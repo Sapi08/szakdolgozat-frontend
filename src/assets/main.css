@@ -1,0 +1,129 @@
+body {
+  color: #757575;
+  background: #ffffff;
+  font-family: 'open sans', sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #fbaf32;
+  font-family: 'Nunito', sans-serif;
+}
+
+a {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  color: #fbaf32;
+  transition: .3s;
+  text-decoration: none;
+}
+
+a:hover,
+a:active,
+a:focus {
+  color: #e86a61;
+  outline: none;
+  text-decoration: none;
+}
+
+.btn.custom-btn {
+  padding: 12px 25px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #e86a61;
+  border: 2px solid #e86a61;
+  border-radius: 5px;
+  transition: .5s;
+}
+
+.btn.custom-btn:hover {
+  color: #e86a61;
+  background: transparent;
+}
+
+.btn.custom-btn:focus,
+.form-control:focus,
+.custom-select:focus {
+  box-shadow: none;
+}
+
+.container-fluid {
+  max-width: 1366px;
+}
+
+.back-to-top {
+  position: fixed;
+  display: none;
+  background: #fbaf32;
+  width: 44px;
+  height: 44px;
+  text-align: center;
+  line-height: 1;
+  font-size: 22px;
+  right: 15px;
+  bottom: 15px;
+  border-radius: 5px;
+  transition: background 0.5s;
+  z-index: 9;
+}
+
+.back-to-top i {
+  color: #ffffff;
+  padding-top: 10px;
+}
+
+.back-to-top:hover {
+  background: #e86a61;
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+  font-size: inherit;
+  margin-left: 0;
+}
+/*******************************/
+.section-header {
+  position: relative;
+  margin-bottom: 45px;
+}
+
+.section-header p {
+  color: #e86a61;
+  margin-bottom: 5px;
+  position: relative;
+  font-size: 20px;
+}
+
+.section-header h2 {
+  margin: 0;
+  position: relative;
+  font-size: 45px;
+  font-weight: 700;
+}
+
+@media (max-width: 991.98px) {
+  .section-header h2 {
+    font-size: 40px;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .section-header h2 {
+    font-size: 35px;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .section-header h2 {
+    font-size: 30px;
+    font-weight: 600;
+  }
+}
