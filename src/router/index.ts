@@ -15,6 +15,10 @@ import Dishes from "@/views/admin/Dishes.vue";
 import Users from "@/views/admin/Users.vue";
 import Gallery from "@/views/Gallery.vue";
 import Profile from '@/views/Profile.vue'
+import Orders from '@/views/admin/Orders.vue'
+import Coupons from '@/views/admin/Coupons.vue'
+import Events from '@/views/admin/Events.vue'
+import Contacts from '@/views/admin/Contacts.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,8 +45,13 @@ const router = createRouter({
       component: AdminLayout,
       children: [
         { path: '', name: 'dashboard', component: Dashboard },
-        { path: 'dishes', name: 'dishes', component: Dishes },
+        { path: 'orders', name: 'orders', component: Orders },
         { path: 'users', name: 'users', component: Users },
+        { path: 'dishes', name: 'dishes', component: Dishes },
+        { path: 'contacts', name: 'contacts', component: Contacts },
+        { path: 'coupons', name: 'coupons', component: Coupons },
+        { path: 'events', name: 'events', component: Events },
+
       ],
     }
   ],

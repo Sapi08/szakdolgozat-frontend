@@ -6,7 +6,7 @@ export const useUserStore = defineStore("user", {
   state: () => {
     return {
       user: null as User | null,
-      users: [] as any[],
+      users: [] as User[],
       accessToken: localStorage.getItem("access_token") || null,
       refreshToken: localStorage.getItem("refresh_token") || null
     }
@@ -51,7 +51,7 @@ export const useUserStore = defineStore("user", {
 
     async loadUsers() {
       const res = await api.get("/users/");
-      this.users = res.data as any[];
+      this.users = res.data as User[];
       return res.data;
     },
 

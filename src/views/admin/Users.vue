@@ -3,7 +3,7 @@ import UsersTableComponent from "@/components/admin/UsersTableComponent.vue";
 import {defineComponent} from "vue";
 
 export default defineComponent({
-  name: "Users",
+  name: "UsersView",
   components: {UsersTableComponent}
 })
 </script>

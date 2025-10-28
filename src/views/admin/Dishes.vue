@@ -3,7 +3,7 @@ import {defineComponent} from 'vue'
 import DishesTableComponent from "@/components/admin/DishesTableComponent.vue";
 
 export default defineComponent({
-  name: "Dishes",
+  name: "DishesView",
   components: {DishesTableComponent}
 })
 </script>

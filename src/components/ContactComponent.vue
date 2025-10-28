@@ -1,5 +1,72 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue'
+import { mapStores } from "pinia";
+import { useContactStore } from "@/stores/contact_store.ts";
+import ToastComponent from '@/components/ToastComponent.vue'
 
+export default defineComponent({
+  name: "ContactComponent",
+  components: { ToastComponent },
+  data() {
+    return {
+      form: {
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+      },
+      loading: false,
+      toast: {
+        show: false,
+        message: "",
+        type: "success" as "success" | "error"
+      }
+    }
+  },
+  computed: {
+    ...mapStores(useContactStore)
+  },
+  methods: {
+    showToast(message: string, type: "success" | "error" = "success") {
+      this.toast.show = false;
+      setTimeout(() => {
+        this.toast = { show: true, message, type };
+      }, 10);
+    },
+
+    async submitForm() {
+      if (!this.form.name || !this.form.email || !this.form.message) {
+        this.showToast('Kérlek, töltsd ki az összes kötelező mezőt!', 'error');
+        return;
+      }
+
+      this.loading = true;
+      try {
+        // KÖZVETLENÜL a form adatait küldjük - NINCS contactMessage változó!
+        await this.contactStore.sendContact(
+          this.form.name,
+          this.form.email,
+          this.form.subject,
+          this.form.message
+        );
+
+        this.showToast('Üzenetét sikeresen elküldtük!', 'success');
+
+        // Form reset
+        this.form.name = "";
+        this.form.email = "";
+        this.form.subject = "";
+        this.form.message = "";
+
+      } catch (error) {
+        console.error('Hiba:', error);
+        this.showToast('Hálózati hiba történt, próbálja újra!', 'error');
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+});
 </script>
 
 <template>
@@ -52,7 +119,22 @@
               <h3>Social média</h3>
               <div class="contact-social">
                 <a href=""><i class="fab fa-facebook-f"></i></a>
-                <a href=""><i><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-tiktok" viewBox="0 0 16 16"><path d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3z"/></svg></i></a>
+                <a href="">
+                  <i>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-tiktok"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M9 0h1.98c.144.715.54 1.617 1.235 2.512C12.895 3.389 13.797 4 15 4v2c-1.753 0-3.07-.814-4-1.829V11a5 5 0 1 1-5-5v2a3 3 0 1 0 3 3z"
+                      />
+                    </svg>
+                  </i>
+                </a>
                 <a href=""><i class="fab fa-instagram"></i></a>
               </div>
             </div>
@@ -61,33 +143,78 @@
       </div>
       <div class="row contact-form">
         <div class="col-md-6">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26252.48294144675!2d20.30057860812809!3d46.42314420952771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47446f7544a0848f%3A0x6a7495745810782a!2zSMOzZG1lesWRdsOhc8OhcmhlbHksIFLDoWvDs2N6aSDDunQgMjksIDY4MDA!5e1!3m2!1shu!2shu!4v1743716221997!5m2!1shu!2shu" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26252.48294144675!2d20.30057860812809!3d46.42314420952771!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47446f7544a0848f%3A0x6a7495745810782a!2zSMOzZG1lesWRdsOhc8OhcmhlbHksIFLDoWvDs2N6aSDDunQgMjksIDY4MDA!5e1!3m2!1shu!2shu!4v1743716221997!5m2!1shu!2shu"
+            width="600"
+            height="450"
+            style="border: 0"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
         <div class="col-md-6">
-          <div id="success"></div>
-          <form name="sentMessage" id="contactForm" novalidate="novalidate">
-            <div class="control-group">
-              <input type="text" class="form-control" id="name" placeholder="Név" required="required" data-validation-required-message="Név" />
-              <p class="help-block text-danger"></p>
+          <form @submit.prevent="submitForm" novalidate>
+            <div class="mb-3">
+              <input
+                v-model="form.name"
+                type="text"
+                class="form-control"
+                placeholder="Név"
+                required
+              />
             </div>
-            <div class="control-group">
-              <input type="email" class="form-control" id="email" placeholder="Email" required="required" data-validation-required-message="Email" />
-              <p class="help-block text-danger"></p>
+
+            <div class="mb-3">
+              <input
+                v-model="form.email"
+                type="email"
+                class="form-control"
+                placeholder="Email"
+                required
+              />
             </div>
-            <div class="control-group">
-              <input type="text" class="form-control" id="subject" placeholder="Tárgy" required="required" data-validation-required-message="Tárgy" />
-              <p class="help-block text-danger"></p>
+
+            <div class="mb-3">
+              <input
+                v-model="form.subject"
+                type="text"
+                class="form-control"
+                placeholder="Tárgy"
+                required
+              />
             </div>
-            <div class="control-group">
-              <textarea class="form-control" id="message" placeholder="Üzenet" required="required" data-validation-required-message="Üzenet"></textarea>
-              <p class="help-block text-danger"></p>
+
+            <div class="mb-3">
+              <textarea
+                v-model="form.message"
+                class="form-control"
+                placeholder="Üzenet"
+                rows="5"
+                required
+              ></textarea>
             </div>
+
+            <p class="small text-muted mb-2">
+              Az itt megadott adatokat kizárólag a kapcsolatfelvétel céljából kezeljük.
+            </p>
+
             <div>
-              <button class="btn custom-btn" type="submit" id="sendMessageButton">Küldés</button>
+              <button class="btn custom-btn" type="submit" :disabled="loading">
+                <span v-if="!loading">Küldés</span>
+                <span v-else>Küldés folyamatban...</span>
+              </button>
             </div>
           </form>
         </div>
       </div>
+      <!-- Toast komponens -->
+      <ToastComponent
+        :show="toast.show"
+        :message="toast.message"
+        :type="toast.type"
+        :duration="3000"
+      />
     </div>
   </div>
 </template>
@@ -103,7 +230,7 @@
   min-height: 150px;
   margin: 0 0 30px 0;
   padding: 30px 15px 0 15px;
-  background: rgba(0, 0, 0, .04);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .contact .contact-info {
@@ -171,7 +298,7 @@
   padding: 15px;
   background: none;
   border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .contact .contact-form textarea {
@@ -179,7 +306,7 @@
   padding: 8px 15px;
   background: none;
   border-radius: 5px;
-  border: 1px solid rgba(0, 0, 0, .1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .contact .help-block ul {

@@ -29,19 +29,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: 'SideNavbar',
   data() {
     return {
       navItems: [
-        { name: 'Rendelések', path: '/admin', icon: 'fas fa-shopping-cart' },
+        { name: 'Előnézet', path: '/admin', icon: 'fas fa-chart-line' },
+        { name: 'Rendelések', path: '/admin/orders', icon: 'fas fa-shopping-cart' },
         { name: 'Felhasználók', path: '/admin/users', icon: 'fas fa-users' },
         { name: 'Ételek', path: '/admin/dishes', icon: 'fas fa-utensils'},
-        { name: 'Kuponok', path: '/admin', icon: 'fas fa-receipt' },
-        { name: 'Rendezvények', path: '/admin', icon: 'fas fa-calendar' },
-        { name: 'Profil', path: '/admin', icon: 'fas fa-user' },
-        { name: 'Statisztikák', path: '/admin', icon: 'fas fa-chart-line' },
+        { name: 'Üzenetek', path: '/admin/contacts', icon: 'fas fa-utensils'},
+        { name: 'Kuponok', path: '/admin/coupons', icon: 'fas fa-receipt' },
+        { name: 'Rendezvények', path: '/admin/events', icon: 'fas fa-calendar' },
       ]
     }
   }
