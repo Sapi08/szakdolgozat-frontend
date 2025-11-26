@@ -8,13 +8,12 @@ import FoodCardComponent from '@/components/FoodCardComponent.vue'
 
 export default defineComponent({
   name: "MenuView",
-  components: { FoodCard: FoodCardComponent, MenuBookComponent, Hamburgers, PageHeader, FoodComponent}
+  components: { FoodCard: FoodCardComponent, MenuBookComponent, Hamburgers, PageHeader}
 })
 </script>
 
 <template>
   <PageHeader/>
-  <FoodComponent/>
   <FoodCard/>
   <MenuBookComponent/>
   <Hamburgers/>

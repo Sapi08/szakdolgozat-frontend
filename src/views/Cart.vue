@@ -5,6 +5,7 @@ import PageHeader from "@/components/PageHeader.vue";
 import CartComponent from "@/components/CartComponent.vue";
 
 export default defineComponent({
+  name: "CartView",
   components: {CartComponent, PageHeader}
 })
 </script>

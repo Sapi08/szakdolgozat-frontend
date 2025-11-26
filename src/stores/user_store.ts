@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import User from "@/models/user.ts";
 import api from "@/config/axios.ts"
+import { AxiosError } from "axios";
 
 export const useUserStore = defineStore("user", {
   state: () => {
@@ -13,8 +14,34 @@ export const useUserStore = defineStore("user", {
   },
   actions: {
     async register(email: string, password: string, firstname: string, lastname: string, phone: string, birthdate: string) {
-      const res = await api.post("/register", {email, password, firstname, lastname, phone, birthdate});
-      console.log("Sikeres regisztráció:", res.data);
+      try {
+        const res = await api.post("/register", {email, password, firstname, lastname, phone, birthdate});
+        console.log("Sikeres regisztráció:", res.data);
+        return { success: true, message: "Sikeres regisztráció!" };
+
+      } catch (err) {
+        console.error("Regisztrációs hiba:", err);
+
+        if (err instanceof AxiosError) {
+          if (err.response) {
+            const status = err.response.status;
+
+            if (status === 400) {
+              // Email már létezik vagy hibás adatok
+              return { success: false, message: "Ez az email cím már regisztrálva van!" };
+            } else if (status === 422) {
+              // Validációs hibák
+              return { success: false, message: "Hibás adatok! Kérjük, ellenőrizze a mezőket!" };
+            } else {
+              return { success: false, message: "Váratlan hiba történt. Kérjük, próbálja újra később!" };
+            }
+          } else if (err.request) {
+            return { success: false, message: "Nem sikerült kapcsolódni a szerverhez!" };
+          }
+        }
+
+        return { success: false, message: "Váratlan hiba történt!" };
+      }
     },
 
     async signIn(email: string, password: string) {
@@ -34,11 +61,29 @@ export const useUserStore = defineStore("user", {
         console.log(this.accessToken);
         await this.userDetail();
 
+        return { success: true, message: "" };
+
       } catch (err) {
         console.error("Bejelentkezés hiba:", err);
-        alert("Hibás email vagy jelszó.");
+
+        if (err instanceof AxiosError) {
+          if (err.response) {
+            const status = err.response.status;
+
+            if (status === 401 || status === 400) {
+              return { success: false, message: "Hibás email vagy jelszó!" };
+            } else {
+              return { success: false, message: "Váratlan hiba történt. Kérjük, próbálja újra később!" };
+            }
+          } else if (err.request) {
+            return { success: false, message: "Nem sikerült kapcsolódni a szerverhez!" };
+          }
+        }
+
+        return { success: false, message: "Váratlan hiba történt!" };
       }
     },
+
     async userDetail() {
       try {
         const res = await api.get("/user_details");

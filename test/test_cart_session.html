@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart Session Storage Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #fbaf32;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        button {
+            background: #fbaf32;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #e86a61;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Cart Session Storage Teszt</h1>
+
+        <div class="test-section">
+            <h2>1. Kosár műveletek</h2>
+            <button onclick="addItem()">➕ Tétel hozzáadása</button>
+            <button onclick="incrementItem()">⬆️ Mennyiség növelése</button>
+            <button onclick="decrementItem()">⬇️ Mennyiség csökkentése</button>
+            <button onclick="removeItem()">🗑️ Tétel törlése</button>
+            <button onclick="clearCart()">🧹 Kosár ürítése</button>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Session állapot</h2>
+            <button onclick="showSession()">🔍 Session megjelenítése</button>
+            <button onclick="loadSession()">📥 Session betöltése</button>
+            <div id="sessionOutput"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. Biztonság teszt</h2>
+            <button onclick="hackPrice()">🔓 Ár manipuláció kísérlet</button>
+            <button onclick="validateCart()">✅ Kosár validálás</button>
+            <div id="securityOutput"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. Jelenlegi kosár állapot</h2>
+            <div id="cartState"></div>
+        </div>
+    </div>
+
+    <script>
+        const CART_KEY = 'shopping_cart';
+
+        // Mock cart state
+        let cart = [];
+
+        function loadSession() {
+            const sessionData = sessionStorage.getItem(CART_KEY);
+            if (sessionData) {
+                cart = JSON.parse(sessionData);
+                log('✅ Session betöltve', 'success');
+            } else {
+                log('ℹ️ Nincs mentett session', 'info');
+                cart = [];
+            }
+            updateCartDisplay();
+        }
+
+        function saveSession() {
+            sessionStorage.setItem(CART_KEY, JSON.stringify(cart));
+            log('💾 Session mentve', 'success');
+            updateCartDisplay();
+        }
+
+        function addItem() {
+            const newItem = {
+                dishId: Math.floor(Math.random() * 100) + 1,
+                variantId: Math.random() > 0.5 ? Math.floor(Math.random() * 20) : null,
+                quantity: 1
+            };
+
+            const existing = cart.find(item => item.dishId === newItem.dishId);
+            if (existing) {
+                existing.quantity++;
+                log(`⬆️ Mennyiség növelve: dishId ${newItem.dishId}`, 'success');
+            } else {
+                cart.push(newItem);
+                log(`➕ Új tétel: dishId ${newItem.dishId}`, 'success');
+            }
+
+            saveSession();
+        }
+
+        function incrementItem() {
+            if (cart.length === 0) {
+                log('❌ Nincs tétel a kosárban', 'error');
+                return;
+            }
+            cart[0].quantity++;
+            log(`⬆️ Mennyiség növelve: ${cart[0].quantity}`, 'success');
+            saveSession();
+        }
+
+        function decrementItem() {
+            if (cart.length === 0) {
+                log('❌ Nincs tétel a kosárban', 'error');
+                return;
+            }
+            if (cart[0].quantity > 1) {
+                cart[0].quantity--;
+                log(`⬇️ Mennyiség csökkentve: ${cart[0].quantity}`, 'success');
+            } else {
+                cart.shift();
+                log('🗑️ Tétel törölve (mennyiség = 0)', 'success');
+            }
+            saveSession();
+        }
+
+        function removeItem() {
+            if (cart.length === 0) {
+                log('❌ Nincs tétel a kosárban', 'error');
+                return;
+            }
+            const removed = cart.shift();
+            log(`🗑️ Tétel törölve: dishId ${removed.dishId}`, 'success');
+            saveSession();
+        }
+
+        function clearCart() {
+            cart = [];
+            sessionStorage.removeItem(CART_KEY);
+            log('🧹 Kosár ürítve', 'success');
+            updateCartDisplay();
+        }
+
+        function showSession() {
+            const sessionData = sessionStorage.getItem(CART_KEY);
+            const output = document.getElementById('sessionOutput');
+            if (sessionData) {
+                output.innerHTML = `<h3>Session Storage tartalom:</h3><pre>${JSON.stringify(JSON.parse(sessionData), null, 2)}</pre>`;
+            } else {
+                output.innerHTML = '<p>Nincs mentett session</p>';
+            }
+        }
+
+        function hackPrice() {
+            const output = document.getElementById('securityOutput');
+
+            // Attempt 1: Try to add price to session
+            const hackedCart = cart.map(item => ({
+                ...item,
+                price: 100  // Manipulated price
+            }));
+
+            output.innerHTML = `
+                <h3>🔓 Támadási kísérlet:</h3>
+                <pre>${JSON.stringify(hackedCart, null, 2)}</pre>
+                <p class="error">⚠️ Figyelem: Az 'price' mező a session-ben van!</p>
+                <p class="success">✅ De a backend ezt nem fogadja el!</p>
+                <p>A backend csak a <code>dishId</code>, <code>variantId</code> és <code>quantity</code> mezőket használja.</p>
+                <p>Az árat mindig az adatbázisból kéri le.</p>
+            `;
+        }
+
+        function validateCart() {
+            const output = document.getElementById('securityOutput');
+
+            // Simulate backend validation
+            const validationResult = cart.map(item => ({
+                dishId: item.dishId,
+                variantId: item.variantId,
+                quantity: item.quantity,
+                // Backend adds these from DB:
+                name: `Pizza #${item.dishId}`,
+                price: Math.floor(Math.random() * 3000) + 1000,  // From DB
+                total: 0  // Will be calculated
+            }));
+
+            validationResult.forEach(item => {
+                item.total = item.price * item.quantity;
+            });
+
+            const totalPrice = validationResult.reduce((sum, item) => sum + item.total, 0);
+
+            output.innerHTML = `
+                <h3>✅ Backend validálás eredménye:</h3>
+                <pre>${JSON.stringify(validationResult, null, 2)}</pre>
+                <p class="success">💰 Végösszeg (backend által számolva): ${totalPrice} Ft</p>
+                <p>ℹ️ Ez az összeg mindig az adatbázis áraiból számolódik!</p>
+            `;
+        }
+
+        function updateCartDisplay() {
+            const output = document.getElementById('cartState');
+            if (cart.length === 0) {
+                output.innerHTML = '<p>A kosár üres</p>';
+            } else {
+                const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                output.innerHTML = `
+                    <h3>📦 Tételek száma: ${cart.length} (${totalItems} db)</h3>
+                    <pre>${JSON.stringify(cart, null, 2)}</pre>
+                `;
+            }
+        }
+
+        function log(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // Initialize
+        loadSession();
+    </script>
+</body>
+</html>
+

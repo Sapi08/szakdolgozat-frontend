@@ -1,33 +1,18 @@
 <script lang="ts">
-import PopupContent from './PopupContent.vue';
+import ScratchCardComponent from './ScratchCardComponent.vue';
 
 export default {
-  components: { PopupContent },
+  name: 'RandomPopupComponent',
+  components: { ScratchCardComponent },
   data() {
     return {
-      showPopup: false,
-      timer: null
+      scratchCardKey: 0
     };
   },
-  mounted() {
-    this.startRandomTimer();
-  },
-  beforeUnmount() {
-    clearTimeout(this.timer);
-  },
   methods: {
-    startRandomTimer() {
-      const randomTime = Math.floor(Math.random() * 100000) + 550000;
-      this.timer = setTimeout(() => {
-        this.showPopup = true;
-        this.startRandomTimer();
-      }, randomTime);
-    },
-    closePopup() {
-      this.showPopup = false;
-    },
     triggerManualPopup() {
-      this.showPopup = true;
+      // Újra rendereljük a komponenst új key-vel, hogy újrainduljon a popup logika
+      this.scratchCardKey++;
     }
   }
 };
@@ -35,31 +20,59 @@ export default {
 
 <template>
   <div>
-    <button @click="triggerManualPopup">Kézi popup</button>
+    <!-- Fejlesztői gomb manuális teszteléshez (később eltávolítható) -->
+    <button
+      @click="triggerManualPopup"
+      class="dev-trigger-btn"
+      title="Kaparós sorsjegy megjelenítése (fejlesztői funkció)"
+    >
+      <i class="fas fa-ticket-alt"></i>
+    </button>
 
-    <div v-if="showPopup" class="popup-overlay">
-      <div class="popup-container">
-        <PopupContent @close="closePopup" />
-      </div>
-    </div>
+    <!-- A ScratchCardComponent most automatikusan kezeli a popup megjelenést -->
+    <ScratchCardComponent :key="scratchCardKey" />
   </div>
 </template>
 
 <style scoped>
-.popup-overlay {
+/* Fejlesztői trigger gomb - Production módban elrejtve */
+.dev-trigger-btn {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fbaf32, #e86a61);
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(251, 175, 50, 0.5);
+  transition: all 0.3s ease;
+  z-index: 9998;
+  display: none; /* Elrejtve - csak fejlesztéshez használd: display: flex; */
   align-items: center;
-  z-index: 1000;
+  justify-content: center;
 }
 
-.popup-container {
-  background: transparent;
+.dev-trigger-btn:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 6px 20px rgba(251, 175, 50, 0.7);
+}
+
+.dev-trigger-btn:active {
+  transform: scale(0.95);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dev-trigger-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    bottom: 15px;
+    right: 15px;
+  }
 }
 </style>
