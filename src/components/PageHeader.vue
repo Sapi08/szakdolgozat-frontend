@@ -13,7 +13,8 @@ const pageTitle = computed(() => {
     contact: "Kapcsolat",
     event_booking: "Rendezvény",
     cart: "Kosár",
-    gallery: "Galéria"
+    gallery: "Galéria",
+    profile: "Profil",
   };
   return titles[route.name] || "Page Not Found";
 });

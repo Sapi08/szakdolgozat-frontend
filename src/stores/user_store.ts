@@ -3,10 +3,20 @@ import User from "@/models/user.ts";
 import api from "@/config/axios.ts"
 import { AxiosError } from "axios";
 
+interface UserWithDetails {
+  email: string;
+  name: string;
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  birth_date?: string;
+  points?: number;
+}
+
 export const useUserStore = defineStore("user", {
   state: () => {
     return {
-      user: null as User | null,
+      user: null as UserWithDetails | null,
       users: [] as User[],
       accessToken: localStorage.getItem("access_token") || null,
       refreshToken: localStorage.getItem("refresh_token") || null
@@ -114,6 +124,7 @@ export const useUserStore = defineStore("user", {
         this.logout();
       }
     },
+
     logout() {
       this.user = null;
       this.accessToken = null;
@@ -124,6 +135,7 @@ export const useUserStore = defineStore("user", {
 
       delete api.defaults.headers.common["Authorization"];
     },
+
     initAuth() {
       if (this.accessToken) {
         // Ha már van tokenünk localStorage-ból
