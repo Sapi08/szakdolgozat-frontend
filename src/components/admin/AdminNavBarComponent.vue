@@ -52,8 +52,8 @@ export default {
 .side-navbar {
   width: 250px;
   height: 100vh;
-  background-color: #2c3e50;
-  color: white;
+  background-color: #e8786f;
+  color: #000000;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -64,13 +64,13 @@ export default {
 
 .logo-container {
   padding: 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgb(32, 32, 32);
 }
 
 .logo-container h1 {
   margin: 0;
   font-size: 1.5rem;
-  color: white;
+  color: #000000;
 }
 
 .main-nav {
@@ -92,13 +92,13 @@ export default {
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  color: #ecf0f1;
+  color: #000000;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .nav-link:hover {
-  background-color: #34495e;
+  background-color: #fc9403;
   color: #ffffff;
 }
 
@@ -132,7 +132,7 @@ export default {
   padding: 0;
   margin: 0;
   font-size: 0.8rem;
-  color: #bdc3c7;
+  color: #000000;
 }
 
 .footer-menu li {

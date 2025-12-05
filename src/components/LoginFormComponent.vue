@@ -55,7 +55,9 @@ export default defineComponent({
 
         const result = await this.userStore.signIn(this.email, this.password);
 
-        if (result.success) {
+        if (result.success && result.is_staff) {
+          this.$router.push("/admin");
+        } else if ( result.success ) {
           this.$router.push("/");
         } else {
           this.backendError = result.message;

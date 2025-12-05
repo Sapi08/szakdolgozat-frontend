@@ -11,6 +11,7 @@ interface UserWithDetails {
   phone?: string;
   birth_date?: string;
   points?: number;
+  is_staff?: boolean;
 }
 
 export const useUserStore = defineStore("user", {
@@ -21,6 +22,10 @@ export const useUserStore = defineStore("user", {
       accessToken: localStorage.getItem("access_token") || null,
       refreshToken: localStorage.getItem("refresh_token") || null
     }
+  },
+  getters: {
+    isAuthenticated: (state) => !!state.accessToken && !!state.user,
+    isAdmin: (state) => state.user?.is_staff || false,
   },
   actions: {
     async register(email: string, password: string, firstname: string, lastname: string, phone: string, birthdate: string) {
@@ -71,7 +76,11 @@ export const useUserStore = defineStore("user", {
         console.log(this.accessToken);
         await this.userDetail();
 
-        return { success: true, message: "" };
+        return {
+          success: true,
+          message: "",
+          is_staff: this.user?.is_staff ?? false,
+        };
 
       } catch (err) {
         console.error("Bejelentkezés hiba:", err);
@@ -110,21 +119,6 @@ export const useUserStore = defineStore("user", {
       return res.data;
     },
 
-    async refreshTokenIfNeeded() {
-      try {
-        const res = await api.post("token/refresh/", {
-          refresh: this.refreshToken
-        });
-
-        this.accessToken = res.data.access;
-        localStorage.setItem("access_token", this.accessToken!);
-        api.defaults.headers.common["Authorization"] = `Bearer ${this.accessToken}`;
-      } catch (err) {
-        console.error("Token frissítés sikertelen:", err);
-        this.logout();
-      }
-    },
-
     logout() {
       this.user = null;
       this.accessToken = null;
@@ -142,17 +136,11 @@ export const useUserStore = defineStore("user", {
         api.defaults.headers.common["Authorization"] = `Bearer ${this.accessToken}`;
 
         // Megpróbáljuk betölteni a felhasználó adatait
-        this.userDetail().catch(async () => {
-          // Ha hibás vagy lejárt az access token, próbáljuk frissíteni
-          if (this.refreshToken) {
-            await this.refreshTokenIfNeeded();
-            await this.userDetail().catch(() => {
-              // Ha ez sem sikerül, kijelentkeztetjük a felhasználót
-              this.logout();
-            });
-          } else {
-            this.logout();
-          }
+        // Az axios interceptor automatikusan kezeli a token refresh-t
+        this.userDetail().catch(() => {
+          // Ha minden próbálkozás sikertelen (beleértve az automatikus refresh-t is)
+          // akkor már az interceptor levágta a felhasználót
+          console.log("Nem sikerült betölteni a felhasználói adatokat");
         });
       }
     }
