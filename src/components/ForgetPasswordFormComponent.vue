@@ -1,30 +1,33 @@
 <script lang="ts">
-import {defineComponent} from "vue";
-import {mapStores} from "pinia";
-import {useUserStore} from "@/stores/user_store.ts";
+
+import { defineComponent } from 'vue';
+import { mapStores } from 'pinia'
+import { useUserStore } from '@/stores/user_store.ts'
 
 export default defineComponent({
-  name: "RegistrationFormComponent",
+  name: "ForgetPasswordFormComponent",
+
   data() {
     return {
       email: "",
-      password: "",
       errors: {
-        email: "",
-        password: ""
+        email: ""
       },
-      backendError: ""
+      backendError: "",
+      successMessage: "",
+      loading: false
     }
   },
   computed: {
-    ...mapStores(useUserStore)
+  ...mapStores(useUserStore)
   },
   methods: {
     clearErrors() {
       this.errors = {
-        email: "",
-        password: ""
+        email: ""
       }
+      this.backendError = ""
+      this.successMessage = ""
     },
     validateForm(): boolean {
       this.clearErrors()
@@ -38,34 +41,32 @@ export default defineComponent({
         isValid = false
       }
 
-      if (this.password.length === 0) {
-        this.errors.password = "Kérjük, adja meg a jelszavát!"
-        isValid = false
-      }
-
       return isValid
     },
     isValidEmail(email: string): boolean {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(email)
     },
-    async signIn() {
+    async sendEmail() {
       if (this.validateForm()) {
         this.backendError = "";
+        this.successMessage = "";
+        this.loading = true;
 
-        const result = await this.userStore.signIn(this.email, this.password);
+        const result = await this.userStore.forgetPassword(this.email);
 
-        if (result.success && result.is_staff) {
-          this.$router.push("/admin");
-        } else if ( result.success ) {
-          this.$router.push("/");
+        this.loading = false;
+
+        if (result.success) {
+          this.successMessage = result.message;
+          this.email = ""; // Tisztítjuk az email mezőt
         } else {
           this.backendError = result.message;
         }
       }
     },
-    goToRegister() {
-      this.$router.push("/registration");
+    goToLogin() {
+      this.$router.push("/login");
     },
     goToForgetPassword() {
       this.$router.push("/forget_pass");
@@ -76,32 +77,35 @@ export default defineComponent({
 
 <template>
   <div class="container">
-    <h1>Belépés</h1>
-    <p>Kérem töltse ki a mezőket a belépéshez.</p>
+    <h1>Új jelszó igénylése</h1>
+    <p>Adjon meg egy érvényes e-mail címet.</p>
     <hr>
 
     <label for="email"><b>E-mail cím</b></label>
     <input type="email" placeholder="Adja meg az email címét" name="email" id="email"
-           v-model="email" :class="{ 'error-input': errors.email }">
+           v-model="email" :class="{ 'error-input': errors.email }" :disabled="loading">
     <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
 
-    <label for="psw"><b>Jelszó</b></label>
-    <input type="password" placeholder="Adja meg a jelszavát" name="psw" id="psw"
-           v-model="password" :class="{ 'error-input': errors.password }">
-    <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
+    <!-- Success message -->
+    <div v-if="successMessage" class="success-message">
+      <span class="success-icon">✓</span>
+      <span class="success-text">{{ successMessage }}</span>
+    </div>
 
     <!-- Backend error message -->
     <div v-if="backendError" class="backend-error">
       <span class="error-icon">⚠️</span>
       <span class="error-text">{{ backendError }}</span>
     </div>
+
     <div class="d-flex justify-content-between">
-      <p class="register-link"><a href="#">Szabályzat</a></p>
-      <p class="register-link">Még nincs fiókja? <a @click="goToRegister" class="register-link-btn">Regisztráció</a></p>
-      <p class="register-link"><a @click="goToForgetPassword" class="register-link-btn">Elfelejtett jelszó?</a></p>
+      <button class="loginbtn" @click="goToLogin" :disabled="loading">Vissza</button>
+      <button type="submit" class="loginbtn" @click="sendEmail" :disabled="loading">
+        <span v-if="loading">Küldés...</span>
+        <span v-else>Email küldése</span>
+      </button>
     </div>
 
-    <button type="submit" class="loginbtn" @click="signIn">Belépés</button>
   </div>
 </template>
 
@@ -130,6 +134,11 @@ input[type=email]:focus {
   outline: none;
 }
 
+input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .error-input {
   border: 2px solid #e86a61 !important;
   background-color: #ffe6e4 !important;
@@ -143,33 +152,28 @@ input[type=email]:focus {
   font-weight: 500;
 }
 
-.backend-error {
+.success-message {
   display: flex;
   align-items: center;
-  background-color: #ffe6e4;
-  border-left: 4px solid #e86a61;
+  background-color: #e8f5e9;
+  border-left: 4px solid #4caf50;
   padding: 15px;
   margin: 20px 0;
   border-radius: 8px;
   animation: slideIn 0.3s ease-out;
 }
 
-.error-icon {
+.success-icon {
   font-size: 24px;
   margin-right: 12px;
+  color: #4caf50;
+  font-weight: bold;
 }
 
-.error-text {
-  color: #d32f2f;
+.success-text {
+  color: #2e7d32;
   font-size: 15px;
   font-weight: 500;
-}
-
-.register-link {
-  text-align: center;
-  margin: 20px 0;
-  font-size: 15px;
-  color: #666;
 }
 
 .register-link-btn {
@@ -214,9 +218,5 @@ hr {
 
 .loginbtn:hover {
   opacity: 1;
-}
-
-a {
-  color: dodgerblue;
 }
 </style>

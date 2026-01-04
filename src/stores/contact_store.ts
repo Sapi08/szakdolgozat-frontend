@@ -11,7 +11,7 @@ export const useContactStore = defineStore("contact", {
       // ContactMessage objektum létrehozása
       const contactData = new ContactMessage(name, email, subject, message);
 
-      const res = await api.post("/api/contact/", contactData);
+      const res = await api.post("/add_contact_message", contactData);
       console.log("Sikeres kapcsolatfelvétel:", res.data);
       return res.data;
     },

@@ -1,0 +1,14 @@
+1. Komponens betöltődik
+   ↓
+2. setup() lefut:
+   - userStore elérése
+   - user változó létrehozása (computed)
+   ↓
+3. HTML renderelődik (de még üres user)
+   ↓
+4. onMounted() lefut:
+   - userStore.userDetail() lekéri az adatokat API-ról
+   ↓
+5. user változó frissül (computed miatt automatikus)
+   ↓
+6. HTML újrarenderelődik a valódi adatokkal ✅

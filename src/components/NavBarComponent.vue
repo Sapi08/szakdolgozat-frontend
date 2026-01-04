@@ -24,14 +24,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="navbar navbar-expand-lg bg-light navbar-light">
-    <div class="container-fluid">
+  <div class="d-flex navbar navbar-expand-lg bg-light navbar-light">
+    <div class="d-flex justify-content-between container-fluid">
       <img src="../assets/icons/pizzahaz_logo_teto.png" alt="" width="70" height="70">
       <router-link to="/" class="navbar-brand">Pizzaház<br><span>Hódmezővásásrhely</span></router-link>
       <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <div class="navbar-nav ps-5">
           <router-link to="/" class="nav-item nav-link" :class="isActive('/')?'active':''">Főoldal</router-link>
@@ -46,11 +45,10 @@ export default defineComponent({
       <div v-if="!isLoggedIn">
         <router-link to="/login" class="loginbutton">Belépés</router-link>
         <router-link to="/registration" class="registerbutton">Regisztráció</router-link>
-      </div>
-      <div>
         <router-link to="/cart"><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i></router-link>
       </div>
       <div v-if="isLoggedIn" class="user-actions">
+        <router-link to="/cart"><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i></router-link>
         <router-link to="/profile"><i class="fa fa-user-circle cartbutton" aria-hidden="true"></i></router-link>
         <button class="logoutbutton" @click="logout">Kijelentkezés</button>
       </div>

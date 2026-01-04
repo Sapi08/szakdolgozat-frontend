@@ -19,6 +19,8 @@ import Orders from '@/views/admin/Orders.vue'
 import Coupons from '@/views/admin/Coupons.vue'
 import Events from '@/views/admin/Events.vue'
 import Contacts from '@/views/admin/Contacts.vue'
+import ForgetPassword from '@/views/ForgetPassword.vue'
+import NewPassword from '@/views/NewPassword.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,12 +31,14 @@ const router = createRouter({
       children: [
         { path: '', name: 'home', component: Home },
         { path: 'registration', name: 'registration', component: Registration },
+        { path: 'login', name: 'login', component: Login },
+        { path: 'forget_pass', name: 'forget_pass', component: ForgetPassword },
+        { path: 'new_pass', name: 'new_pass', component: NewPassword },
         { path: 'about', name: 'about', component: About },
         { path: 'services', name: 'services', component: Services },
         { path: 'menu', name: 'menu', component: Menu },
         { path: 'contact', name: 'contact', component: Contact },
         { path: 'event_booking', name: 'event_booking', component: EventBooking },
-        { path: 'login', name: 'login', component: Login },
         { path: 'cart', name: 'cart', component: Cart },
         { path: 'gallery', name: 'gallery', component: Gallery },
         { path: 'profile', name: 'profile', component: Profile },

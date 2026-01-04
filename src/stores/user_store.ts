@@ -30,7 +30,7 @@ export const useUserStore = defineStore("user", {
   actions: {
     async register(email: string, password: string, firstname: string, lastname: string, phone: string, birthdate: string) {
       try {
-        const res = await api.post("/register", {email, password, firstname, lastname, phone, birthdate});
+        const res = await api.post("/register", { email, password, firstname, lastname, phone, birthdate });
         console.log("Sikeres regisztráció:", res.data);
         return { success: true, message: "Sikeres regisztráció!" };
 
@@ -61,7 +61,7 @@ export const useUserStore = defineStore("user", {
 
     async signIn(email: string, password: string) {
       try {
-        const res = await api.post("/sign_in", {email, password});
+        const res = await api.post("/sign_in", { email, password });
         console.log(res)
 
         this.accessToken = res.data.access;
@@ -143,7 +143,110 @@ export const useUserStore = defineStore("user", {
           console.log("Nem sikerült betölteni a felhasználói adatokat");
         });
       }
-    }
+    },
 
+    async forgetPassword(email: string) {
+      try {
+        const res = await api.post("/forget_password", { email });
+        console.log("Jelszóemlékeztető kérés sikeres" + res.data);
+        // Biztonsági okokból mindig ugyanazt az üzenetet adjuk vissza
+        // Így nem áruljuk el, hogy létezik-e az email cím az adatbázisban
+        return {
+          success: true,
+          message: "Ha ez az email cím regisztrálva van, elküldtünk egy jelszóvisszaállító linket."
+        };
+      } catch (err) {
+        console.error("Jelszóemlékeztető hiba:", err);
+
+        if (err instanceof AxiosError) {
+          if (err.response) {
+            const status = err.response.status;
+
+            // Rate limiting esetén egyértelmű üzenet
+            if (status === 429) {
+              return {
+                success: false,
+                message: "Túl sok próbálkozás! Kérjük, próbálja újra 5 perc múlva."
+              };
+            } else if (status >= 500) {
+              return {
+                success: false,
+                message: "Szerverhiba történt. Kérjük, próbálja újra később!"
+              };
+            }
+
+            // Minden más esetben (400, 404, stb.) is ugyanaz az üzenet
+            // Biztonsági ok: ne áruljuk el, hogy létezik-e az email
+            return {
+              success: true,
+              message: "Ha ez az email cím regisztrálva van, elküldtünk egy jelszóvisszaállító linket."
+            };
+
+          } else if (err.request) {
+            return {
+              success: false,
+              message: "Nem sikerült kapcsolódni a szerverhez!"
+            };
+          }
+        }
+
+        return {
+          success: false,
+          message: "Váratlan hiba történt!"
+        };
+      }
+    },
+
+    async resetPassword(token: string, password: string) {
+      try {
+        const res = await api.post("/reset_password", { token, password });
+        console.log("Jelszó sikeresen megváltoztatva:", res.data);
+        return {
+          success: true,
+          message: "Jelszó sikeresen megváltoztatva! Átirányítás a bejelentkezési oldalra..."
+        };
+      } catch (err) {
+        console.error("Jelszó visszaállítási hiba:", err);
+
+        if (err instanceof AxiosError) {
+          if (err.response) {
+            const status = err.response.status;
+
+            if (status === 400) {
+              return {
+                success: false,
+                message: "Érvénytelen vagy lejárt token! Kérjük, kezdje újra a jelszó visszaállítási folyamatot."
+              };
+            } else if (status === 404) {
+              return {
+                success: false,
+                message: "Érvénytelen link! Kérjük, kérjen új jelszó visszaállító linket."
+              };
+            } else if (status === 422) {
+              return {
+                success: false,
+                message: "A jelszó túl gyenge! Minimum 6 karakter szükséges."
+              };
+            } else if (status >= 500) {
+              return {
+                success: false,
+                message: "Szerverhiba történt. Kérjük, próbálja újra később!"
+              };
+            }
+
+            return {
+              success: false,
+              message: "Hiba történt a jelszó megváltoztatása során!"
+            };
+
+          } else if (err.request) {
+            return {
+              success: false,
+              message: "Nem sikerült kapcsolódni a szerverhez!"
+            };
+          }
+        }
+      }
+    }
   }
-})
+});
