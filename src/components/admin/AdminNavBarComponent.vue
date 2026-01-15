@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       navItems: [
-        { name: 'Előnézet', path: '/admin', icon: 'fas fa-chart-line' },
+        { name: 'Statisztikák', path: '/admin', icon: 'fas fa-chart-line' },
         { name: 'Rendelések', path: '/admin/orders', icon: 'fas fa-shopping-cart' },
         { name: 'Felhasználók', path: '/admin/users', icon: 'fas fa-users' },
         { name: 'Ételek', path: '/admin/dishes', icon: 'fas fa-utensils'},

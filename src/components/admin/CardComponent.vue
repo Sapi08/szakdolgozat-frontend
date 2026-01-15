@@ -1,32 +1,43 @@
-<template>
-  <div class="capacity-card">
-    <div class="card-header">
-      <h3 class="card-title">Capacity</h3>
-      <span class="update-badge">
-        <i class="update-icon">📌</i> Updated now
-      </span>
-    </div>
-    <div class="card-content">
-      <p class="capacity-value">105GB</p>
-    </div>
-  </div>
-</template>
-
 <script lang="ts">
 export default {
   name: 'CardComponent',
   props: {
-    value: {
+    title: {
       type: String,
-      default: '105GB'
+      default: '-Cím-',
+    },
+    value: {
+      type: [String, Number],
+      default: '-Érték-',
+    },
+    icon: {
+      type: String,
+      default: '📌',
     },
     updatedText: {
       type: String,
-      default: 'Updated now'
-    }
-  }
+      default: 'Frissítve',
+    },
+    color: {
+      type: String,
+      default: 'blue',
+    },
+  },
 }
 </script>
+
+<template>
+  <div class="capacity-card">
+    <div class="card-header">
+      <h3 class="card-title">{{title}}</h3>
+      <span class="update-badge">
+        <i class="update-icon">{{icon}}</i> {{updatedText}}</span>
+    </div>
+    <div class="card-content">
+      <p class="capacity-value">{{value}}</p>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .capacity-card {
@@ -35,9 +46,11 @@ export default {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 240px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-left: 1000px;
+  max-width: 440px;
+  max-height: 500px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .capacity-card:hover {
