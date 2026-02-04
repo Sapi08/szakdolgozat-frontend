@@ -8,6 +8,10 @@ export default defineComponent({
     isLoggedIn(): boolean {
       const store = useUserStore()
       return !!store.user
+    },
+    isAdmin(): boolean {
+      const store = useUserStore()
+      return store.isAdmin
     }
   },
   methods: {
@@ -50,6 +54,7 @@ export default defineComponent({
       <div v-if="isLoggedIn" class="user-actions">
         <router-link to="/cart"><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i></router-link>
         <router-link to="/profile"><i class="fa fa-user-circle cartbutton" aria-hidden="true"></i></router-link>
+        <router-link v-if="isAdmin" to="/admin" class="cartbutton">ADMIN</router-link>
         <button class="logoutbutton" @click="logout">Kijelentkezés</button>
       </div>
     </div>

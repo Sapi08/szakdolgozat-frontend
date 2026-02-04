@@ -4,125 +4,121 @@ import { mapStores } from 'pinia'
 import { useCouponStore } from '@/stores/coupon_store.ts'
 
 export default defineComponent({
-  name: "CouponTypeCreaterComponent",
+  name: "CouponCreaterComponent",
   data() {
     return {
-      name: "",
-      description: "",
-      imageFile: null as File | null,
-      discountCategory: "",
-      value: "",
+      userId: "",
+      discountType: "",
+      expirationDate: "",
       errors: {
-        name: "",
-        discountCategory: "",
-        value: ""
+        userId: "",
+        discountType: "",
+        expirationDate: ""
       },
       backendError: "",
       successMessage: "",
-      discountCategories: [
-        { value: "percent", label: "Százalékos kedvezmény" },
-        { value: "fixed", label: "Fix összegű kedvezmény" },
-        { value: "free_item", label: "Egy termék ingyen" },
-        { value: "shipping", label: "Ingyenes szállítás" }
-      ]
+      generatedCode: ""
     }
   },
   computed: {
     ...mapStores(useCouponStore),
     isLoading() {
       return this.couponStore.isLoading
+    },
+    couponTypes() {
+      return this.couponStore.couponTypes
     }
   },
+  async mounted() {
+    await this.loadDiscountTypes()
+  },
   methods: {
+    async loadDiscountTypes() {
+      try {
+        await this.couponStore.loadDiscountTypes()
+      } catch (error) {
+        this.backendError = "Hiba történt a kedvezménytípusok betöltésekor"
+      }
+    },
     clearErrors() {
       this.errors = {
-        name: "",
-        discountCategory: "",
-        value: ""
+        userId: "",
+        discountType: "",
+        expirationDate: ""
       }
       this.backendError = ""
       this.successMessage = ""
+      this.generatedCode = ""
     },
     validateForm(): boolean {
       this.clearErrors()
       let isValid = true
 
-      if (this.name.trim().length === 0) {
-        this.errors.name = "Kérjük, adja meg a kupon nevét!"
-        isValid = false
-      }
+      // Konvertáljuk string-gé, ha szám
+      const userIdStr = String(this.userId || "").trim()
 
-      if (this.discountCategory.length === 0) {
-        this.errors.discountCategory = "Kérjük, válasszon kedvezmény kategóriát!"
-        isValid = false
-      }
-
-      if (this.value.length === 0) {
-        this.errors.value = "Kérjük, adja meg az értéket!"
+      if (userIdStr.length === 0) {
+        this.errors.userId = "Kérjük, adja meg a felhasználó ID-t!"
         isValid = false
       } else {
-        const numValue = parseFloat(this.value)
+        const numValue = parseInt(userIdStr)
         if (isNaN(numValue) || numValue <= 0) {
-          this.errors.value = "Kérjük, adjon meg egy érvényes pozitív számot!"
+          this.errors.userId = "Kérjük, adjon meg egy érvényes pozitív számot!"
           isValid = false
         }
-        if (this.discountCategory === "percent" && numValue > 100) {
-          this.errors.value = "A százalékos kedvezmény nem lehet több mint 100%!"
+      }
+
+      if (this.discountType.length === 0) {
+        this.errors.discountType = "Kérjük, válasszon kedvezménytípust!"
+        isValid = false
+      }
+
+      if (this.expirationDate.length === 0) {
+        this.errors.expirationDate = "Kérjük, adja meg a lejárati dátumot!"
+        isValid = false
+      } else {
+        const expDate = new Date(this.expirationDate)
+        const now = new Date()
+        if (expDate <= now) {
+          this.errors.expirationDate = "A lejárati dátum a jövőben kell legyen!"
           isValid = false
         }
       }
 
       return isValid
     },
-    handleImageUpload(event: Event) {
-      const target = event.target as HTMLInputElement
-      if (target.files && target.files[0]) {
-        this.imageFile = target.files[0]
-      }
-    },
     resetForm() {
-      this.name = ""
-      this.description = ""
-      this.imageFile = null
-      this.discountCategory = ""
-      this.value = ""
+      this.userId = ""
+      this.discountType = ""
+      this.expirationDate = ""
       this.clearErrors()
-
-      // Reset file input
-      const fileInput = this.$refs.imageInput as HTMLInputElement
-      if (fileInput) {
-        fileInput.value = ""
-      }
     },
-    async createCouponType() {
+    async createCoupon() {
       if (!this.validateForm()) {
         return
       }
 
       this.clearErrors()
 
-      const formData = new FormData()
-      formData.append('name', this.name)
-      formData.append('description', this.description)
-      formData.append('discount_category', this.discountCategory)
-      formData.append('value', this.value)
-
-      if (this.imageFile) {
-        formData.append('image', this.imageFile)
+      const couponData = {
+        user: parseInt(String(this.userId)),
+        discount_type: parseInt(String(this.discountType)),
+        expiration_date: new Date(this.expirationDate).toISOString()
+        // tobbi mezo
       }
 
-      const result = await this.couponStore.createDiscountType(formData)
+      const result = await this.couponStore.createCoupon(couponData)
 
       if (result.success) {
-        this.successMessage = "Kupontípus sikeresen létrehozva!"
-        console.log("Kupontípus létrehozva:", result.data)
+        this.generatedCode = result.data?.code || ""
+        this.successMessage = `Kupon sikeresen létrehozva! Kód: ${this.generatedCode}`
+        console.log("Kupon létrehozva:", result.data)
 
-        // Űrlap resetelése 2 másodperc után
         setTimeout(() => {
           this.resetForm()
-        }, 2000)
+        }, 5000)
       } else {
-        this.backendError = result.message || "Hiba történt a kupontípus létrehozásakor"
+        this.backendError = result.message || "Hiba történt a kupon létrehozásakor"
       }
     }
   }
@@ -133,7 +129,7 @@ export default defineComponent({
   <div class="coupon-creator-container">
     <div class="card">
       <div class="card-header">
-        <h2>Új Kedvezménytípus Létrehozása</h2>
+        <h2>Új Kupon Létrehozása</h2>
       </div>
 
       <div class="card-body">
@@ -147,90 +143,68 @@ export default defineComponent({
           {{ backendError }}
         </div>
 
-        <form @submit.prevent="createCouponType" class="coupon-form">
-          <!-- Name -->
+        <form @submit.prevent="createCoupon" class="coupon-form">
+          <!-- User ID -->
           <div class="form-group">
-            <label for="name">Kedvezmény neve <span class="required">*</span></label>
-            <input
-              type="text"
-              id="name"
-              v-model="name"
-              :class="{ 'error-input': errors.name }"
-              placeholder="Pl. 20% kedvezmény pizzákra"
-            />
-            <span v-if="errors.name" class="error-message">{{ errors.name }}</span>
-          </div>
-
-          <!-- Description -->
-          <div class="form-group">
-            <label for="description">Leírás</label>
-            <textarea
-              id="description"
-              v-model="description"
-              rows="4"
-              placeholder="Részletes leírás a kuponról..."
-            ></textarea>
-          </div>
-
-          <!-- Discount Category -->
-          <div class="form-group">
-            <label for="discountCategory">Kedvezmény típusa <span class="required">*</span></label>
-            <select
-              id="discountCategory"
-              v-model="discountCategory"
-              :class="{ 'error-input': errors.discountCategory }"
-            >
-              <option value="" disabled>Válasszon egy típust...</option>
-              <option
-                v-for="category in discountCategories"
-                :key="category.value"
-                :value="category.value"
-              >
-                {{ category.label }}
-              </option>
-            </select>
-            <span v-if="errors.discountCategory" class="error-message">{{ errors.discountCategory }}</span>
-          </div>
-
-          <!-- Value -->
-          <div class="form-group">
-            <label for="value">
-              Érték <span class="required">*</span>
-              <span v-if="discountCategory === 'percent'" class="hint">(%)</span>
-              <span v-else-if="discountCategory === 'fixed'" class="hint">(Ft)</span>
-            </label>
+            <label for="userId">Felhasználó ID <span class="required">*</span></label>
             <input
               type="number"
-              id="value"
-              v-model="value"
-              step="0.01"
-              :class="{ 'error-input': errors.value }"
-              placeholder="Pl. 20 vagy 1000"
+              id="userId"
+              v-model="userId"
+              :class="{ 'error-input': errors.userId }"
+              placeholder="Pl. 1"
+              min="1"
             />
-            <span v-if="errors.value" class="error-message">{{ errors.value }}</span>
+            <span v-if="errors.userId" class="error-message">{{ errors.userId }}</span>
+            <span class="hint-text">A kupon ehhez a felhasználóhoz lesz rendelve</span>
           </div>
 
-          <!-- Image Upload -->
+          <!-- Discount Type -->
           <div class="form-group">
-            <label for="image">Kép feltöltése</label>
+            <label for="discountType">Kedvezménytípus <span class="required">*</span></label>
+            <select
+              id="discountType"
+              v-model="discountType"
+              :class="{ 'error-input': errors.discountType }"
+            >
+              <option value="" disabled>Válasszon egy kedvezménytípust...</option>
+              <option
+                v-for="type in couponTypes"
+                :key="type.id"
+                :value="type.id"
+              >
+                {{ type.name }} ({{ type.discount_category === 'percent' ? type.value + '%' : type.value + ' Ft' }})
+              </option>
+            </select>
+            <span v-if="errors.discountType" class="error-message">{{ errors.discountType }}</span>
+          </div>
+
+          <!-- Expiration Date -->
+          <div class="form-group">
+            <label for="expirationDate">
+              Lejárati dátum
+              <span class="required">*</span>
+            </label>
             <input
-              type="file"
-              id="image"
-              ref="imageInput"
-              @change="handleImageUpload"
-              accept="image/*"
-              class="file-input"
+              type="datetime-local"
+              id="expirationDate"
+              v-model="expirationDate"
+              :class="{ 'error-input': errors.expirationDate }"
             />
-            <div v-if="imageFile" class="file-preview">
-              Kiválasztott fájl: {{ imageFile.name }}
-            </div>
+            <span v-if="errors.expirationDate" class="error-message">{{ errors.expirationDate }}</span>
+          </div>
+
+          <!-- Generated Code Display -->
+          <div v-if="generatedCode" class="generated-code-box">
+            <div class="code-label">Generált kuponkód:</div>
+            <div class="code-display">{{ generatedCode }}</div>
           </div>
 
           <!-- Submit Button -->
           <div class="form-actions">
             <button type="submit" class="btn-primary" :disabled="isLoading">
               <span v-if="isLoading">Létrehozás...</span>
-              <span v-else>Kedvezménytípus létrehozása</span>
+              <span v-else>Kupon létrehozása</span>
             </button>
             <button type="button" class="btn-secondary" @click="resetForm" :disabled="isLoading">
               Mezők törlése
@@ -332,9 +306,15 @@ export default defineComponent({
   font-size: 0.9rem;
 }
 
+.hint-text {
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
 .form-group input[type="text"],
 .form-group input[type="number"],
-.form-group textarea,
+.form-group input[type="datetime-local"],
 .form-group select {
   padding: 0.75rem;
   border: 2px solid #e0e0e0;
@@ -346,16 +326,11 @@ export default defineComponent({
 
 .form-group input[type="text"]:focus,
 .form-group input[type="number"]:focus,
-.form-group textarea:focus,
+.form-group input[type="datetime-local"]:focus,
 .form-group select:focus {
   outline: none;
   border-color: #FEA116;
   box-shadow: 0 0 0 3px rgba(254, 161, 22, 0.1);
-}
-
-.form-group textarea {
-  resize: vertical;
-  font-family: inherit;
 }
 
 .form-group select {
@@ -378,25 +353,28 @@ export default defineComponent({
   font-weight: 500;
 }
 
-.file-input {
-  padding: 0.5rem;
-  border: 2px dashed #e0e0e0;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.generated-code-box {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  animation: slideDown 0.5s ease-out;
 }
 
-.file-input:hover {
-  border-color: #FEA116;
-  background-color: #fff8f0;
-}
-
-.file-preview {
-  padding: 0.75rem;
-  background-color: #f8f9fa;
-  border-radius: 6px;
-  color: #495057;
+.code-label {
+  color: #fff;
   font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.code-display {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .form-actions {
@@ -465,5 +443,11 @@ export default defineComponent({
   .btn-secondary {
     width: 100%;
   }
+
+  .code-display {
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+  }
 }
 </style>
+
