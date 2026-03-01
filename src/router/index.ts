@@ -21,6 +21,8 @@ import Events from '@/views/admin/Events.vue'
 import Contacts from '@/views/admin/Contacts.vue'
 import ForgetPassword from '@/views/ForgetPassword.vue'
 import NewPassword from '@/views/NewPassword.vue'
+import PaymentSuccess from '@/views/PaymentSuccess.vue'
+import PaymentCancelled from '@/views/PaymentCancelled.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +44,8 @@ const router = createRouter({
         { path: 'cart', name: 'cart', component: Cart },
         { path: 'gallery', name: 'gallery', component: Gallery },
         { path: 'profile', name: 'profile', component: Profile },
+        { path: 'payment_success', name: 'payment_success', component: PaymentSuccess },
+        { path: 'payment_cancelled', name: 'payment_cancelled', component: PaymentCancelled },
       ],
     },
     {

@@ -697,7 +697,7 @@ export default defineComponent({
 }
 
 .btn-confirm-delete {
-  background-color: #dc3545;
+  background-color: #fbaf32;
   color: #fff;
 }
 

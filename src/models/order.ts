@@ -17,7 +17,7 @@ export interface OrderCreateRequest {
   delivery_address: string
   delivery_city: string
   delivery_zip: string
-  payment_method: 'card' | 'cash_on_delivery'
+  payment_method: 'card_online' | 'card_on_delivery' | 'cash_on_delivery'
   coupon_code?: string
   comment?: string
   items: OrderItem[]
@@ -44,7 +44,7 @@ export interface Order {
   comment?: string
   admin_note?: string
   coupon?: any
-  is_viewed_by_admin: boolean
+  is_seen_by_admin: boolean
   created_at: string
   accepted_at?: string
   completed_at?: string
@@ -71,7 +71,7 @@ export class OrderModel implements Order {
   comment?: string
   admin_note?: string
   coupon?: any
-  is_viewed_by_admin: boolean
+  is_seen_by_admin: boolean
   created_at: string
   accepted_at?: string
   completed_at?: string
@@ -97,7 +97,7 @@ export class OrderModel implements Order {
     this.comment = data.comment
     this.admin_note = data.admin_note
     this.coupon = data.coupon
-    this.is_viewed_by_admin = data.is_viewed_by_admin || false
+    this.is_seen_by_admin = data.is_seen_by_admin || false
     this.created_at = data.created_at || ''
     this.accepted_at = data.accepted_at
     this.completed_at = data.completed_at

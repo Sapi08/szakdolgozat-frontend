@@ -4,6 +4,8 @@
   import { useCartStore } from '@/stores/cart_store'
   import { useOrderStore } from '@/stores/order_store'
   import { useUserStore } from '@/stores/user_store'
+  import api from '@/config/axios'
+
 
   export default defineComponent({
     name: 'ShoppingCart',
@@ -17,7 +19,7 @@
         deliveryAddress: '',
         deliveryCity: '',
         deliveryZip: '',
-        paymentMethod: 'cash_on_delivery' as 'cash_on_delivery' | 'card',
+        paymentMethod: 'cash_on_delivery' as 'cash_on_delivery' | 'card_on_delivery' | 'card_online',
         orderNotes: '',
         couponCode: '',
         isSubmitting: false,
@@ -135,70 +137,109 @@
         this.isSubmitting = true;
 
         try {
-          // Rendelési adatok összeállítása backend formátumban
-          const orderData: any = {
-            delivery_type: this.deliveryType,
-            delivery_name: this.deliveryName.trim(),
-            delivery_phone: this.deliveryPhone.trim(),
-            payment_method: this.paymentMethod,
-            items: this.cartStore.cartItems.map(item => {
-              const orderItem: any = {
-                dish: item.dishId,
-                quantity: item.quantity,
-              };
-
-              // Csak akkor adjuk hozzá a dish_variant-ot, ha létezik
-              if (item.variantId) {
-                orderItem.dish_variant = item.variantId;
-              }
-
-              return orderItem;
-            }),
-          };
-
-          // Csak akkor küldjük a cím mezőket, ha delivery típusú
-          if (this.deliveryType === 'delivery') {
-            orderData.delivery_address = this.deliveryAddress.trim();
-            orderData.delivery_city = this.deliveryCity.trim();
-            orderData.delivery_zip = this.deliveryZip.trim();
-          } else {
-            // Ha pickup, akkor üres stringeket küldünk
-            orderData.delivery_address = '';
-            orderData.delivery_city = '';
-            orderData.delivery_zip = '';
+          // Ha online fizetés, először Stripe Checkout-ot kell létrehozni
+          if (this.paymentMethod === 'card_online') {
+            await this.handleOnlinePayment();
+            return; // A createOrder majd a sikeres fizetés után hívódik meg
           }
 
-          // Opcionális mezők - backend üres stringeket vár, nem undefined-ot
-          orderData.comment = this.orderNotes.trim() || '';
-          orderData.coupon_code = this.couponCode.trim() || '';
-
-          console.log('📦 Submitting order with data:', orderData);
-
-          const result = await this.orderStore.createOrder(orderData);
-
-          console.log('🔍 Order result:', result);
-
-          if (result.success) {
-            // Kosár ürítése
-            this.cartStore.clearCart();
-
-            // Modal bezárása
-            this.closeOrderModal();
-
-            // Sikeres üzenet
-            alert('Rendelés sikeresen leadva! Köszönjük!');
-
-            // Átirányítás
-            this.$router.push('/');
-          } else {
-            console.error('❌ Order failed with message:', result.message);
-            alert('Hiba: ' + (result.message || 'Hiba történt a rendelés leadása során'));
-          }
+          // Készpénzes vagy kártyás kiszállításkor - azonnal létrehozzuk a rendelést
+          await this.createOrderInBackend();
         } catch (err) {
           console.error('❌ Order submission error:', err);
           alert('Váratlan hiba történt. Kérjük próbálja újra!');
         } finally {
           this.isSubmitting = false;
+        }
+      },
+
+      async handleOnlinePayment() {
+        try {
+          console.log('🔄 Starting Stripe Checkout...');
+
+          // Rendelési adatok összeállítása
+          const orderData = this.buildOrderData();
+
+          // Stripe Checkout session létrehozása a backenden
+          const response = await api.post('/api/create_checkout_session/', orderData);
+
+          if (response.data.url) {
+            // Átirányítás a Stripe Checkout-ra
+            window.location.href = response.data.url;
+          } else {
+            alert('Nem érkezett checkout URL a backendtől');
+            this.isSubmitting = false;
+          }
+        } catch (err) {
+          console.error('❌ Online payment error:', err);
+          alert('Hiba történt az online fizetés indításakor');
+          this.isSubmitting = false;
+        }
+      },
+
+      buildOrderData() {
+        const orderData = {
+          delivery_type: this.deliveryType,
+          delivery_name: this.deliveryName.trim(),
+          delivery_phone: this.deliveryPhone.trim(),
+          payment_method: this.paymentMethod,
+          items: this.cartStore.cartItems.map(item => {
+            const orderItem: { dish: number; quantity: number; dish_variant?: number } = {
+              dish: item.dishId,
+              quantity: item.quantity,
+            };
+
+            if (item.variantId) {
+              orderItem.dish_variant = item.variantId;
+            }
+
+            return orderItem;
+          }),
+          delivery_address: '',
+          delivery_city: '',
+          delivery_zip: '',
+          comment: '',
+          coupon_code: '',
+        };
+
+        // Szállítási cím csak delivery esetén
+        if (this.deliveryType === 'delivery') {
+          orderData.delivery_address = this.deliveryAddress.trim();
+          orderData.delivery_city = this.deliveryCity.trim();
+          orderData.delivery_zip = this.deliveryZip.trim();
+        }
+
+        // Opcionális mezők
+        orderData.comment = this.orderNotes.trim() || '';
+        orderData.coupon_code = this.couponCode.trim() || '';
+
+        return orderData;
+      },
+
+      async createOrderInBackend() {
+        const orderData = this.buildOrderData();
+
+        console.log('📦 Submitting order with data:', orderData);
+
+        const result = await this.orderStore.createOrder(orderData);
+
+        console.log('🔍 Order result:', result);
+
+        if (result.success) {
+          // Kosár ürítése
+          this.cartStore.clearCart();
+
+          // Modal bezárása
+          this.closeOrderModal();
+
+          // Sikeres üzenet
+          alert('Rendelés sikeresen leadva! Köszönjük!');
+
+          // Átirányítás
+          this.$router.push('/');
+        } else {
+          console.error('❌ Order failed with message:', result.message);
+          alert('Hiba: ' + (result.message || 'Hiba történt a rendelés leadása során'));
         }
       }
     },
@@ -426,9 +467,14 @@
                   Fizetési mód *
                 </label>
                 <select v-model="paymentMethod" class="form-select">
-                  <option value="cash_on_delivery">Készpénz házhoz szállításkor</option>
-                  <option value="card">Kártya</option>
+                  <option value="cash_on_delivery">Készpénz átvételkor</option>
+                  <option value="card_on_delivery">Kártya átvételkor</option>
+                  <option value="card_online">Online fizetés bankkártyával</option>
                 </select>
+                <small v-if="paymentMethod === 'card_online'" class="text-muted d-block mt-2">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Biztonságos online fizetés. A rendelés csak sikeres fizetés után jön létre.
+                </small>
               </div>
 
               <!-- Megjegyzés -->
@@ -717,6 +763,7 @@
   font-weight: 700;
   display: flex;
   align-items: center;
+  color: #ffffff;
 }
 
 .btn-close {
