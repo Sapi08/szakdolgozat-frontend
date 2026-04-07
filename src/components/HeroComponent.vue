@@ -1,8 +1,8 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "HeroComponent"
+  name: 'HeroComponent',
 })
 </script>
 
@@ -12,13 +12,15 @@ export default defineComponent({
       <div class="owl-carousel">
         <div class="carousel-item">
           <div class="carousel-img">
-            <img src="@/assets/pictures/carousel-1.jpg" alt="Image">
+            <img src="@/assets/pictures/carousel-1.jpg" alt="Image" />
           </div>
           <div class="carousel-text">
             <h1>A legjobb <span>minőségű</span> összetevők</h1>
             <p>
-              Minőség, amit érezni fogsz az ízekben! 🥗🍎
-              Csak a legjobb alapanyagokkal dolgozunk, mert hiszünk abban, hogy az igazi élvezet a részletekben rejlik. Friss, válogatott összetevők, gondosan megmunkálva – ez a titka annak, hogy minden falat tökéletes legyen. Nálunk a minőség nem kompromisszum!
+              Minőség, amit érezni fogsz az ízekben! 🥗🍎 Csak a legjobb alapanyagokkal dolgozunk,
+              mert hiszünk abban, hogy az igazi élvezet a részletekben rejlik. Friss, válogatott
+              összetevők, gondosan megmunkálva – ez a titka annak, hogy minden falat tökéletes
+              legyen. Nálunk a minőség nem kompromisszum!
             </p>
             <div class="carousel-btn">
               <a class="btn custom-btn" href="">Étlap</a>
@@ -28,13 +30,15 @@ export default defineComponent({
         </div>
         <div class="carousel-item">
           <div class="carousel-img">
-            <img src="@/assets/pictures/carousel-2.jpg" alt="Image">
+            <img src="@/assets/pictures/carousel-2.jpg" alt="Image" />
           </div>
           <div class="carousel-text">
             <h1>Hazánk <span>legjobb </span> szakácsai</h1>
             <p>
-              Magyarország legjobb szakácsai, akik a világ ízeit hozzák el hozzád! 🌍🍴
-              A hazai gasztronómia mesterei, akik nemcsak a magyar konyhát, hanem a nemzetközi ízeket is mesterien varázsolják a tányérodra. Friss, innovatív fogások, egyedi fúziók és prémium alapanyagok – mindez egy helyen, a legjobb szakácsok kezei között!
+              Magyarország legjobb szakácsai, akik a világ ízeit hozzák el hozzád! 🌍🍴 A hazai
+              gasztronómia mesterei, akik nemcsak a magyar konyhát, hanem a nemzetközi ízeket is
+              mesterien varázsolják a tányérodra. Friss, innovatív fogások, egyedi fúziók és prémium
+              alapanyagok – mindez egy helyen, a legjobb szakácsok kezei között!
             </p>
             <div class="carousel-btn">
               <a class="btn custom-btn" href="">Étlap</a>
@@ -44,13 +48,15 @@ export default defineComponent({
         </div>
         <div class="carousel-item">
           <div class="carousel-img">
-            <img src="@/assets/pictures/carousel-3.jpg" alt="Image">
+            <img src="@/assets/pictures/carousel-3.jpg" alt="Image" />
           </div>
           <div class="carousel-text">
             <h1>A leggyorsabb <span>kiszállítás</span></h1>
             <p>
-              Villámgyors kiszállítás, hogy neked csak az élmény maradjon! 🚚⚡
-              Rendelj egyszerűen, és élvezd a hihetetlenül gyors kézbesítést! Legyen szó ebédről, vacsoráról vagy egy last-minute ajándékról, mi rekordidő alatt házhoz visszük. Velünk az idő mindig neked dolgozik!
+              Villámgyors kiszállítás, hogy neked csak az élmény maradjon! 🚚⚡ Rendelj egyszerűen,
+              és élvezd a hihetetlenül gyors kézbesítést! Legyen szó ebédről, vacsoráról vagy egy
+              last-minute ajándékról, mi rekordidő alatt házhoz visszük. Velünk az idő mindig neked
+              dolgozik!
             </p>
             <div class="carousel-btn">
               <a class="btn custom-btn" href="">Étlap</a>
@@ -71,7 +77,6 @@ export default defineComponent({
   min-height: 400px;
   background: #ffffff;
 }
-
 
 .carousel .container-fluid {
   padding: 0;
@@ -97,7 +102,7 @@ export default defineComponent({
 
 .carousel .carousel-img::after {
   position: absolute;
-  content: "";
+  content: '';
   top: 0;
   right: 0;
   bottom: 0;

@@ -6,12 +6,12 @@ import { useCartStore } from '@/stores/cart_store.ts'
 export default defineComponent({
   name: 'App',
 
-  mounted() {
+  async mounted() {
     const userStore = useUserStore()
-    userStore.initAuth() // Itt induláskor visszatöltjük a bejelentkezést
+    userStore.initAuth()
 
     const cartStore = useCartStore()
-    cartStore.loadFromSession() // Itt induláskor visszatöltjük a kosarat a sessionből
+    await cartStore.loadFromSession() // Várunk az ételek betöltésére
   },
 })
 </script>

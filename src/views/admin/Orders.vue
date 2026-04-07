@@ -2,10 +2,10 @@
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useOrderStore } from '@/stores/order_store'
-import { OrderModel } from '@/models/order'
+import { OrderModel } from '@/types/order'
 
 export default defineComponent({
-  name: "OrdersView",
+  name: 'OrdersView',
   data() {
     return {
       selectedOrder: null as OrderModel | null,
@@ -22,7 +22,7 @@ export default defineComponent({
       if (this.filterStatus === 'all') {
         return this.orderStore.orders
       }
-      return this.orderStore.orders.filter(order => order.status === this.filterStatus)
+      return this.orderStore.orders.filter((order) => order.status === this.filterStatus)
     },
     statusCounts() {
       return {
@@ -35,7 +35,7 @@ export default defineComponent({
         completed: this.orderStore.completedOrders.length,
         canceled: this.orderStore.canceledOrders.length,
       }
-    }
+    },
   },
   async mounted() {
     await this.loadOrders()
@@ -137,7 +137,7 @@ export default defineComponent({
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     },
     formatPrice(price: number) {
@@ -152,11 +152,11 @@ export default defineComponent({
         in_delivery: 'shipping-fast',
         delivered: 'truck',
         completed: 'check-double',
-        canceled: 'times-circle'
+        canceled: 'times-circle',
       }
       return icons[status]
-    }
-  }
+    },
+  },
 })
 </script>
 
@@ -168,11 +168,7 @@ export default defineComponent({
         Rendelések Kezelése
       </h1>
       <div class="header-actions">
-        <button
-          @click="loadOrders"
-          class="btn btn-outline-primary"
-          :disabled="orderStore.loading"
-        >
+        <button @click="loadOrders" class="btn btn-outline-primary" :disabled="orderStore.loading">
           <i class="fas fa-sync-alt" :class="{ 'fa-spin': orderStore.loading }"></i>
           Frissítés
         </button>
@@ -273,7 +269,11 @@ export default defineComponent({
     <div v-else-if="filteredOrders.length === 0" class="empty-state">
       <i class="fas fa-inbox fa-3x mb-3"></i>
       <h3>Nincs megjeleníthető rendelés</h3>
-      <p>{{ filterStatus === 'all' ? 'Még nem érkezett rendelés.' : 'Nincs ilyen státuszú rendelés.' }}</p>
+      <p>
+        {{
+          filterStatus === 'all' ? 'Még nem érkezett rendelés.' : 'Nincs ilyen státuszú rendelés.'
+        }}
+      </p>
     </div>
 
     <div v-else class="orders-grid">
@@ -342,7 +342,10 @@ export default defineComponent({
               <i class="fas fa-info-circle me-2"></i>
               Státusz
             </h5>
-            <div class="status-badge-large" :style="{ backgroundColor: selectedOrder.getStatusColor() }">
+            <div
+              class="status-badge-large"
+              :style="{ backgroundColor: selectedOrder.getStatusColor() }"
+            >
               <i class="fas" :class="`fa-${getStatusIcon(selectedOrder.status)}`"></i>
               {{ selectedOrder.getStatusLabel() }}
             </div>
@@ -406,7 +409,14 @@ export default defineComponent({
               Rendelés információk
             </h5>
             <p><strong>Rendelésszám:</strong> {{ selectedOrder.order_number }}</p>
-            <p><strong>Típus:</strong> {{ selectedOrder.delivery_type === 'delivery' ? 'Házhoz szállítás' : 'Személyes átvétel' }}</p>
+            <p>
+              <strong>Típus:</strong>
+              {{
+                selectedOrder.delivery_type === 'delivery'
+                  ? 'Házhoz szállítás'
+                  : 'Személyes átvétel'
+              }}
+            </p>
             <p><strong>Fizetés:</strong> {{ selectedOrder.payment_method }}</p>
             <p><strong>Fizetés státusz:</strong> {{ selectedOrder.payment_status }}</p>
           </div>
@@ -418,8 +428,12 @@ export default defineComponent({
               Időpontok
             </h5>
             <p><strong>Leadva:</strong> {{ formatDate(selectedOrder.created_at) }}</p>
-            <p v-if="selectedOrder.accepted_at"><strong>Elfogadva:</strong> {{ formatDate(selectedOrder.accepted_at) }}</p>
-            <p v-if="selectedOrder.completed_at"><strong>Lezárva:</strong> {{ formatDate(selectedOrder.completed_at) }}</p>
+            <p v-if="selectedOrder.accepted_at">
+              <strong>Elfogadva:</strong> {{ formatDate(selectedOrder.accepted_at) }}
+            </p>
+            <p v-if="selectedOrder.completed_at">
+              <strong>Lezárva:</strong> {{ formatDate(selectedOrder.completed_at) }}
+            </p>
           </div>
 
           <!-- Szállítási cím -->
@@ -431,7 +445,8 @@ export default defineComponent({
             <p><strong>Név:</strong> {{ selectedOrder.delivery_name }}</p>
             <p><strong>Telefon:</strong> {{ selectedOrder.delivery_phone }}</p>
             <p v-if="selectedOrder.delivery_type === 'delivery'" class="address-text">
-              {{ selectedOrder.delivery_address }}, {{ selectedOrder.delivery_city }} {{ selectedOrder.delivery_zip }}
+              {{ selectedOrder.delivery_address }}, {{ selectedOrder.delivery_city }}
+              {{ selectedOrder.delivery_zip }}
             </p>
           </div>
 
@@ -472,14 +487,20 @@ export default defineComponent({
               <div v-for="(item, index) in selectedOrder.items" :key="index" class="order-item-row">
                 <div class="item-info">
                   <span class="item-name">{{ item.dish_name || `Étel #${item.dish}` }}</span>
-                  <span class="item-variant" v-if="item.variant_detail">{{ item.variant_detail }}</span>
-                  <span class="item-variant" v-if="item.special_request" style="color: #e86a61;">
+                  <span class="item-variant" v-if="item.variant_detail">{{
+                    item.variant_detail
+                  }}</span>
+                  <span class="item-variant" v-if="item.special_request" style="color: #e86a61">
                     <i class="fas fa-star me-1"></i>{{ item.special_request }}
                   </span>
                 </div>
                 <div class="item-quantity">{{ item.quantity }} db</div>
-                <div class="item-price" v-if="item.unit_price">{{ formatPrice(item.unit_price * item.quantity) }}</div>
-                <div class="item-price" v-else-if="item.total_price">{{ formatPrice(item.total_price) }}</div>
+                <div class="item-price" v-if="item.unit_price">
+                  {{ formatPrice(item.unit_price * item.quantity) }}
+                </div>
+                <div class="item-price" v-else-if="item.total_price">
+                  {{ formatPrice(item.total_price) }}
+                </div>
               </div>
             </div>
           </div>
@@ -616,13 +637,27 @@ export default defineComponent({
 }
 
 /* Status Colors */
-.status-pending { border-left: 4px solid #ffc107; }
-.status-accepted { border-left: 4px solid #17a2b8; }
-.status-preparing { border-left: 4px solid #fd7e14; }
-.status-ready { border-left: 4px solid #28a745; }
-.status-in-delivery { border-left: 4px solid #9c27b0; }
-.status-delivered { border-left: 4px solid #607d8b; }
-.status-completed { border-left: 4px solid #4caf50; }
+.status-pending {
+  border-left: 4px solid #ffc107;
+}
+.status-accepted {
+  border-left: 4px solid #17a2b8;
+}
+.status-preparing {
+  border-left: 4px solid #fd7e14;
+}
+.status-ready {
+  border-left: 4px solid #28a745;
+}
+.status-in-delivery {
+  border-left: 4px solid #9c27b0;
+}
+.status-delivered {
+  border-left: 4px solid #607d8b;
+}
+.status-completed {
+  border-left: 4px solid #4caf50;
+}
 
 /* Orders Grid */
 .orders-grid {

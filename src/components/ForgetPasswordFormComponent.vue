@@ -1,43 +1,42 @@
 <script lang="ts">
-
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useUserStore } from '@/stores/user_store.ts'
 
 export default defineComponent({
-  name: "ForgetPasswordFormComponent",
+  name: 'ForgetPasswordFormComponent',
 
   data() {
     return {
-      email: "",
+      email: '',
       errors: {
-        email: ""
+        email: '',
       },
-      backendError: "",
-      successMessage: "",
-      loading: false
+      backendError: '',
+      successMessage: '',
+      loading: false,
     }
   },
   computed: {
-  ...mapStores(useUserStore)
+    ...mapStores(useUserStore),
   },
   methods: {
     clearErrors() {
       this.errors = {
-        email: ""
+        email: '',
       }
-      this.backendError = ""
-      this.successMessage = ""
+      this.backendError = ''
+      this.successMessage = ''
     },
     validateForm(): boolean {
       this.clearErrors()
       let isValid = true
 
       if (this.email.length === 0) {
-        this.errors.email = "Kérjük, adja meg az email címét!"
+        this.errors.email = 'Kérjük, adja meg az email címét!'
         isValid = false
       } else if (!this.isValidEmail(this.email)) {
-        this.errors.email = "Kérjük, adjon meg egy érvényes email címet!"
+        this.errors.email = 'Kérjük, adjon meg egy érvényes email címet!'
         isValid = false
       }
 
@@ -49,29 +48,29 @@ export default defineComponent({
     },
     async sendEmail() {
       if (this.validateForm()) {
-        this.backendError = "";
-        this.successMessage = "";
-        this.loading = true;
+        this.backendError = ''
+        this.successMessage = ''
+        this.loading = true
 
-        const result = await this.userStore.forgetPassword(this.email);
+        const result = await this.userStore.forgetPassword(this.email)
 
-        this.loading = false;
+        this.loading = false
 
         if (result.success) {
-          this.successMessage = result.message;
-          this.email = ""; // Tisztítjuk az email mezőt
+          this.successMessage = result.message
+          this.email = '' // Tisztítjuk az email mezőt
         } else {
-          this.backendError = result.message;
+          this.backendError = result.message
         }
       }
     },
     goToLogin() {
-      this.$router.push("/login");
+      this.$router.push('/login')
     },
     goToForgetPassword() {
-      this.$router.push("/forget_pass");
-    }
-  }
+      this.$router.push('/forget_pass')
+    },
+  },
 })
 </script>
 
@@ -79,11 +78,18 @@ export default defineComponent({
   <div class="container">
     <h1>Új jelszó igénylése</h1>
     <p>Adjon meg egy érvényes e-mail címet.</p>
-    <hr>
+    <hr />
 
     <label for="email"><b>E-mail cím</b></label>
-    <input type="email" placeholder="Adja meg az email címét" name="email" id="email"
-           v-model="email" :class="{ 'error-input': errors.email }" :disabled="loading">
+    <input
+      type="email"
+      placeholder="Adja meg az email címét"
+      name="email"
+      id="email"
+      v-model="email"
+      :class="{ 'error-input': errors.email }"
+      :disabled="loading"
+    />
     <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
 
     <!-- Success message -->
@@ -105,7 +111,6 @@ export default defineComponent({
         <span v-else>Email küldése</span>
       </button>
     </div>
-
   </div>
 </template>
 
@@ -115,9 +120,9 @@ export default defineComponent({
   background-color: white;
 }
 
-input[type=text],
-input[type=password],
-input[type=email] {
+input[type='text'],
+input[type='password'],
+input[type='email'] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 8px 0;
@@ -127,9 +132,9 @@ input[type=email] {
   border-radius: 10px;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
-input[type=email]:focus {
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus {
   background-color: #ddd;
   outline: none;
 }

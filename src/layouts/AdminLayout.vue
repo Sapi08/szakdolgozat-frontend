@@ -1,21 +1,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import AdminNavBarComponent from "@/components/admin/AdminNavBarComponent.vue";
-
+import AdminNavBarComponent from '@/components/admin/AdminNavBarComponent.vue'
 
 export default defineComponent({
   name: 'AdminLayout',
   components: {
-    AdminNavBarComponent
+    AdminNavBarComponent,
   },
 })
 </script>
 
 <template>
-  <AdminNavBarComponent/>
-  <RouterView/>
+  <AdminNavBarComponent />
+  <RouterView />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

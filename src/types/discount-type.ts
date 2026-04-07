@@ -1,4 +1,4 @@
-export default interface DiscountType {
+export interface DiscountType {
   id?: number
   name: string
   description?: string
@@ -6,4 +6,3 @@ export default interface DiscountType {
   discount_category: string
   value: number
 }
-

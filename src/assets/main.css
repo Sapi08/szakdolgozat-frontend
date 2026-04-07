@@ -18,7 +18,7 @@ a {
   font-family: 'Nunito', sans-serif;
   font-weight: 600;
   color: #fbaf32;
-  transition: .3s;
+  transition: 0.3s;
   text-decoration: none;
 }
 
@@ -39,7 +39,7 @@ a:focus {
   background: #e86a61;
   border: 2px solid #e86a61;
   border-radius: 5px;
-  transition: .5s;
+  transition: 0.5s;
 }
 
 .btn.custom-btn:hover {
@@ -57,33 +57,10 @@ a:focus {
   max-width: 1366px;
 }
 
-.back-to-top {
-  position: fixed;
-  display: none;
-  background: #fbaf32;
-  width: 44px;
-  height: 44px;
-  text-align: center;
-  line-height: 1;
-  font-size: 22px;
-  right: 15px;
-  bottom: 15px;
-  border-radius: 5px;
-  transition: background 0.5s;
-  z-index: 9;
-}
-
-.back-to-top i {
-  color: #ffffff;
-  padding-top: 10px;
-}
-
-.back-to-top:hover {
-  background: #e86a61;
-}
-
-[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
-[class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+[class^='flaticon-']:before,
+[class*=' flaticon-']:before,
+[class^='flaticon-']:after,
+[class*=' flaticon-']:after {
   font-size: inherit;
   margin-left: 0;
 }

@@ -1,12 +1,12 @@
 <script lang="ts">
-import { useBookingStore } from '@/stores/booking_store'
-import type { Booking } from '@/types/Booking'
+import { useAdminBookingStore } from '@/stores/admin/admin_booking_store'
+import type { Booking } from '@/types/booking'
 
 export default {
   name: 'AdminEventBookingComponent',
   data() {
     return {
-      bookingStore: useBookingStore(),
+      bookingStore: useAdminBookingStore(),
       eventTypeLabels: {
         wedding: 'Esküvő',
         birthday_party: 'Születésnapi buli',
@@ -51,12 +51,10 @@ export default {
     },
     getStatusText(booking: Booking) {
       if (booking.confirmed) return 'Elfogadva'
-      if (booking.rejected) return 'Elutasítva'
       return 'Függőben'
     },
     getStatusClass(booking: Booking) {
       if (booking.confirmed) return 'confirmed'
-      if (booking.rejected) return 'rejected'
       return 'pending'
     },
   },
@@ -72,63 +70,61 @@ export default {
     </div>
 
     <div v-if="bookingStore.loading" class="loading">Betöltés...</div>
-    <div v-else-if="bookingStore.bookings.length === 0" class="empty">
-      Nincsenek foglalások
-    </div>
+    <div v-else-if="bookingStore.bookings.length === 0" class="empty">Nincsenek foglalások</div>
 
     <div v-else class="table-container">
       <table>
         <thead>
-        <tr>
-          <th>Név</th>
-          <th>Dátum</th>
-          <th>Időpont</th>
-          <th>Rendezvény típusa</th>
-          <th>Email</th>
-          <th>Telefon</th>
-          <th>Létszám</th>
-          <th>Megjegyzés</th>
-          <th>Státusz</th>
-          <th>Műveletek</th>
-        </tr>
+          <tr>
+            <th>Név</th>
+            <th>Dátum</th>
+            <th>Időpont</th>
+            <th>Rendezvény típusa</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Létszám</th>
+            <th>Megjegyzés</th>
+            <th>Státusz</th>
+            <th>Műveletek</th>
+          </tr>
         </thead>
         <tbody>
-        <tr
-          v-for="booking in bookingStore.bookings"
-          :key="booking.id"
-          :class="{ 'unseen': !booking.seen_by_admin }"
-          @click="viewBooking(booking.id)"
-        >
-          <td>{{ booking.name }}</td>
-          <td>{{ formatDate(booking.date) }}</td>
-          <td>{{ booking.time }}</td>
-          <td>{{ getEventTypeLabel(booking.type_of_event) }}</td>
-          <td>{{ booking.email }}</td>
-          <td>{{ booking.phone }}</td>
-          <td>{{ booking.number_of_people }} fő</td>
-          <td class="comment">{{ booking.comment || '-' }}</td>
-          <td>
+          <tr
+            v-for="booking in bookingStore.bookings"
+            :key="booking.id"
+            :class="{ unseen: !booking.seen_by_admin }"
+            @click="viewBooking(booking.id)"
+          >
+            <td>{{ booking.name }}</td>
+            <td>{{ formatDate(booking.date) }}</td>
+            <td>{{ booking.time }}</td>
+            <td>{{ getEventTypeLabel(booking.type_of_event) }}</td>
+            <td>{{ booking.email }}</td>
+            <td>{{ booking.phone }}</td>
+            <td>{{ booking.number_of_people }} fő</td>
+            <td class="comment">{{ booking.comment || '-' }}</td>
+            <td>
               <span :class="['status-badge', getStatusClass(booking)]">
                 {{ getStatusText(booking) }}
               </span>
-          </td>
-          <td class="actions">
-            <button
-              v-if="!booking.confirmed && !booking.rejected"
-              @click.stop="handleConfirm(booking.id)"
-              class="btn-accept"
-            >
-              Elfogad
-            </button>
-            <button
-              v-if="!booking.confirmed && !booking.rejected"
-              @click.stop="handleReject(booking.id)"
-              class="btn-reject"
-            >
-              Elutasít
-            </button>
-          </td>
-        </tr>
+            </td>
+            <td class="actions">
+              <button
+                v-if="!booking.confirmed"
+                @click.stop="handleConfirm(booking.id)"
+                class="btn-accept"
+              >
+                Elfogad
+              </button>
+              <button
+                v-if="!booking.confirmed"
+                @click.stop="handleReject(booking.id)"
+                class="btn-reject"
+              >
+                Elutasít
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -150,7 +146,8 @@ export default {
   font-weight: bold;
 }
 
-.loading, .empty {
+.loading,
+.empty {
   text-align: center;
   padding: 2rem;
   color: #666;
@@ -166,10 +163,11 @@ table {
   background: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
+th,
+td {
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #eee;
@@ -228,7 +226,8 @@ tr:hover {
   white-space: nowrap;
 }
 
-.btn-accept, .btn-reject {
+.btn-accept,
+.btn-reject {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
@@ -240,7 +239,8 @@ tr:hover {
 
 .btn-accept {
   background-color: #28a745;
-  color: white;margin-right: 0.5rem;
+  color: white;
+  margin-right: 0.5rem;
 }
 
 .btn-accept:hover {

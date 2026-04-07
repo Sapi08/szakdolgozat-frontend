@@ -1,227 +1,187 @@
 <script lang="ts">
-import { ref, onMounted, computed, watch, nextTick } from "vue";
-import ticket1 from "@/assets/pictures/scratchtickets/ticket1.png";
+import { ref, computed, watch, nextTick, onMounted, defineComponent } from 'vue'
 
 interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
+  x: number
+  y: number
+  vx: number
+  vy: number
+  life: number
 }
 
-export default {
-  name: "ScratchCardComponent",
-  setup() {
-    const canvas = ref<HTMLCanvasElement | null>(null);
-    const ctx = ref<CanvasRenderingContext2D | null>(null);
-    const isScratching = ref(false);
-    const revealed = ref(false);
-    const scratchProgress = ref(0);
-    const particles = ref<Particle[]>([]);
-    const showHint = ref(true);
-    const showPopup = ref(false);
-    const selectedTicketImage = ref('');
+export default defineComponent({
+  name: 'ScratchCardComponent',
+  props: {
+    couponId: {
+      type: String,
+      required: true,
+    },
+    couponImage: {
+      type: String,
+      required: true,
+    },
+  },
+  emits: ['scratched', 'closed'],
+  setup(props, { emit }) {
+    const canvas = ref<HTMLCanvasElement | null>(null)
+    const ctx = ref<CanvasRenderingContext2D | null>(null)
+    const isScratching = ref(false)
+    const revealed = ref(false)
+    const scratchProgress = ref(0)
+    const particles = ref<Particle[]>([])
+    const showHint = ref(true)
 
-    const threshold = 65;
-    const width = 500;
-    const height = 320;
+    const THRESHOLD = 65
+    const WIDTH = 500
+    const HEIGHT = 320
 
-    // Ticket képek listája
-    // További képek később hozzáadhatók:
-    // import ticket2 from "@/assets/pictures/scratchtickets/ticket2.png";
-    // import ticket3 from "@/assets/pictures/scratchtickets/ticket3.png";
-    const ticketImages = [
-      ticket1,
-      // ticket2,
-      // ticket3,
-    ];
-
-    // Random ticket kép kiválasztása
-    const selectRandomTicket = () => {
-      const randomIndex = Math.floor(Math.random() * ticketImages.length);
-      selectedTicketImage.value = ticketImages[randomIndex];
-    };
-
-
-
-    const progressPercentage = computed(() => Math.round(scratchProgress.value));
+    const progressPercentage = computed(() => Math.round(scratchProgress.value))
     const progressColor = computed(() => {
-      if (scratchProgress.value < 30) return '#e74c3c';
-      if (scratchProgress.value < 60) return '#f39c12';
-      return '#27ae60';
-    });
-
-    const startScratching = (event: MouseEvent | TouchEvent) => {
-      isScratching.value = true;
-      showHint.value = false;
-      scratch(event);
-    };
-
-    const stopScratching = () => {
-      isScratching.value = false;
-      checkScratchCompletion();
-    };
-
-    const scratch = (event: MouseEvent | TouchEvent) => {
-      if (!isScratching.value || !ctx.value || !canvas.value) return;
-
-      const rect = canvas.value.getBoundingClientRect();
-      const x = (event instanceof TouchEvent ? event.touches[0].clientX : event.clientX) - rect.left;
-      const y = (event instanceof TouchEvent ? event.touches[0].clientY : event.clientY) - rect.top;
-
-      const scaleX = canvas.value.width / rect.width;
-      const scaleY = canvas.value.height / rect.height;
-      const scaledX = x * scaleX;
-      const scaledY = y * scaleY;
-
-      ctx.value.globalCompositeOperation = "destination-out";
-      ctx.value.beginPath();
-      ctx.value.arc(scaledX, scaledY, 30, 0, Math.PI * 2);
-      ctx.value.fill();
-
-      // Részecskék hozzáadása
-      for (let i = 0; i < 3; i++) {
-        particles.value.push({
-          x: x,
-          y: y,
-          vx: (Math.random() - 0.5) * 4,
-          vy: (Math.random() - 0.5) * 4,
-          life: 1,
-        });
-      }
-
-      // Progress ellenőrzés kaparás közben (throttled)
-      checkScratchCompletion();
-    };
-
-    const checkScratchCompletion = () => {
-      if (!ctx.value || !canvas.value) return;
-
-      const imageData = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height);
-      const pixels = imageData.data;
-      let transparentPixels = 0;
-
-      for (let i = 3; i < pixels.length; i += 4) {
-        if (pixels[i] < 128) transparentPixels++;
-      }
-
-      const percentage = (transparentPixels / (pixels.length / 4)) * 100;
-      scratchProgress.value = Math.min(percentage, 100);
-
-      if (percentage > threshold && !revealed.value) {
-        revealPrize();
-      }
-    };
-
-    const revealPrize = () => {
-      revealed.value = true;
-
-      if (ctx.value && canvas.value) {
-        let alpha = 1;
-        const fadeOut = setInterval(() => {
-          if (!ctx.value || !canvas.value) return;
-          ctx.value.globalCompositeOperation = "source-over";
-          ctx.value.fillStyle = `rgba(140, 140, 140, ${alpha})`;
-          ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height);
-          alpha -= 0.1;
-          if (alpha <= 0) {
-            clearInterval(fadeOut);
-            if (ctx.value && canvas.value) {
-              ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
-            }
-          }
-        }, 30);
-      }
-    };
-
-    const revealAll = () => {
-      if (ctx.value && canvas.value) {
-        ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height);
-      }
-      scratchProgress.value = 100;
-      revealPrize();
-    };
-
-    const closePopup = () => {
-      showPopup.value = false;
-    };
-
-    const triggerPopup = () => {
-      // Random időzítés: 3-10 másodperc között
-      const randomDelay = Math.random() * 7000 + 3000;
-      setTimeout(() => {
-        if (!revealed.value) {
-          showPopup.value = true;
-        }
-      }, randomDelay);
-    };
-
-    const animateParticles = () => {
-      particles.value = particles.value.filter((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life -= 0.02;
-        return p.life > 0;
-      });
-
-      requestAnimationFrame(animateParticles);
-    };
+      if (scratchProgress.value < 30) return '#e74c3c'
+      if (scratchProgress.value < 60) return '#f39c12'
+      return '#27ae60'
+    })
 
     const initializeCanvas = () => {
       nextTick(() => {
-        if (!canvas.value) {
-          console.warn('Canvas not found');
-          return;
-        }
-
-        const canvasEl = canvas.value;
-        canvasEl.width = width;
-        canvasEl.height = height;
-        ctx.value = canvasEl.getContext("2d");
+        if (!canvas.value) return
+        canvas.value.width = WIDTH
+        canvas.value.height = HEIGHT
+        ctx.value = canvas.value.getContext('2d')
 
         if (ctx.value) {
-          // Kaparóréteg rajzolása
-          ctx.value.fillStyle = "#8c8c8c";
-          ctx.value.fillRect(0, 0, width, height);
+          ctx.value.fillStyle = '#8c8c8c'
+          ctx.value.fillRect(0, 0, WIDTH, HEIGHT)
 
-          // Textúra hozzáadása
           for (let i = 0; i < 100; i++) {
-            ctx.value.fillStyle = `rgba(${Math.random() * 100 + 100}, ${Math.random() * 100 + 100}, ${Math.random() * 100 + 100}, 0.3)`;
-            ctx.value.fillRect(Math.random() * width, Math.random() * height, 2, 2);
+            ctx.value.fillStyle = `rgba(${Math.random() * 100 + 100}, ${Math.random() * 100 + 100}, ${Math.random() * 100 + 100}, 0.3)`
+            ctx.value.fillRect(Math.random() * WIDTH, Math.random() * HEIGHT, 2, 2)
           }
 
-          ctx.value.lineWidth = 35;
-          ctx.value.lineJoin = "round";
-          ctx.value.lineCap = "round";
-
-          console.log('Canvas initialized successfully');
+          ctx.value.lineWidth = 35
+          ctx.value.lineJoin = 'round'
+          ctx.value.lineCap = 'round'
         }
-      });
-    };
+      })
+    }
 
-    // Watch showPopup változás - amikor megjelenik a popup, inicializáljuk a canvas-t
-    watch(showPopup, (newValue) => {
-      if (newValue) {
-        initializeCanvas();
+    const startScratching = (event: MouseEvent | TouchEvent) => {
+      isScratching.value = true
+      showHint.value = false
+      scratch(event)
+    }
 
-        // Hint eltűntetése 3 másodperc után
-        setTimeout(() => {
-          showHint.value = false;
-        }, 3000);
+    const stopScratching = () => {
+      isScratching.value = false
+    }
+
+    const scratch = (event: MouseEvent | TouchEvent) => {
+      if (!isScratching.value || !ctx.value || !canvas.value) return
+
+      const rect = canvas.value.getBoundingClientRect()
+      const clientX = event instanceof TouchEvent ? event.touches[0].clientX : event.clientX
+      const clientY = event instanceof TouchEvent ? event.touches[0].clientY : event.clientY
+      const x = clientX - rect.left
+      const y = clientY - rect.top
+      const scaleX = canvas.value.width / rect.width
+      const scaleY = canvas.value.height / rect.height
+
+      ctx.value.globalCompositeOperation = 'destination-out'
+      ctx.value.beginPath()
+      ctx.value.arc(x * scaleX, y * scaleY, 30, 0, Math.PI * 2)
+      ctx.value.fill()
+
+      for (let i = 0; i < 3; i++) {
+        particles.value.push({
+          x,
+          y,
+          vx: (Math.random() - 0.5) * 4,
+          vy: (Math.random() - 0.5) * 4,
+          life: 1,
+        })
       }
-    });
+
+      checkScratchCompletion()
+    }
+
+    const checkScratchCompletion = () => {
+      if (!ctx.value || !canvas.value) return
+
+      const pixels = ctx.value.getImageData(0, 0, canvas.value.width, canvas.value.height).data
+      let transparentPixels = 0
+
+      for (let i = 3; i < pixels.length; i += 4) {
+        if (pixels[i] < 128) transparentPixels++
+      }
+
+      const percentage = (transparentPixels / (pixels.length / 4)) * 100
+      scratchProgress.value = Math.min(percentage, 100)
+
+      if (percentage > THRESHOLD && !revealed.value) {
+        revealPrize()
+      }
+    }
+
+    const revealPrize = () => {
+      if (revealed.value) return
+      revealed.value = true
+
+      // Értesítjük a szülőt – ő hívja majd a store-t
+      emit('scratched', props.couponId)
+
+      if (ctx.value && canvas.value) {
+        let alpha = 1
+        const fadeOut = setInterval(() => {
+          if (!ctx.value || !canvas.value) return
+          ctx.value.globalCompositeOperation = 'source-over'
+          ctx.value.fillStyle = `rgba(140, 140, 140, ${alpha})`
+          ctx.value.fillRect(0, 0, canvas.value.width, canvas.value.height)
+          alpha -= 0.1
+          if (alpha <= 0) {
+            clearInterval(fadeOut)
+            ctx.value?.clearRect(0, 0, canvas.value.width, canvas.value.height)
+          }
+        }, 30)
+      }
+    }
+
+    const revealAll = () => {
+      if (ctx.value && canvas.value) {
+        ctx.value.clearRect(0, 0, canvas.value.width, canvas.value.height)
+      }
+      scratchProgress.value = 100
+      revealPrize()
+    }
+
+    const closePopup = () => {
+      emit('closed')
+    }
+
+    const animateParticles = () => {
+      particles.value = particles.value.filter((p) => {
+        p.x += p.vx
+        p.y += p.vy
+        p.life -= 0.02
+        return p.life > 0
+      })
+      requestAnimationFrame(animateParticles)
+    }
+
+    // Új kupon érkezésekor reseteljük és újrarajzoljuk a canvast
+    watch(
+      () => props.couponId,
+      () => {
+        revealed.value = false
+        scratchProgress.value = 0
+        showHint.value = true
+        initializeCanvas()
+      },
+      { immediate: true },
+    )
 
     onMounted(() => {
-      // Random ticket kép kiválasztása
-      selectRandomTicket();
-
-      // Popup megjelenítés trigger
-      triggerPopup();
-
-      // Részecske animáció indítása
-      animateParticles();
-    });
+      animateParticles()
+    })
 
     return {
       canvas,
@@ -235,136 +195,128 @@ export default {
       particles,
       showHint,
       revealAll,
-      showPopup,
       closePopup,
-      selectedTicketImage
-    };
+    }
   },
-};
+})
 </script>
 
 <template>
-  <!-- Popup Modal Overlay -->
-  <transition name="popup-fade">
-    <div v-if="showPopup" class="popup-overlay" @click.self="closePopup">
-      <div class="popup-content">
-        <button class="close-popup-btn" @click="closePopup">
-          <i class="fas fa-times"></i>
-        </button>
-
-        <div class="scratch-card-wrapper">
-          <!-- Fejléc -->
-          <div class="title-section">
-            <h2 class="scratch-title">
-              <i class="fas fa-ticket-alt"></i>
-              Kaparós Sorsjegy
-            </h2>
-            <p class="scratch-subtitle">Kaparj meg és nyerj fantasztikus ajándékokat!</p>
-          </div>
-
-    <!-- Fő konténer -->
-    <div class="scratch-card-container">
-      <!-- Nyeremény háttér - Csak a ticket kép -->
-      <div class="prize-background" :style="{
-        backgroundImage: `url(${selectedTicketImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }">
-      </div>
-
-      <!-- Canvas réteg -->
-      <canvas
-        ref="canvas"
-        class="scratch-canvas"
-        @mousedown="startScratching"
-        @mousemove="scratch"
-        @mouseup="stopScratching"
-        @mouseleave="stopScratching"
-        @touchstart.prevent="startScratching"
-        @touchmove.prevent="scratch"
-        @touchend="stopScratching"
-      ></canvas>
-
-      <!-- Részecskék -->
-      <div class="particles-container">
-        <div
-          v-for="(particle, index) in particles"
-          :key="index"
-          class="particle"
-          :style="{
-            left: particle.x + 'px',
-            top: particle.y + 'px',
-            opacity: particle.life
-          }"
-        ></div>
-      </div>
-
-      <!-- Hint animáció -->
-      <transition name="fade">
-        <div v-if="showHint && !revealed" class="hint-overlay">
-          <div class="hint-hand">
-            <i class="fas fa-hand-pointer"></i>
-          </div>
-          <p class="hint-text">Kaparj meg a sorsjegyet!</p>
-        </div>
-      </transition>
-
-      <!-- Feltárt overlay -->
-      <transition name="prize-reveal">
-        <div v-if="revealed" class="revealed-overlay">
-          <div class="revealed-content">
-            <button class="action-btn close-btn" @click="closePopup">
-              <i class="fas fa-check"></i>
-              Bezárás
-            </button>
-          </div>
-        </div>
-      </transition>
-    </div>
-
-    <!-- Progress bar -->
-    <div class="progress-section" v-if="!revealed">
-      <div class="progress-label">
-        <span>Kaparási folyamat</span>
-        <span class="progress-percent" :style="{ color: progressColor }">
-          {{ progressPercentage }}%
-        </span>
-      </div>
-      <div class="progress-bar">
-        <div
-          class="progress-fill"
-          :style="{ width: progressPercentage + '%', backgroundColor: progressColor }"
-        ></div>
-      </div>
-    </div>
-
-    <!-- Gombok -->
-    <div class="action-buttons" v-if="!revealed">
-      <button class="action-btn reveal-btn" @click="revealAll">
-        <i class="fas fa-eye"></i>
-        Azonnali feltárás
+  <div class="popup-overlay" @click.self="closePopup">
+    <div class="popup-content">
+      <button class="close-popup-btn" @click="closePopup">
+        <i class="fas fa-times"></i>
       </button>
-    </div>
 
-    <!-- Statisztikák -->
-    <div class="stats-section">
-      <div class="stat-item">
-        <i class="fas fa-star"></i>
-        <span>Egyszeri lehetőség</span>
-      </div>
-      <div class="stat-item">
-        <i class="fas fa-gift"></i>
-        <span>Kaparj meg és nyerj!</span>
-      </div>
-    </div>
+      <div class="scratch-card-wrapper">
+        <!-- Fejléc -->
+        <div class="title-section">
+          <h2 class="scratch-title">
+            <i class="fas fa-ticket-alt"></i>
+            Kaparós Sorsjegy
+          </h2>
+          <p class="scratch-subtitle">Kaparj meg és nyerj fantasztikus ajándékokat!</p>
+        </div>
+
+        <!-- Fő konténer -->
+        <div class="scratch-card-container">
+          <!-- Kupon képe a canvas alatt -->
+          <div
+            class="prize-background"
+            :style="{
+              backgroundImage: `url(${couponImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }"
+          ></div>
+
+          <!-- Canvas réteg -->
+          <canvas
+            ref="canvas"
+            class="scratch-canvas"
+            @mousedown="startScratching"
+            @mousemove="scratch"
+            @mouseup="stopScratching"
+            @mouseleave="stopScratching"
+            @touchstart.prevent="startScratching"
+            @touchmove.prevent="scratch"
+            @touchend="stopScratching"
+          ></canvas>
+
+          <!-- Részecskék -->
+          <div class="particles-container">
+            <div
+              v-for="(particle, index) in particles"
+              :key="index"
+              class="particle"
+              :style="{ left: particle.x + 'px', top: particle.y + 'px', opacity: particle.life }"
+            ></div>
+          </div>
+
+          <!-- Hint animáció -->
+          <transition name="fade">
+            <div v-if="showHint && !revealed" class="hint-overlay">
+              <div class="hint-hand">
+                <i class="fas fa-hand-pointer"></i>
+              </div>
+              <p class="hint-text">Kaparj meg a sorsjegyet!</p>
+            </div>
+          </transition>
+
+          <!-- Feltárt overlay -->
+          <transition name="prize-reveal">
+            <div v-if="revealed" class="revealed-overlay">
+              <div class="revealed-content">
+                <button class="action-btn close-btn" @click="closePopup">
+                  <i class="fas fa-check"></i>
+                  Bezárás
+                </button>
+              </div>
+            </div>
+          </transition>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-section" v-if="!revealed">
+          <div class="progress-label">
+            <span>Kaparási folyamat</span>
+            <span class="progress-percent" :style="{ color: progressColor }">
+              {{ progressPercentage }}%
+            </span>
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              :style="{ width: progressPercentage + '%', backgroundColor: progressColor }"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Gombok -->
+        <div class="action-buttons" v-if="!revealed">
+          <button class="action-btn reveal-btn" @click="revealAll">
+            <i class="fas fa-eye"></i>
+            Azonnali feltárás
+          </button>
+        </div>
+
+        <!-- Statisztikák -->
+        <div class="stats-section">
+          <div class="stat-item">
+            <i class="fas fa-star"></i>
+            <span>Egyszeri lehetőség</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-gift"></i>
+            <span>Kaparj meg és nyerj!</span>
+          </div>
         </div>
       </div>
     </div>
-  </transition>
+  </div>
 </template>
 
 <style scoped>
-/* Popup Modal Overlay */
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -427,7 +379,6 @@ export default {
   transform: rotate(90deg);
 }
 
-/* Wrapper */
 .scratch-card-wrapper {
   max-width: 600px;
   margin: 0 auto;
@@ -435,7 +386,6 @@ export default {
   font-family: 'Nunito', sans-serif;
 }
 
-/* Fejléc */
 .title-section {
   text-align: center;
   margin-bottom: 30px;
@@ -455,8 +405,13 @@ export default {
 }
 
 @keyframes rotate {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(15deg); }
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(15deg);
+  }
 }
 
 .scratch-subtitle {
@@ -465,7 +420,6 @@ export default {
   margin: 0;
 }
 
-/* Fő konténer */
 .scratch-card-container {
   position: relative;
   width: 100%;
@@ -477,7 +431,6 @@ export default {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Nyeremény háttér */
 .prize-background {
   position: absolute;
   top: 0;
@@ -487,12 +440,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.5s ease;
 }
 
-
-
-/* Canvas */
 .scratch-canvas {
   position: absolute;
   top: 0;
@@ -504,7 +453,6 @@ export default {
   touch-action: none;
 }
 
-/* Részecskék */
 .particles-container {
   position: absolute;
   top: 0;
@@ -525,7 +473,6 @@ export default {
   transition: opacity 0.3s ease;
 }
 
-/* Hint overlay */
 .hint-overlay {
   position: absolute;
   top: 0;
@@ -548,8 +495,13 @@ export default {
 }
 
 @keyframes pointDown {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(15px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(15px);
+  }
 }
 
 .hint-text {
@@ -560,7 +512,6 @@ export default {
   margin: 0;
 }
 
-/* Feltárt overlay */
 .revealed-overlay {
   position: absolute;
   top: 0;
@@ -580,7 +531,6 @@ export default {
   pointer-events: auto;
 }
 
-/* Progress section */
 .progress-section {
   margin-bottom: 20px;
 }
@@ -610,12 +560,13 @@ export default {
 
 .progress-fill {
   height: 100%;
-  transition: width 0.3s ease, background-color 0.3s ease;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Gombok */
 .action-buttons {
   display: flex;
   justify-content: center;
@@ -665,37 +616,6 @@ export default {
   background: linear-gradient(135deg, #229954, #1e8449);
 }
 
-/* Popup transitions */
-.popup-fade-enter-active,
-.popup-fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.popup-fade-enter-from,
-.popup-fade-leave-to {
-  opacity: 0;
-}
-
-.popup-fade-enter-active .popup-content {
-  animation: popupSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.popup-fade-leave-active .popup-content {
-  animation: popupSlideOut 0.3s ease-in;
-}
-
-@keyframes popupSlideOut {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-}
-
-/* Statisztikák */
 .stats-section {
   display: flex;
   justify-content: space-around;
@@ -721,14 +641,13 @@ export default {
   color: #fbaf32;
 }
 
-
-
-/* Transitions */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
@@ -751,7 +670,6 @@ export default {
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .scratch-card-wrapper {
     padding: 20px;
@@ -764,7 +682,6 @@ export default {
   .scratch-card-container {
     height: 280px;
   }
-
 
   .action-btn {
     padding: 12px 24px;

@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="blog">
@@ -13,7 +11,7 @@
         <div class="col-md-6">
           <div class="blog-item">
             <div class="blog-img">
-              <img src="../assets/pictures/feature-1.jpg" alt="Blog">
+              <img src="../assets/pictures/feature-1.jpg" alt="Blog" />
             </div>
             <div class="blog-content">
               <h2 class="blog-title">Lorem ipsum dolor sit amet</h2>
@@ -25,7 +23,9 @@
               </div>
               <div class="blog-text">
                 <p>
-                  Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non vulpte liqum metus tortor. Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non vulpte
+                  Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non
+                  vulpte liqum metus tortor. Lorem ipsum dolor sit amet elit. Neca pretim miura
+                  bitur facili ornare velit non vulpte
                 </p>
                 <a class="btn custom-btn" href="">Read More</a>
               </div>
@@ -35,7 +35,7 @@
         <div class="col-md-6">
           <div class="blog-item">
             <div class="blog-img">
-              <img src="../assets/pictures/feature-1.jpg" alt="Blog">
+              <img src="../assets/pictures/feature-1.jpg" alt="Blog" />
             </div>
             <div class="blog-content">
               <h2 class="blog-title">Lorem ipsum dolor sit amet</h2>
@@ -47,7 +47,9 @@
               </div>
               <div class="blog-text">
                 <p>
-                  Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non vulpte liqum metus tortor. Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non vulpte
+                  Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non
+                  vulpte liqum metus tortor. Lorem ipsum dolor sit amet elit. Neca pretim miura
+                  bitur facili ornare velit non vulpte
                 </p>
                 <a class="btn custom-btn" href="">Read More</a>
               </div>
@@ -89,7 +91,7 @@
   left: 30px;
   padding: 25px 30px 30px 30px;
   background: #ffffff;
-  box-shadow: 0 0 30px rgba(0, 0, 0, .08);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
   border-radius: 15px;
   z-index: 2;
 }
@@ -107,10 +109,10 @@
 }
 
 .blog .blog-meta p {
-   margin: 0 10px 0 0;
-   font-size: 14px;
-   color: #999999;
- }
+  margin: 0 10px 0 0;
+  font-size: 14px;
+  color: #999999;
+}
 
 .blog .blog-meta i {
   color: #e86a61;
@@ -151,7 +153,7 @@
   color: #999999;
 }
 
-@media(max-width: 575.98px){
+@media (max-width: 575.98px) {
   .blog .blog-meta p {
     flex: 50%;
     font-size: 13px;

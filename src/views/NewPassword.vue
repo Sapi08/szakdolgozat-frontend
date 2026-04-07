@@ -9,7 +9,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <CreateNewPasswordComponent/>
+  <CreateNewPasswordComponent />
 </template>
 
 <style scoped></style>

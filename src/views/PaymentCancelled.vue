@@ -8,9 +8,9 @@ export default defineComponent({
     const router = useRouter()
 
     return {
-      router
+      router,
     }
-  }
+  },
 })
 </script>
 
@@ -19,7 +19,7 @@ export default defineComponent({
     <div class="card shadow-lg rounded-4 border-0 text-center p-5">
       <div class="cancelled-state">
         <div class="cancelled-icon mb-4">
-          <i class="fas fa-times-circle text-warning" style="font-size: 5rem;"></i>
+          <i class="fas fa-times-circle text-warning" style="font-size: 5rem"></i>
         </div>
         <h2 class="text-warning mb-3">Fizetés megszakítva</h2>
         <p class="lead mb-4">
@@ -27,7 +27,8 @@ export default defineComponent({
         </p>
         <div class="alert alert-info">
           <i class="fas fa-info-circle me-2"></i>
-          A kosár tartalma megőrződött. Folytathatja a vásárlást, vagy újra megpróbálhatja a fizetést.
+          A kosár tartalma megőrződött. Folytathatja a vásárlást, vagy újra megpróbálhatja a
+          fizetést.
         </div>
         <div class="d-flex gap-3 justify-content-center mt-4">
           <button @click="router.push('/menu')" class="btn btn-outline-primary">

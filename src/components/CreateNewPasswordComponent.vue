@@ -1,54 +1,53 @@
 <script lang="ts">
-
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useUserStore } from '@/stores/user_store.ts'
 
 export default defineComponent({
-  name: "CreateNewPasswordComponent",
+  name: 'CreateNewPasswordComponent',
 
   data() {
     return {
-      password: "",
-      passwordAgain: "",
+      password: '',
+      passwordAgain: '',
       errors: {
-        password: "",
-        passwordAgain: ""
+        password: '',
+        passwordAgain: '',
       },
-      backendError: "",
-      successMessage: "",
-      loading: false
+      backendError: '',
+      successMessage: '',
+      loading: false,
     }
   },
   computed: {
-    ...mapStores(useUserStore)
+    ...mapStores(useUserStore),
   },
   methods: {
     clearErrors() {
       this.errors = {
-        password: "",
-        passwordAgain: ""
+        password: '',
+        passwordAgain: '',
       }
-      this.backendError = ""
-      this.successMessage = ""
+      this.backendError = ''
+      this.successMessage = ''
     },
     validateForm(): boolean {
       this.clearErrors()
       let isValid = true
 
       if (this.password.length === 0) {
-        this.errors.password = "Kérjük, adja meg a jelszavát!"
+        this.errors.password = 'Kérjük, adja meg a jelszavát!'
         isValid = false
       } else if (this.password.length < 6) {
-        this.errors.password = "A jelszónak legalább 6 karakter hosszúnak kell lennie!"
+        this.errors.password = 'A jelszónak legalább 6 karakter hosszúnak kell lennie!'
         isValid = false
       }
 
       if (this.passwordAgain.length === 0) {
-        this.errors.passwordAgain = "Kérjük, ismételje meg a jelszót!"
+        this.errors.passwordAgain = 'Kérjük, ismételje meg a jelszót!'
         isValid = false
       } else if (this.password !== this.passwordAgain) {
-        this.errors.passwordAgain = "A két jelszó nem egyezik meg!"
+        this.errors.passwordAgain = 'A két jelszó nem egyezik meg!'
         isValid = false
       }
 
@@ -56,34 +55,34 @@ export default defineComponent({
     },
     async createNewPassword() {
       if (this.validateForm()) {
-        this.backendError = "";
-        this.successMessage = "";
-        this.loading = true;
+        this.backendError = ''
+        this.successMessage = ''
+        this.loading = true
 
         // Szerezd meg a tokent az URL-ből
-        const token = this.$route.params.token || this.$route.query.token;
+        const token = this.$route.params.token || this.$route.query.token
 
-        const result = await this.userStore.resetPassword(token as string, this.password);
+        const result = await this.userStore.resetPassword(token as string, this.password)
 
-        this.loading = false;
+        this.loading = false
 
         if (result.success) {
-          this.successMessage = result.message;
-          this.password = "";
-          this.passwordAgain = "";
+          this.successMessage = result.message
+          this.password = ''
+          this.passwordAgain = ''
           // 2 másodperc után átirányítás a login oldalra
           setTimeout(() => {
-            this.$router.push("/login");
-          }, 2000);
+            this.$router.push('/login')
+          }, 2000)
         } else {
-          this.backendError = result.message;
+          this.backendError = result.message
         }
       }
     },
     goToLogin() {
-      this.$router.push("/login");
-    }
-  }
+      this.$router.push('/login')
+    },
+  },
 })
 </script>
 
@@ -91,16 +90,28 @@ export default defineComponent({
   <div class="container">
     <h1>Új jelszó létrehozása</h1>
     <p>Hozza létre új jelszavát!</p>
-    <hr>
+    <hr />
 
     <label for="psw"><b>Jelszó</b></label>
-    <input type="password" placeholder="Adjon meg egy új jelszót" name="psw" id="psw"
-           v-model="password" :class="{ 'error-input': errors.password }">
+    <input
+      type="password"
+      placeholder="Adjon meg egy új jelszót"
+      name="psw"
+      id="psw"
+      v-model="password"
+      :class="{ 'error-input': errors.password }"
+    />
     <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
 
     <label for="psw-repeat"><b>Jelszó ismét</b></label>
-    <input type="password" placeholder="Ismételje meg az új jelszót" name="psw-repeat" id="psw-repeat"
-           v-model="passwordAgain" :class="{ 'error-input': errors.passwordAgain }">
+    <input
+      type="password"
+      placeholder="Ismételje meg az új jelszót"
+      name="psw-repeat"
+      id="psw-repeat"
+      v-model="passwordAgain"
+      :class="{ 'error-input': errors.passwordAgain }"
+    />
     <span v-if="errors.passwordAgain" class="error-message">{{ errors.passwordAgain }}</span>
 
     <div v-if="successMessage" class="success-message">
@@ -108,7 +119,17 @@ export default defineComponent({
       <span class="success-text">{{ successMessage }}</span>
     </div>
 
-    <div v-if="backendError" class="error-message" style="margin: 15px 0; padding: 12px; background-color: #ffe6e4; border-left: 4px solid #e86a61; border-radius: 8px;">
+    <div
+      v-if="backendError"
+      class="error-message"
+      style="
+        margin: 15px 0;
+        padding: 12px;
+        background-color: #ffe6e4;
+        border-left: 4px solid #e86a61;
+        border-radius: 8px;
+      "
+    >
       {{ backendError }}
     </div>
 
@@ -119,7 +140,6 @@ export default defineComponent({
         <span v-else>Jelszó mentése</span>
       </button>
     </div>
-
   </div>
 </template>
 
@@ -129,9 +149,9 @@ export default defineComponent({
   background-color: white;
 }
 
-input[type=text],
-input[type=password],
-input[type=email] {
+input[type='text'],
+input[type='password'],
+input[type='email'] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 8px 0;
@@ -141,9 +161,9 @@ input[type=email] {
   border-radius: 10px;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
-input[type=email]:focus {
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus {
   background-color: #ddd;
   outline: none;
 }
@@ -189,7 +209,6 @@ input:disabled {
   font-size: 15px;
   font-weight: 500;
 }
-
 
 @keyframes slideIn {
   from {

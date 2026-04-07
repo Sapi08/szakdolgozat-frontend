@@ -56,9 +56,9 @@ export default defineComponent({
       error,
       orderCreated,
       orderId,
-      router
+      router,
     }
-  }
+  },
 })
 </script>
 
@@ -67,7 +67,11 @@ export default defineComponent({
     <div class="card shadow-lg rounded-4 border-0 text-center p-5">
       <!-- Loading state -->
       <div v-if="loading" class="loading-state">
-        <div class="spinner-border text-primary mb-3" role="status" style="width: 4rem; height: 4rem;">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 4rem; height: 4rem"
+        >
           <span class="visually-hidden">Betöltés...</span>
         </div>
         <h3 class="mb-2">Fizetés ellenőrzése...</h3>
@@ -77,12 +81,10 @@ export default defineComponent({
       <!-- Success state -->
       <div v-else-if="orderCreated && !error" class="success-state">
         <div class="success-icon mb-4">
-          <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+          <i class="fas fa-check-circle text-success" style="font-size: 5rem"></i>
         </div>
         <h2 class="text-success mb-3">Sikeres fizetés!</h2>
-        <p class="lead mb-4">
-          Köszönjük a megrendelését! A fizetés sikeresen megtörtént.
-        </p>
+        <p class="lead mb-4">Köszönjük a megrendelését! A fizetés sikeresen megtörtént.</p>
         <div class="alert alert-info">
           <i class="fas fa-info-circle me-2"></i>
           Rendelés azonosító: <strong>#{{ orderId }}</strong>
@@ -104,7 +106,7 @@ export default defineComponent({
       <!-- Error state -->
       <div v-else class="error-state">
         <div class="error-icon mb-4">
-          <i class="fas fa-exclamation-circle text-danger" style="font-size: 5rem;"></i>
+          <i class="fas fa-exclamation-circle text-danger" style="font-size: 5rem"></i>
         </div>
         <h2 class="text-danger mb-3">Hiba történt</h2>
         <p class="lead mb-4">{{ error }}</p>
@@ -166,13 +168,21 @@ export default defineComponent({
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-10px);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(10px);
   }
 }

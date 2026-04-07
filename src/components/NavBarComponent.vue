@@ -1,9 +1,14 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import { useUserStore } from '@/stores/user_store'
 
 export default defineComponent({
-  name: "MenuComponent",
+  name: 'MenuComponent',
+  data() {
+    return {
+      isSticky: false,
+    }
+  },
   computed: {
     isLoggedIn(): boolean {
       const store = useUserStore()
@@ -12,48 +17,109 @@ export default defineComponent({
     isAdmin(): boolean {
       const store = useUserStore()
       return store.isAdmin
-    }
+    },
   },
   methods: {
     isActive(path: string): boolean {
-      return this.$route.path === path;
+      return this.$route.path === path
     },
     logout() {
       const store = useUserStore()
       store.logout()
-      this.$router.push("/")
-    }
-  }
+      this.$router.push('/')
+    },
+    toggleStickyNavbar() {
+      this.isSticky = window.scrollY > 0
+    },
+  },
+  mounted() {
+    // Initial check on mount
+    this.toggleStickyNavbar()
+    // Add scroll listener
+    window.addEventListener('scroll', this.toggleStickyNavbar)
+  },
+  unmounted() {
+    // Clean up scroll listener
+    window.removeEventListener('scroll', this.toggleStickyNavbar)
+  },
 })
 </script>
 
 <template>
-  <div class="d-flex navbar navbar-expand-lg bg-light navbar-light">
+  <div
+    class="d-flex navbar navbar-expand-lg bg-light navbar-light"
+    :class="{ 'nav-sticky': isSticky }"
+  >
     <div class="d-flex justify-content-between container-fluid">
-      <img src="../assets/icons/pizzahaz_logo_teto.png" alt="" width="70" height="70">
-      <router-link to="/" class="navbar-brand">Pizzaház<br><span>Hódmezővásásrhely</span></router-link>
-      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+      <img src="../assets/icons/pizzahaz_logo_teto.png" alt="" width="70" height="70" />
+      <router-link to="/" class="navbar-brand"
+        >Pizzaház<br /><span>Hódmezővásásrhely</span></router-link
+      >
+      <button
+        type="button"
+        class="navbar-toggler"
+        data-toggle="collapse"
+        data-target="#navbarCollapse"
+      >
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
         <div class="navbar-nav ps-5">
-          <router-link to="/" class="nav-item nav-link" :class="isActive('/')?'active':''">Főoldal</router-link>
-          <router-link to="/about" class="nav-item nav-link" :class="isActive('/about')?'active':''">Rólunk</router-link>
-          <router-link to="/gallery" class="nav-item nav-link" :class="isActive('/gallery')?'active':''">Galéria</router-link>
-          <router-link to="/services" class="nav-item nav-link" :class="isActive('/services')?'active':''">Szolgáltatások</router-link>
-          <router-link to="/menu" class="nav-item nav-link" :class="isActive('/menu')?'active':''">Étlap</router-link>
-          <router-link to="/event_booking" class="nav-item nav-link" :class="isActive('/event_booking')?'active':''">Rendezvény</router-link>
-          <router-link to="/contact" class="nav-item nav-link" :class="isActive('/contact')?'active':''">Kapcsolat</router-link>
+          <router-link to="/" class="nav-item nav-link" :class="isActive('/') ? 'active' : ''"
+            >Főoldal</router-link
+          >
+          <router-link
+            to="/about"
+            class="nav-item nav-link"
+            :class="isActive('/about') ? 'active' : ''"
+            >Rólunk</router-link
+          >
+          <router-link
+            to="/gallery"
+            class="nav-item nav-link"
+            :class="isActive('/gallery') ? 'active' : ''"
+            >Galéria</router-link
+          >
+          <router-link
+            to="/services"
+            class="nav-item nav-link"
+            :class="isActive('/services') ? 'active' : ''"
+            >Szolgáltatások</router-link
+          >
+          <router-link
+            to="/menu"
+            class="nav-item nav-link"
+            :class="isActive('/menu') ? 'active' : ''"
+            >Étlap</router-link
+          >
+          <router-link
+            to="/event_booking"
+            class="nav-item nav-link"
+            :class="isActive('/event_booking') ? 'active' : ''"
+            >Rendezvény</router-link
+          >
+          <router-link
+            to="/contact"
+            class="nav-item nav-link"
+            :class="isActive('/contact') ? 'active' : ''"
+            >Kapcsolat</router-link
+          >
         </div>
       </div>
       <div v-if="!isLoggedIn">
         <router-link to="/login" class="loginbutton">Belépés</router-link>
         <router-link to="/registration" class="registerbutton">Regisztráció</router-link>
-        <router-link to="/cart"><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i></router-link>
+        <router-link to="/cart"
+          ><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i
+        ></router-link>
       </div>
       <div v-if="isLoggedIn" class="user-actions">
-        <router-link to="/cart"><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i></router-link>
-        <router-link to="/profile"><i class="fa fa-user-circle cartbutton" aria-hidden="true"></i></router-link>
+        <router-link to="/cart"
+          ><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i
+        ></router-link>
+        <router-link to="/profile"
+          ><i class="fa fa-user-circle cartbutton" aria-hidden="true"></i
+        ></router-link>
         <router-link v-if="isAdmin" to="/admin" class="cartbutton">ADMIN</router-link>
         <button class="logoutbutton" @click="logout">Kijelentkezés</button>
       </div>
@@ -64,14 +130,14 @@ export default defineComponent({
 <style scoped>
 .navbar {
   position: fixed;
-  transition: .5s;
+  transition: 0.5s;
   z-index: 999;
 }
 .nav-sticky {
   position: fixed !important;
   top: 0 !important;
   width: 100% !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, .3) !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
 }
 .navbar .navbar-brand {
   padding-top: 20px;
@@ -82,7 +148,7 @@ export default defineComponent({
   line-height: 20px;
   font-weight: 700;
   font-family: 'Nunito', sans-serif;
-  transition: .5s;
+  transition: 0.5s;
 }
 .navbar .navbar-brand span {
   color: #e76c63;

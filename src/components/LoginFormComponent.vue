@@ -1,29 +1,29 @@
 <script lang="ts">
-import {defineComponent} from "vue";
-import {mapStores} from "pinia";
-import {useUserStore} from "@/stores/user_store.ts";
+import { defineComponent } from 'vue'
+import { mapStores } from 'pinia'
+import { useUserStore } from '@/stores/user_store.ts'
 
 export default defineComponent({
-  name: "RegistrationFormComponent",
+  name: 'RegistrationFormComponent',
   data() {
     return {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       errors: {
-        email: "",
-        password: ""
+        email: '',
+        password: '',
       },
-      backendError: ""
+      backendError: '',
     }
   },
   computed: {
-    ...mapStores(useUserStore)
+    ...mapStores(useUserStore),
   },
   methods: {
     clearErrors() {
       this.errors = {
-        email: "",
-        password: ""
+        email: '',
+        password: '',
       }
     },
     validateForm(): boolean {
@@ -31,15 +31,15 @@ export default defineComponent({
       let isValid = true
 
       if (this.email.length === 0) {
-        this.errors.email = "Kérjük, adja meg az email címét!"
+        this.errors.email = 'Kérjük, adja meg az email címét!'
         isValid = false
       } else if (!this.isValidEmail(this.email)) {
-        this.errors.email = "Kérjük, adjon meg egy érvényes email címet!"
+        this.errors.email = 'Kérjük, adjon meg egy érvényes email címet!'
         isValid = false
       }
 
       if (this.password.length === 0) {
-        this.errors.password = "Kérjük, adja meg a jelszavát!"
+        this.errors.password = 'Kérjük, adja meg a jelszavát!'
         isValid = false
       }
 
@@ -51,26 +51,26 @@ export default defineComponent({
     },
     async signIn() {
       if (this.validateForm()) {
-        this.backendError = "";
+        this.backendError = ''
 
-        const result = await this.userStore.signIn(this.email, this.password);
+        const result = await this.userStore.signIn(this.email, this.password)
 
         if (result.success && result.is_staff) {
-          this.$router.push("/admin");
-        } else if ( result.success ) {
-          this.$router.push("/");
+          this.$router.push('/admin')
+        } else if (result.success) {
+          this.$router.push('/')
         } else {
-          this.backendError = result.message;
+          this.backendError = result.message
         }
       }
     },
     goToRegister() {
-      this.$router.push("/registration");
+      this.$router.push('/registration')
     },
     goToForgetPassword() {
-      this.$router.push("/forget_pass");
-    }
-  }
+      this.$router.push('/forget_pass')
+    },
+  },
 })
 </script>
 
@@ -78,16 +78,28 @@ export default defineComponent({
   <div class="container">
     <h1>Belépés</h1>
     <p>Kérem töltse ki a mezőket a belépéshez.</p>
-    <hr>
+    <hr />
 
     <label for="email"><b>E-mail cím</b></label>
-    <input type="email" placeholder="Adja meg az email címét" name="email" id="email"
-           v-model="email" :class="{ 'error-input': errors.email }">
+    <input
+      type="email"
+      placeholder="Adja meg az email címét"
+      name="email"
+      id="email"
+      v-model="email"
+      :class="{ 'error-input': errors.email }"
+    />
     <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
 
     <label for="psw"><b>Jelszó</b></label>
-    <input type="password" placeholder="Adja meg a jelszavát" name="psw" id="psw"
-           v-model="password" :class="{ 'error-input': errors.password }">
+    <input
+      type="password"
+      placeholder="Adja meg a jelszavát"
+      name="psw"
+      id="psw"
+      v-model="password"
+      :class="{ 'error-input': errors.password }"
+    />
     <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
 
     <!-- Backend error message -->
@@ -97,8 +109,12 @@ export default defineComponent({
     </div>
     <div class="d-flex justify-content-between">
       <p class="register-link"><a href="#">Szabályzat</a></p>
-      <p class="register-link">Még nincs fiókja? <a @click="goToRegister" class="register-link-btn">Regisztráció</a></p>
-      <p class="register-link"><a @click="goToForgetPassword" class="register-link-btn">Elfelejtett jelszó?</a></p>
+      <p class="register-link">
+        Még nincs fiókja? <a @click="goToRegister" class="register-link-btn">Regisztráció</a>
+      </p>
+      <p class="register-link">
+        <a @click="goToForgetPassword" class="register-link-btn">Elfelejtett jelszó?</a>
+      </p>
     </div>
 
     <button type="submit" class="loginbtn" @click="signIn">Belépés</button>
@@ -111,9 +127,9 @@ export default defineComponent({
   background-color: white;
 }
 
-input[type=text],
-input[type=password],
-input[type=email] {
+input[type='text'],
+input[type='password'],
+input[type='email'] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 8px 0;
@@ -123,9 +139,9 @@ input[type=email] {
   border-radius: 10px;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
-input[type=email]:focus {
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus {
   background-color: #ddd;
   outline: none;
 }

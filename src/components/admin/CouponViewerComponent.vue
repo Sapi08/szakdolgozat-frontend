@@ -2,23 +2,23 @@
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useCouponStore } from '@/stores/coupon_store.ts'
-import type Coupon from '@/models/coupon.ts'
+import type { Coupon } from '@/types/coupon.ts'
 
 export default defineComponent({
-  name: "CouponViewerComponent",
+  name: 'CouponViewerComponent',
   data() {
     return {
       showDeleteModal: false,
       couponToDelete: null as number | null,
-      couponCodeToDelete: "",
-      backendError: "",
-      successMessage: "",
+      couponCodeToDelete: '',
+      backendError: '',
+      successMessage: '',
       discountCategories: {
-        percent: "Százalékos",
-        fixed: "Fix összeg",
-        free_item: "Ingyen termék",
-        shipping: "Ingyen szállítás"
-      }
+        percent: 'Százalékos',
+        fixed: 'Fix összeg',
+        free_item: 'Ingyen termék',
+        shipping: 'Ingyen szállítás',
+      },
     }
   },
   computed: {
@@ -28,37 +28,31 @@ export default defineComponent({
     },
     coupons() {
       return this.couponStore.coupons
-    }
+    },
   },
   async mounted() {
     await this.loadCoupons()
   },
   methods: {
     async loadCoupons() {
-      this.backendError = ""
+      this.backendError = ''
       try {
         await this.couponStore.loadCoupons()
-
-        // Másolás a local state-be hogy Vue reaktívan kezelje
-        this.localCoupons = JSON.parse(JSON.stringify(this.couponStore.coupons))
-
-        // Force update
-        this.$forceUpdate()
       } catch (error) {
-        this.backendError = "Hiba történt a kuponok betöltésekor"
+        this.backendError = 'Hiba történt a kuponok betöltésekor'
       }
     },
     openDeleteModal(id: number, code: string) {
       this.couponToDelete = id
       this.couponCodeToDelete = code
       this.showDeleteModal = true
-      this.backendError = ""
-      this.successMessage = ""
+      this.backendError = ''
+      this.successMessage = ''
     },
     closeDeleteModal() {
       this.showDeleteModal = false
       this.couponToDelete = null
-      this.couponCodeToDelete = ""
+      this.couponCodeToDelete = ''
     },
     async confirmDelete() {
       if (this.couponToDelete === null) return
@@ -66,14 +60,14 @@ export default defineComponent({
       const result = await this.couponStore.deleteCoupon(this.couponToDelete)
 
       if (result.success) {
-        this.successMessage = "Kupon sikeresen törölve!"
+        this.successMessage = 'Kupon sikeresen törölve!'
         this.closeDeleteModal()
 
         setTimeout(() => {
-          this.successMessage = ""
+          this.successMessage = ''
         }, 3000)
       } else {
-        this.backendError = result.message || "Hiba történt a kupon törlésekor"
+        this.backendError = result.message || 'Hiba történt a kupon törlésekor'
       }
     },
     getCategoryLabel(category?: string): string {
@@ -105,25 +99,25 @@ export default defineComponent({
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
       })
     },
     isExpired(coupon: Coupon): boolean {
       return new Date(coupon.expiration_date) < new Date()
     },
-    getUsedStatusClass(status: string): string {
-      return status === 'used' ? 'status-used' : 'status-not-used'
+    getUsedStatusClass(isUsed: boolean): string {
+      return isUsed ? 'status-used' : 'status-not-used'
     },
-    getUsedStatusLabel(status: string): string {
-      return status === 'used' ? 'Felhasznált' : 'Nem használt'
+    getUsedStatusLabel(isUsed: boolean): string {
+      return isUsed ? 'Felhasznált' : 'Nem használt'
     },
-    getScratchedStatusClass(status: string): string {
-      return status === 'scratched' ? 'status-scratched' : 'status-not-scratched'
+    getScratchedStatusClass(isScratched: boolean): string {
+      return isScratched ? 'status-scratched' : 'status-not-scratched'
     },
-    getScratchedStatusLabel(status: string): string {
-      return status === 'scratched' ? 'Lekapart' : 'Nem lekapart'
-    }
-  }
+    getScratchedStatusLabel(isScratched: boolean): string {
+      return isScratched ? 'Lekapart' : 'Nem lekapart'
+    },
+  },
 })
 </script>
 
@@ -174,7 +168,11 @@ export default defineComponent({
               </tr>
             </thead>
             <tbody>
-              <tr v-for="coupon in coupons" :key="coupon.id" :class="{ 'expired-row': isExpired(coupon) }">
+              <tr
+                v-for="coupon in coupons"
+                :key="coupon.id"
+                :class="{ 'expired-row': isExpired(coupon) }"
+              >
                 <td>{{ coupon.id }}</td>
                 <td class="coupon-code">
                   <span class="code-badge">{{ coupon.code }}</span>
@@ -194,7 +192,11 @@ export default defineComponent({
                       class="type-image"
                     />
                     <span class="type-name">
-                      {{ coupon.discount_type_details && coupon.discount_type_details.name ? coupon.discount_type_details.name : '-' }}
+                      {{
+                        coupon.discount_type_details && coupon.discount_type_details.name
+                          ? coupon.discount_type_details.name
+                          : '-'
+                      }}
                     </span>
                   </div>
                 </td>
@@ -206,13 +208,13 @@ export default defineComponent({
                   <span v-if="isExpired(coupon)" class="expired-label">LEJÁRT</span>
                 </td>
                 <td>
-                  <span :class="['status-badge', getUsedStatusClass(coupon.status_used)]">
-                    {{ getUsedStatusLabel(coupon.status_used) }}
+                  <span :class="['status-badge', getUsedStatusClass(coupon.is_used)]">
+                    {{ getUsedStatusLabel(coupon.is_used) }}
                   </span>
                 </td>
                 <td>
-                  <span :class="['status-badge', getScratchedStatusClass(coupon.status_scratched)]">
-                    {{ getScratchedStatusLabel(coupon.status_scratched) }}
+                  <span :class="['status-badge', getScratchedStatusClass(coupon.is_scratched)]">
+                    {{ getScratchedStatusLabel(coupon.is_scratched) }}
                   </span>
                 </td>
                 <td>
@@ -221,13 +223,25 @@ export default defineComponent({
                 <td>
                   <div class="action-buttons">
                     <button
-                      @click="openDeleteModal(coupon.id!, coupon.code)"
+                      @click="openDeleteModal(coupon.id!, coupon.code ?? '')"
                       class="btn-delete"
                       title="Törlés"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
                         <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path
+                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        ></path>
                         <line x1="10" y1="11" x2="10" y2="17"></line>
                         <line x1="14" y1="11" x2="14" y2="17"></line>
                       </svg>
@@ -254,9 +268,7 @@ export default defineComponent({
           <p class="warning-text">Ez a művelet nem visszavonható!</p>
         </div>
         <div class="modal-footer">
-          <button class="btn-cancel" @click="closeDeleteModal">
-            Mégse
-          </button>
+          <button class="btn-cancel" @click="closeDeleteModal">Mégse</button>
           <button class="btn-confirm-delete" @click="confirmDelete" :disabled="isLoading">
             <span v-if="isLoading">Törlés...</span>
             <span v-else>Törlés</span>
@@ -283,7 +295,7 @@ export default defineComponent({
 }
 
 .card-header {
-  background: linear-gradient(135deg, #FEA116 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #fea116 0%, #ff6b35 100%);
   padding: 1.5rem;
   text-align: center;
 }
@@ -338,7 +350,7 @@ export default defineComponent({
 
 .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #FEA116;
+  border-top: 4px solid #fea116;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -347,8 +359,12 @@ export default defineComponent({
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-container p {
@@ -463,7 +479,7 @@ export default defineComponent({
 .badge {
   display: inline-block;
   padding: 0.4rem 0.8rem;
-  background-color: #FEA116;
+  background-color: #fea116;
   color: #fff;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -732,4 +748,3 @@ export default defineComponent({
   }
 }
 </style>
-

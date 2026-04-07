@@ -1,104 +1,104 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import {mapStores} from "pinia";
-import {useUserStore} from "@/stores/user_store.ts";
+import { defineComponent } from 'vue'
+import { mapStores } from 'pinia'
+import { useUserStore } from '@/stores/user_store.ts'
 
 export default defineComponent({
-  name: "RegistrationFormComponent",
-  data(){
+  name: 'RegistrationFormComponent',
+  data() {
     return {
-      firstName: "",
-      lastName: "",
-      phone: "",
-      birthDate: "",
-      email: "",
-      password: "",
-      passwordAgain: "",
+      firstName: '',
+      lastName: '',
+      phone: '',
+      birthDate: '',
+      email: '',
+      password: '',
+      passwordAgain: '',
       errors: {
-        firstName: "",
-        lastName: "",
-        phone: "",
-        birthDate: "",
-        email: "",
-        password: "",
-        passwordAgain: ""
+        firstName: '',
+        lastName: '',
+        phone: '',
+        birthDate: '',
+        email: '',
+        password: '',
+        passwordAgain: '',
       },
-      backendError: "",
-      successMessage: ""
+      backendError: '',
+      successMessage: '',
     }
   },
-  computed:{
-    ...mapStores(useUserStore)
+  computed: {
+    ...mapStores(useUserStore),
   },
-  methods:{
-    clearErrors(){
+  methods: {
+    clearErrors() {
       this.errors = {
-        firstName: "",
-        lastName: "",
-        phone: "",
-        birthDate: "",
-        email: "",
-        password: "",
-        passwordAgain: ""
+        firstName: '',
+        lastName: '',
+        phone: '',
+        birthDate: '',
+        email: '',
+        password: '',
+        passwordAgain: '',
       }
     },
     validateForm(): boolean {
       this.clearErrors()
       let isValid = true
 
-      if (this.firstName.length === 0){
-        this.errors.firstName = "Kérjük, adja meg a keresztnevét!"
+      if (this.firstName.length === 0) {
+        this.errors.firstName = 'Kérjük, adja meg a keresztnevét!'
         isValid = false
       }
 
-      if (this.lastName.length === 0){
-        this.errors.lastName = "Kérjük, adja meg a vezetéknevét!"
+      if (this.lastName.length === 0) {
+        this.errors.lastName = 'Kérjük, adja meg a vezetéknevét!'
         isValid = false
       }
 
-      if (this.phone.length === 0){
-        this.errors.phone = "Kérjük, adja meg a telefonszámát!"
+      if (this.phone.length === 0) {
+        this.errors.phone = 'Kérjük, adja meg a telefonszámát!'
         isValid = false
       } else {
-        if (!this.isValidPhone(this.phone)){
-          this.errors.phone = "Kérjük, adjon meg egy érvényes telefonszámot!"
+        if (!this.isValidPhone(this.phone)) {
+          this.errors.phone = 'Kérjük, adjon meg egy érvényes telefonszámot!'
           isValid = false
         }
       }
 
-      if (this.birthDate.length === 0){
-        this.errors.birthDate = "Kérjük, adja meg a születési dátumát!"
+      if (this.birthDate.length === 0) {
+        this.errors.birthDate = 'Kérjük, adja meg a születési dátumát!'
         isValid = false
       } else {
         const today = new Date()
         const birthDateObj = new Date(this.birthDate)
-        if (birthDateObj >= today){
-          this.errors.birthDate = "Kérjük, adjon meg egy érvényes születési dátumot!"
+        if (birthDateObj >= today) {
+          this.errors.birthDate = 'Kérjük, adjon meg egy érvényes születési dátumot!'
           isValid = false
         }
       }
 
-      if (this.email.length === 0){
-        this.errors.email = "Kérjük, adja meg az email címét!"
+      if (this.email.length === 0) {
+        this.errors.email = 'Kérjük, adja meg az email címét!'
         isValid = false
-      } else if (!this.isValidEmail(this.email)){
-        this.errors.email = "Kérjük, adjon meg egy érvényes email címet!"
-        isValid = false
-      }
-
-      if (this.password.length === 0){
-        this.errors.password = "Kérjük, adjon meg egy jelszót!"
-        isValid = false
-      } else if (this.password.length < 6){
-        this.errors.password = "A jelszónak legalább 6 karakter hosszúnak kell lennie!"
+      } else if (!this.isValidEmail(this.email)) {
+        this.errors.email = 'Kérjük, adjon meg egy érvényes email címet!'
         isValid = false
       }
 
-      if (this.passwordAgain.length === 0){
-        this.errors.passwordAgain = "Kérjük, ismételje meg a jelszót!"
+      if (this.password.length === 0) {
+        this.errors.password = 'Kérjük, adjon meg egy jelszót!'
         isValid = false
-      } else if (this.password !== this.passwordAgain){
-        this.errors.passwordAgain = "A két jelszó nem egyezik!"
+      } else if (this.password.length < 6) {
+        this.errors.password = 'A jelszónak legalább 6 karakter hosszúnak kell lennie!'
+        isValid = false
+      }
+
+      if (this.passwordAgain.length === 0) {
+        this.errors.passwordAgain = 'Kérjük, ismételje meg a jelszót!'
+        isValid = false
+      } else if (this.password !== this.passwordAgain) {
+        this.errors.passwordAgain = 'A két jelszó nem egyezik!'
         isValid = false
       }
 
@@ -112,11 +112,11 @@ export default defineComponent({
       const phoneRegex = /^\+?[0-9]{7,15}$/
       return phoneRegex.test(phone)
     },
-    async register(){
+    async register() {
       if (this.validateForm()) {
         // Clear previous messages
-        this.backendError = ""
-        this.successMessage = ""
+        this.backendError = ''
+        this.successMessage = ''
 
         const result = await this.userStore.register(
           this.email,
@@ -124,7 +124,7 @@ export default defineComponent({
           this.firstName,
           this.lastName,
           this.phone,
-          this.birthDate
+          this.birthDate,
         )
 
         if (result.success) {
@@ -140,8 +140,8 @@ export default defineComponent({
           this.backendError = result.message
         }
       }
-    }
-  }
+    },
+  },
 })
 </script>
 
@@ -149,44 +149,85 @@ export default defineComponent({
   <div class="container">
     <h1>Regisztráció</h1>
     <p>Kérem töltse ki a mezőket a regisztrációhoz.</p>
-    <hr>
+    <hr />
 
     <label for="first_name"><b>Keresztnév</b></label>
-    <input type="text" placeholder="Adja meg a keresztnevét" name="first_name" id="first_name"
-           v-model="firstName" :class="{ 'error-input': errors.firstName }">
+    <input
+      type="text"
+      placeholder="Adja meg a keresztnevét"
+      name="first_name"
+      id="first_name"
+      v-model="firstName"
+      :class="{ 'error-input': errors.firstName }"
+    />
     <span v-if="errors.firstName" class="error-message">{{ errors.firstName }}</span>
 
     <label for="last_name"><b>Vezetéknév</b></label>
-    <input type="text" placeholder="Adja meg a vezetéknevét" name="last_name" id="last_name"
-           v-model="lastName" :class="{ 'error-input': errors.lastName }">
+    <input
+      type="text"
+      placeholder="Adja meg a vezetéknevét"
+      name="last_name"
+      id="last_name"
+      v-model="lastName"
+      :class="{ 'error-input': errors.lastName }"
+    />
     <span v-if="errors.lastName" class="error-message">{{ errors.lastName }}</span>
 
     <label for="birth_date"><b>Születési dátum</b></label>
-    <input type="date" name="birth_date" id="birth_date"
-           v-model="birthDate" :class="{ 'error-input': errors.birthDate }">
+    <input
+      type="date"
+      name="birth_date"
+      id="birth_date"
+      v-model="birthDate"
+      :class="{ 'error-input': errors.birthDate }"
+    />
     <span v-if="errors.birthDate" class="error-message">{{ errors.birthDate }}</span>
 
     <label for="phone"><b>Telefonszám</b></label>
-    <input type="tel" placeholder="Adja meg a telefonszámát" name="phone" id="phone"
-           v-model="phone" :class="{ 'error-input': errors.phone }">
+    <input
+      type="tel"
+      placeholder="Adja meg a telefonszámát"
+      name="phone"
+      id="phone"
+      v-model="phone"
+      :class="{ 'error-input': errors.phone }"
+    />
     <span v-if="errors.phone" class="error-message">{{ errors.phone }}</span>
 
     <label for="email"><b>E-mail cím</b></label>
-    <input type="email" placeholder="Adja meg az email címét" name="email" id="email"
-           v-model="email" :class="{ 'error-input': errors.email }">
+    <input
+      type="email"
+      placeholder="Adja meg az email címét"
+      name="email"
+      id="email"
+      v-model="email"
+      :class="{ 'error-input': errors.email }"
+    />
     <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
 
     <label for="psw"><b>Jelszó</b></label>
-    <input type="password" placeholder="Adjon meg egy jelszót" name="psw" id="psw"
-           v-model="password" :class="{ 'error-input': errors.password }">
+    <input
+      type="password"
+      placeholder="Adjon meg egy jelszót"
+      name="psw"
+      id="psw"
+      v-model="password"
+      :class="{ 'error-input': errors.password }"
+    />
     <span v-if="errors.password" class="error-message">{{ errors.password }}</span>
 
     <label for="psw-repeat"><b>Jelszó ismét</b></label>
-    <input type="password" placeholder="Ismételje meg a jelszót" name="psw-repeat" id="psw-repeat"
-           v-model="passwordAgain" :class="{ 'error-input': errors.passwordAgain }">
+    <input
+      type="password"
+      placeholder="Ismételje meg a jelszót"
+      name="psw-repeat"
+      id="psw-repeat"
+      v-model="passwordAgain"
+      :class="{ 'error-input': errors.passwordAgain }"
+    />
     <span v-if="errors.passwordAgain" class="error-message">{{ errors.passwordAgain }}</span>
 
-    <hr>
+    <hr />
 
     <!-- Backend error message -->
     <div v-if="backendError" class="backend-error">
@@ -205,21 +246,19 @@ export default defineComponent({
 
     <button type="submit" class="registerbtn" @click="register">Regisztráció</button>
   </div>
-
 </template>
 
 <style scoped>
-
 .container {
   padding-top: 160px;
   background-color: white;
 }
 
-input[type=text],
-input[type=password],
-input[type=email],
-input[type=tel],
-input[type=date] {
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='tel'],
+input[type='date'] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 8px 0;
@@ -229,11 +268,11 @@ input[type=date] {
   border-radius: 10px;
 }
 
-input[type=text]:focus,
-input[type=password]:focus,
-input[type=email]:focus,
-input[type=tel]:focus,
-input[type=date]:focus {
+input[type='text']:focus,
+input[type='password']:focus,
+input[type='email']:focus,
+input[type='tel']:focus,
+input[type='date']:focus {
   background-color: #ddd;
   outline: none;
 }

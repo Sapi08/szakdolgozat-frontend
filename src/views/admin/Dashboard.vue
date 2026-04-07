@@ -1,11 +1,11 @@
 <script lang="ts">
-import {defineComponent, onMounted} from 'vue'
-import CardComponent from "@/components/admin/CardComponent.vue";
+import { defineComponent, onMounted } from 'vue'
+import CardComponent from '@/components/admin/CardComponent.vue'
 import { useStatisticsStore } from '@/stores/statistics_store.ts'
 
 export default defineComponent({
-  name: "DashboardView",
-  components: {CardComponent},
+  name: 'DashboardView',
+  components: { CardComponent },
   setup() {
     const statisticsStore = useStatisticsStore()
 
@@ -14,9 +14,9 @@ export default defineComponent({
     })
 
     return {
-      statisticsStore
+      statisticsStore,
     }
-  }
+  },
 })
 </script>
 
@@ -137,5 +137,6 @@ export default defineComponent({
 <style scoped>
 h1 {
   margin-top: 20px;
-  margin-bottom: 20px;}
+  margin-bottom: 20px;
+}
 </style>

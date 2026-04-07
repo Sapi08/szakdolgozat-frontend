@@ -4,20 +4,22 @@ import { mapStores } from 'pinia'
 import { useCouponStore } from '@/stores/coupon_store.ts'
 
 export default defineComponent({
-  name: "CouponCreaterComponent",
+  name: 'CouponCreaterComponent',
   data() {
     return {
-      userId: "",
-      discountType: "",
-      expirationDate: "",
+      userId: '',
+      discountType: '',
+      startDate: '',
+      expirationDate: '',
       errors: {
-        userId: "",
-        discountType: "",
-        expirationDate: ""
+        userId: '',
+        discountType: '',
+        expirationDate: '',
+        startDate: '',
       },
-      backendError: "",
-      successMessage: "",
-      generatedCode: ""
+      backendError: '',
+      successMessage: '',
+      generatedCode: '',
     }
   },
   computed: {
@@ -27,7 +29,7 @@ export default defineComponent({
     },
     couponTypes() {
       return this.couponStore.couponTypes
-    }
+    },
   },
   async mounted() {
     await this.loadDiscountTypes()
@@ -37,60 +39,81 @@ export default defineComponent({
       try {
         await this.couponStore.loadDiscountTypes()
       } catch (error) {
-        this.backendError = "Hiba történt a kedvezménytípusok betöltésekor"
+        this.backendError = 'Hiba történt a kedvezménytípusok betöltésekor'
       }
     },
     clearErrors() {
       this.errors = {
-        userId: "",
-        discountType: "",
-        expirationDate: ""
+        userId: '',
+        discountType: '',
+        expirationDate: '',
+        startDate: '',
       }
-      this.backendError = ""
-      this.successMessage = ""
-      this.generatedCode = ""
+      this.backendError = ''
+      this.successMessage = ''
+      this.generatedCode = ''
     },
     validateForm(): boolean {
       this.clearErrors()
       let isValid = true
 
       // Konvertáljuk string-gé, ha szám
-      const userIdStr = String(this.userId || "").trim()
+      const userIdStr = String(this.userId || '').trim()
 
       if (userIdStr.length === 0) {
-        this.errors.userId = "Kérjük, adja meg a felhasználó ID-t!"
+        this.errors.userId = 'Kérjük, adja meg a felhasználó ID-t!'
         isValid = false
       } else {
         const numValue = parseInt(userIdStr)
         if (isNaN(numValue) || numValue <= 0) {
-          this.errors.userId = "Kérjük, adjon meg egy érvényes pozitív számot!"
+          this.errors.userId = 'Kérjük, adjon meg egy érvényes pozitív számot!'
           isValid = false
         }
       }
 
       if (this.discountType.length === 0) {
-        this.errors.discountType = "Kérjük, válasszon kedvezménytípust!"
+        this.errors.discountType = 'Kérjük, válasszon kedvezménytípust!'
         isValid = false
       }
 
+      if (this.startDate.length === 0) {
+        this.errors.startDate = 'Kérjük, adja meg a kezdő dátumot!'
+        isValid = false
+      } else {
+        const startDate = new Date(this.startDate)
+        const now = new Date()
+        if (startDate <= now) {
+          this.errors.startDate = 'A kezdő dátum a jövőben kell legyen!'
+          isValid = false
+        }
+      }
+
       if (this.expirationDate.length === 0) {
-        this.errors.expirationDate = "Kérjük, adja meg a lejárati dátumot!"
+        this.errors.expirationDate = 'Kérjük, adja meg a lejárati dátumot!'
         isValid = false
       } else {
         const expDate = new Date(this.expirationDate)
         const now = new Date()
         if (expDate <= now) {
-          this.errors.expirationDate = "A lejárati dátum a jövőben kell legyen!"
+          this.errors.expirationDate = 'A lejárati dátum a jövőben kell legyen!'
           isValid = false
+        }
+        if (this.startDate.length > 0) {
+          const startDate = new Date(this.startDate)
+          if (expDate <= startDate) {
+            this.errors.expirationDate = 'A lejárati dátum a kezdő dátum után kell legyen!'
+            isValid = false
+          }
         }
       }
 
       return isValid
     },
     resetForm() {
-      this.userId = ""
-      this.discountType = ""
-      this.expirationDate = ""
+      this.userId = ''
+      this.discountType = ''
+      this.startDate = ''
+      this.expirationDate = ''
       this.clearErrors()
     },
     async createCoupon() {
@@ -103,25 +126,25 @@ export default defineComponent({
       const couponData = {
         user: parseInt(String(this.userId)),
         discount_type: parseInt(String(this.discountType)),
-        expiration_date: new Date(this.expirationDate).toISOString()
-        // tobbi mezo
+        start_date: new Date(this.startDate).toISOString(),
+        expiration_date: new Date(this.expirationDate).toISOString(),
       }
 
       const result = await this.couponStore.createCoupon(couponData)
 
       if (result.success) {
-        this.generatedCode = result.data?.code || ""
+        this.generatedCode = result.data?.code || ''
         this.successMessage = `Kupon sikeresen létrehozva! Kód: ${this.generatedCode}`
-        console.log("Kupon létrehozva:", result.data)
+        console.log('Kupon létrehozva:', result.data)
 
         setTimeout(() => {
           this.resetForm()
         }, 5000)
       } else {
-        this.backendError = result.message || "Hiba történt a kupon létrehozásakor"
+        this.backendError = result.message || 'Hiba történt a kupon létrehozásakor'
       }
-    }
-  }
+    },
+  },
 })
 </script>
 
@@ -168,15 +191,28 @@ export default defineComponent({
               :class="{ 'error-input': errors.discountType }"
             >
               <option value="" disabled>Válasszon egy kedvezménytípust...</option>
-              <option
-                v-for="type in couponTypes"
-                :key="type.id"
-                :value="type.id"
-              >
-                {{ type.name }} ({{ type.discount_category === 'percent' ? type.value + '%' : type.value + ' Ft' }})
+              <option v-for="type in couponTypes" :key="type.id" :value="type.id">
+                {{ type.name }} ({{
+                  type.discount_category === 'percent' ? type.value + '%' : type.value + ' Ft'
+                }})
               </option>
             </select>
             <span v-if="errors.discountType" class="error-message">{{ errors.discountType }}</span>
+          </div>
+
+          <!-- Starting Date -->
+          <div class="form-group">
+            <label for="startDate">
+              Kezdő dátum
+              <span class="required">*</span>
+            </label>
+            <input
+              type="datetime-local"
+              id="startDate"
+              v-model="startDate"
+              :class="{ 'error-input': errors.startDate }"
+            />
+            <span v-if="errors.startDate" class="error-message">{{ errors.startDate }}</span>
           </div>
 
           <!-- Expiration Date -->
@@ -191,7 +227,9 @@ export default defineComponent({
               v-model="expirationDate"
               :class="{ 'error-input': errors.expirationDate }"
             />
-            <span v-if="errors.expirationDate" class="error-message">{{ errors.expirationDate }}</span>
+            <span v-if="errors.expirationDate" class="error-message">{{
+              errors.expirationDate
+            }}</span>
           </div>
 
           <!-- Generated Code Display -->
@@ -231,7 +269,7 @@ export default defineComponent({
 }
 
 .card-header {
-  background: linear-gradient(135deg, #FEA116 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #fea116 0%, #ff6b35 100%);
   padding: 1.5rem;
   text-align: center;
 }
@@ -312,9 +350,9 @@ export default defineComponent({
   font-style: italic;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
-.form-group input[type="datetime-local"],
+.form-group input[type='text'],
+.form-group input[type='number'],
+.form-group input[type='datetime-local'],
 .form-group select {
   padding: 0.75rem;
   border: 2px solid #e0e0e0;
@@ -324,12 +362,12 @@ export default defineComponent({
   background-color: #fff;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus,
-.form-group input[type="datetime-local"]:focus,
+.form-group input[type='text']:focus,
+.form-group input[type='number']:focus,
+.form-group input[type='datetime-local']:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #FEA116;
+  border-color: #fea116;
   box-shadow: 0 0 0 3px rgba(254, 161, 22, 0.1);
 }
 
@@ -396,7 +434,7 @@ export default defineComponent({
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #FEA116 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #fea116 0%, #ff6b35 100%);
   color: #fff;
 }
 
@@ -450,4 +488,3 @@ export default defineComponent({
   }
 }
 </style>
-

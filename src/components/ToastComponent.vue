@@ -2,15 +2,15 @@
 import { defineComponent, ref, watch } from 'vue'
 
 export default defineComponent({
-  name: "ToastComponent",
+  name: 'ToastComponent',
   props: {
     message: {
       type: String,
-      default: "",
+      default: '',
     },
     type: {
       type: String,
-      default: "success", // 'success' | 'error'
+      default: 'success', // 'success' | 'error'
     },
     duration: {
       type: Number,
@@ -22,27 +22,27 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const visible = ref(false);
+    const visible = ref(false)
 
     // Watch-oljuk a "show" propot
     watch(
       () => props.show,
       (newVal) => {
         if (newVal) {
-          visible.value = true;
+          visible.value = true
           setTimeout(() => {
-            visible.value = false;
-          }, props.duration);
+            visible.value = false
+          }, props.duration)
         }
-      }
-    );
+      },
+    )
 
     return {
       visible,
       props,
-    };
+    }
   },
-});
+})
 </script>
 
 <template>

@@ -38,13 +38,13 @@ export default {
         { name: 'Statisztikák', path: '/admin', icon: 'fas fa-chart-line' },
         { name: 'Rendelések', path: '/admin/orders', icon: 'fas fa-shopping-cart' },
         { name: 'Felhasználók', path: '/admin/users', icon: 'fas fa-users' },
-        { name: 'Ételek', path: '/admin/dishes', icon: 'fas fa-utensils'},
-        { name: 'Üzenetek', path: '/admin/contacts', icon: 'fas fa-utensils'},
+        { name: 'Ételek', path: '/admin/dishes', icon: 'fas fa-utensils' },
+        { name: 'Üzenetek', path: '/admin/contacts', icon: 'fas fa-utensils' },
         { name: 'Kuponok', path: '/admin/coupons', icon: 'fas fa-receipt' },
         { name: 'Rendezvények', path: '/admin/events', icon: 'fas fa-calendar' },
-      ]
+      ],
     }
-  }
+  },
 }
 </script>
 
@@ -59,7 +59,7 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .logo-container {
@@ -118,7 +118,7 @@ export default {
 
 .nav-footer {
   padding: 20px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .user-profile {

@@ -1,8 +1,8 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "ServicesComponent"
+  name: 'ServicesComponent',
 })
 </script>
 
@@ -19,21 +19,23 @@ export default defineComponent({
             <div class="feature-img">
               <div class="row">
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-1.jpg" alt="Image">
+                  <img src="../assets/pictures/feature-1.jpg" alt="Image" />
                 </div>
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-2.jpg" alt="Image">
+                  <img src="../assets/pictures/feature-2.jpg" alt="Image" />
                 </div>
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-3.jpg" alt="Image">
+                  <img src="../assets/pictures/feature-3.jpg" alt="Image" />
                 </div>
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-4.jpg" alt="Image">
+                  <img src="../assets/pictures/feature-4.jpg" alt="Image" />
                 </div>
               </div>
             </div>
             <p>
-              Lorem ipsum dolor sit amet consec adipis elit. Phasel nec preti mi. Curabit facilis ornare velit non vulputa. Aliquam metus tortor, auctor id gravida condime, viverra quis sem. Curabit non nisl nec nisi sceleri maximus
+              Lorem ipsum dolor sit amet consec adipis elit. Phasel nec preti mi. Curabit facilis
+              ornare velit non vulputa. Aliquam metus tortor, auctor id gravida condime, viverra
+              quis sem. Curabit non nisl nec nisi sceleri maximus
             </p>
             <a class="btn custom-btn" href="">Időpont foglalás rendezvényre</a>
           </div>
@@ -45,7 +47,8 @@ export default defineComponent({
                 <i class="flaticon-cooking"></i>
                 <h3>A világ legjobb szakácsa</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit non vulput metus tortor
+                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
+                  non vulput metus tortor
                 </p>
               </div>
             </div>
@@ -54,7 +57,8 @@ export default defineComponent({
                 <i class="flaticon-vegetable"></i>
                 <h3>Természetes összetevők</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit non vulput metus tortor
+                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
+                  non vulput metus tortor
                 </p>
               </div>
             </div>
@@ -65,7 +69,8 @@ export default defineComponent({
                 <i class="flaticon-medal"></i>
                 <h3>Legjobb minőségű termékek</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit non vulput metus tortor
+                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
+                  non vulput metus tortor
                 </p>
               </div>
             </div>
@@ -74,7 +79,8 @@ export default defineComponent({
                 <i class="flaticon-meat"></i>
                 <h3>Friss zöldségek és húsok</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit non vulput metus tortor
+                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
+                  non vulput metus tortor
                 </p>
               </div>
             </div>
@@ -85,7 +91,8 @@ export default defineComponent({
                 <i class="flaticon-courier"></i>
                 <h3>Gyors házhozszállítás</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit non vulput metus tortor
+                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
+                  non vulput metus tortor
                 </p>
               </div>
             </div>
@@ -94,7 +101,8 @@ export default defineComponent({
                 <i class="flaticon-fruits-and-vegetables"></i>
                 <h3>Darált marhahús és alacsony zsírtartalom</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit non vulput metus tortor
+                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
+                  non vulput metus tortor
                 </p>
               </div>
             </div>
@@ -130,10 +138,10 @@ export default defineComponent({
 }
 .feature .feature-img img {
   width: 100%;
-  transition: .3s;
+  transition: 0.3s;
 }
 .feature .feature-img img:hover {
-   transform: scale(1.1);
+  transform: scale(1.1);
 }
 .feature .feature-text .btn {
   width: 100%;
@@ -157,7 +165,7 @@ export default defineComponent({
 }
 .feature .feature-item i::after {
   position: absolute;
-  content: "";
+  content: '';
   width: 40px;
   height: 40px;
   top: -10px;

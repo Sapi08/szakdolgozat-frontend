@@ -1,8 +1,8 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "FooterComponent"
+  name: 'FooterComponent',
 })
 </script>
 
@@ -15,7 +15,10 @@ export default defineComponent({
             <div class="col-md-6">
               <div class="footer-contact">
                 <h2>Cím</h2>
-                <p><i class="fa fa-map-marker-alt"></i>6800 Hódmezővásárhely, <br>Rákóczi út 29, Magyarország</p>
+                <p>
+                  <i class="fa fa-map-marker-alt"></i>6800 Hódmezővásárhely, <br />Rákóczi út 29,
+                  Magyarország
+                </p>
                 <p><i class="fa fa-phone-alt"></i>62 123 4567</p>
                 <p><i class="fa fa-envelope"></i>info@pizzahaz.hu</p>
                 <div class="footer-social">
@@ -43,10 +46,11 @@ export default defineComponent({
           <div class="footer-newsletter">
             <h2>Hírlevél</h2>
             <p>
-              Ha szeretne föliratkozni hírlevelünkre írja be e-mail címét és mindig értesítjük legfrissebb akcióinkról és ajánlatainkról.
+              Ha szeretne föliratkozni hírlevelünkre írja be e-mail címét és mindig értesítjük
+              legfrissebb akcióinkról és ajánlatainkról.
             </p>
             <div class="form">
-              <input class="form-control" placeholder="E-mail">
+              <input class="form-control" placeholder="E-mail" />
               <button class="btn custom-btn">Küldés</button>
             </div>
           </div>
@@ -55,8 +59,9 @@ export default defineComponent({
     </div>
     <div class="copyright">
       <div class="container">
-        <p>Copyright &copy; <a href="#">Pizzahaz.hu</a>, Minden Jog Fenntartva.</p><br>
-        <p> Alkotó: <a href="#">Kucsera Milán</a></p>
+        <p>Copyright &copy; <a href="#">Pizzahaz.hu</a>, Minden Jog Fenntartva.</p>
+        <br />
+        <p>Alkotó: <a href="#">Kucsera Milán</a></p>
       </div>
     </div>
   </div>
@@ -67,7 +72,7 @@ export default defineComponent({
   position: relative;
   margin-top: 45px;
   padding-top: 90px;
-  background: rgba(0, 0, 0, .04);
+  background: rgba(0, 0, 0, 0.04);
 }
 .footer .footer-contact,
 .footer .footer-link,
@@ -90,7 +95,7 @@ export default defineComponent({
 .footer .footer-link h2::after,
 .footer .footer-newsletter h2::after {
   position: absolute;
-  content: "";
+  content: '';
   width: 45px;
   height: 2px;
   bottom: 0;
@@ -101,12 +106,12 @@ export default defineComponent({
   display: block;
   margin-bottom: 10px;
   color: #454545;
-  transition: .3s;
+  transition: 0.3s;
 }
 .footer .footer-link a::before {
   position: relative;
-  content: "\f105";
-  font-family: "Font Awesome 5 Free";
+  content: '\f105';
+  font-family: 'Font Awesome 5 Free';
   font-weight: 900;
   margin-right: 10px;
   color: #fbaf32;

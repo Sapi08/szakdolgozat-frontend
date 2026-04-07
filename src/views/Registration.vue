@@ -9,7 +9,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <RegistrationFormComponent/>
+  <RegistrationFormComponent />
 </template>
 
 <style scoped></style>

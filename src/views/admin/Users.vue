@@ -1,17 +1,15 @@
 <script lang="ts">
-import UsersTableComponent from "@/components/admin/UsersTableComponent.vue";
-import {defineComponent} from "vue";
+import UsersTableComponent from '@/components/admin/UsersTableComponent.vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "UsersView",
-  components: {UsersTableComponent}
+  name: 'UsersView',
+  components: { UsersTableComponent },
 })
 </script>
 
 <template>
- <UsersTableComponent/>
+  <UsersTableComponent />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

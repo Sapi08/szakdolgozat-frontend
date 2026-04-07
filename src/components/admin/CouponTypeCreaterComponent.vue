@@ -4,70 +4,70 @@ import { mapStores } from 'pinia'
 import { useCouponStore } from '@/stores/coupon_store.ts'
 
 export default defineComponent({
-  name: "CouponTypeCreaterComponent",
+  name: 'CouponTypeCreaterComponent',
   data() {
     return {
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       imageFile: null as File | null,
-      discountCategory: "",
-      value: "",
+      discountCategory: '',
+      value: '',
       errors: {
-        name: "",
-        discountCategory: "",
-        value: ""
+        name: '',
+        discountCategory: '',
+        value: '',
       },
-      backendError: "",
-      successMessage: "",
+      backendError: '',
+      successMessage: '',
       discountCategories: [
-        { value: "percent", label: "Százalékos kedvezmény" },
-        { value: "fixed", label: "Fix összegű kedvezmény" },
-        { value: "free_item", label: "Egy termék ingyen" },
-        { value: "shipping", label: "Ingyenes szállítás" }
-      ]
+        { value: 'percent', label: 'Százalékos kedvezmény' },
+        { value: 'fixed', label: 'Fix összegű kedvezmény' },
+        { value: 'free_item', label: 'Egy termék ingyen' },
+        { value: 'shipping', label: 'Ingyenes szállítás' },
+      ],
     }
   },
   computed: {
     ...mapStores(useCouponStore),
     isLoading() {
       return this.couponStore.isLoading
-    }
+    },
   },
   methods: {
     clearErrors() {
       this.errors = {
-        name: "",
-        discountCategory: "",
-        value: ""
+        name: '',
+        discountCategory: '',
+        value: '',
       }
-      this.backendError = ""
-      this.successMessage = ""
+      this.backendError = ''
+      this.successMessage = ''
     },
     validateForm(): boolean {
       this.clearErrors()
       let isValid = true
 
       if (this.name.trim().length === 0) {
-        this.errors.name = "Kérjük, adja meg a kupon nevét!"
+        this.errors.name = 'Kérjük, adja meg a kupon nevét!'
         isValid = false
       }
 
       if (this.discountCategory.length === 0) {
-        this.errors.discountCategory = "Kérjük, válasszon kedvezmény kategóriát!"
+        this.errors.discountCategory = 'Kérjük, válasszon kedvezmény kategóriát!'
         isValid = false
       }
 
       if (this.value.length === 0) {
-        this.errors.value = "Kérjük, adja meg az értéket!"
+        this.errors.value = 'Kérjük, adja meg az értéket!'
         isValid = false
       } else {
         const numValue = parseFloat(this.value)
         if (isNaN(numValue) || numValue <= 0) {
-          this.errors.value = "Kérjük, adjon meg egy érvényes pozitív számot!"
+          this.errors.value = 'Kérjük, adjon meg egy érvényes pozitív számot!'
           isValid = false
         }
-        if (this.discountCategory === "percent" && numValue > 100) {
-          this.errors.value = "A százalékos kedvezmény nem lehet több mint 100%!"
+        if (this.discountCategory === 'percent' && numValue > 100) {
+          this.errors.value = 'A százalékos kedvezmény nem lehet több mint 100%!'
           isValid = false
         }
       }
@@ -81,17 +81,17 @@ export default defineComponent({
       }
     },
     resetForm() {
-      this.name = ""
-      this.description = ""
+      this.name = ''
+      this.description = ''
       this.imageFile = null
-      this.discountCategory = ""
-      this.value = ""
+      this.discountCategory = ''
+      this.value = ''
       this.clearErrors()
 
       // Reset file input
       const fileInput = this.$refs.imageInput as HTMLInputElement
       if (fileInput) {
-        fileInput.value = ""
+        fileInput.value = ''
       }
     },
     async createCouponType() {
@@ -114,18 +114,18 @@ export default defineComponent({
       const result = await this.couponStore.createDiscountType(formData)
 
       if (result.success) {
-        this.successMessage = "Kupontípus sikeresen létrehozva!"
-        console.log("Kupontípus létrehozva:", result.data)
+        this.successMessage = 'Kupontípus sikeresen létrehozva!'
+        console.log('Kupontípus létrehozva:', result.data)
 
         // Űrlap resetelése 2 másodperc után
         setTimeout(() => {
           this.resetForm()
         }, 2000)
       } else {
-        this.backendError = result.message || "Hiba történt a kupontípus létrehozásakor"
+        this.backendError = result.message || 'Hiba történt a kupontípus létrehozásakor'
       }
-    }
-  }
+    },
+  },
 })
 </script>
 
@@ -189,7 +189,9 @@ export default defineComponent({
                 {{ category.label }}
               </option>
             </select>
-            <span v-if="errors.discountCategory" class="error-message">{{ errors.discountCategory }}</span>
+            <span v-if="errors.discountCategory" class="error-message">{{
+              errors.discountCategory
+            }}</span>
           </div>
 
           <!-- Value -->
@@ -221,9 +223,7 @@ export default defineComponent({
               accept="image/*"
               class="file-input"
             />
-            <div v-if="imageFile" class="file-preview">
-              Kiválasztott fájl: {{ imageFile.name }}
-            </div>
+            <div v-if="imageFile" class="file-preview">Kiválasztott fájl: {{ imageFile.name }}</div>
           </div>
 
           <!-- Submit Button -->
@@ -257,7 +257,7 @@ export default defineComponent({
 }
 
 .card-header {
-  background: linear-gradient(135deg, #FEA116 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #fea116 0%, #ff6b35 100%);
   padding: 1.5rem;
   text-align: center;
 }
@@ -332,8 +332,8 @@ export default defineComponent({
   font-size: 0.9rem;
 }
 
-.form-group input[type="text"],
-.form-group input[type="number"],
+.form-group input[type='text'],
+.form-group input[type='number'],
 .form-group textarea,
 .form-group select {
   padding: 0.75rem;
@@ -344,12 +344,12 @@ export default defineComponent({
   background-color: #fff;
 }
 
-.form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus,
+.form-group input[type='text']:focus,
+.form-group input[type='number']:focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #FEA116;
+  border-color: #fea116;
   box-shadow: 0 0 0 3px rgba(254, 161, 22, 0.1);
 }
 
@@ -387,7 +387,7 @@ export default defineComponent({
 }
 
 .file-input:hover {
-  border-color: #FEA116;
+  border-color: #fea116;
   background-color: #fff8f0;
 }
 
@@ -418,7 +418,7 @@ export default defineComponent({
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #FEA116 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #fea116 0%, #ff6b35 100%);
   color: #fff;
 }
 

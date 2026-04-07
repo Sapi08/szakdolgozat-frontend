@@ -2,20 +2,12 @@
 import { defineComponent } from 'vue'
 import ProfileComponent from '@/components/ProfileComponent.vue'
 import PageHeader from '@/components/PageHeader.vue'
-import CouponViewerComponent from '@/components/admin/CouponViewerComponent.vue'
-import CouponTypeCreaterComponent from '@/components/admin/CouponTypeCreaterComponent.vue'
-import CouponCreaterComponent from '@/components/admin/CouponCreaterComponent.vue'
-import CouponTypeViewerComponent from '@/components/admin/CouponTypeViewerComponent.vue'
-import ProfileCouponViewerComponent from '@/components/ProfileCouponViewerComponent.vue'
+import UserCouponViewerComponent from '@/components/UserCouponViewerComponent.vue'
 
 export default defineComponent({
   name: 'ProfileView',
   components: {
-    ProfileCouponViewerComponent,
-    CouponTypeViewerComponent,
-    CouponCreaterComponent,
-    CouponTypeCreaterComponent,
-    CouponViewerComponent,
+    UserCouponViewerComponent,
     PageHeader,
     ProfileComponent,
   },
@@ -33,7 +25,7 @@ export default defineComponent({
           <ProfileComponent />
         </div>
         <div class="col-lg-6 col-12">
-          <ProfileCouponViewerComponent />
+          <UserCouponViewerComponent />
         </div>
       </div>
     </div>

@@ -1,19 +1,17 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import PageHeader from "@/components/PageHeader.vue";
-import ContactComponent from "@/components/ContactComponent.vue";
+import { defineComponent } from 'vue'
+import PageHeader from '@/components/PageHeader.vue'
+import ContactComponent from '@/components/ContactComponent.vue'
 
 export default defineComponent({
-  name: "ContactView",
-  components: {ContactComponent, PageHeader}
+  name: 'ContactView',
+  components: { ContactComponent, PageHeader },
 })
 </script>
 
 <template>
-  <PageHeader/>
-  <ContactComponent/>
+  <PageHeader />
+  <ContactComponent />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

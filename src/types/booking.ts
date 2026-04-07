@@ -11,7 +11,6 @@ export interface Booking {
   confirmed: boolean
   seen_by_admin: boolean
   created_at: string
-  rejected?: boolean // lokális státusz az elutasított foglalásokhoz
 }
 
 export interface CreateBookingRequest {

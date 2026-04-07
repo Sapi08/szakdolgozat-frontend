@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
+const route = useRoute()
 
 // Az útvonalnevekhez tartozó címek
 const pageTitle = computed(() => {
   const titles = {
-    about: "Rólunk",
-    services: "Szolgáltatások",
-    menu: "Étlap",
-    contact: "Kapcsolat",
-    event_booking: "Rendezvény",
-    cart: "Kosár",
-    gallery: "Galéria",
-    profile: "Profil",
-  };
-  return titles[route.name] || "Page Not Found";
-});
+    about: 'Rólunk',
+    services: 'Szolgáltatások',
+    menu: 'Étlap',
+    contact: 'Kapcsolat',
+    event_booking: 'Rendezvény',
+    cart: 'Kosár',
+    gallery: 'Galéria',
+    profile: 'Profil',
+  }
+  return titles[route.name] || 'Page Not Found'
+})
 </script>
 
 <template>
@@ -38,7 +38,8 @@ const pageTitle = computed(() => {
   margin-bottom: 45px;
   padding: 150px 0 90px 0;
   text-align: center;
-  background: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url('@/assets/pictures/page-header.jpg');
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('@/assets/pictures/page-header.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -61,7 +62,7 @@ const pageTitle = computed(() => {
 }
 .page-header a::after {
   position: absolute;
-  content: "/";
+  content: '/';
   width: 8px;
   height: 8px;
   top: -1px;
@@ -72,7 +73,6 @@ const pageTitle = computed(() => {
 .page-header a:last-child::after {
   display: none;
 }
-
 
 @media (max-width: 767.98px) {
   .page-header h2 {

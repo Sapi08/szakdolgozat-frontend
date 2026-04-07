@@ -1,6 +1,4 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="menu">
@@ -27,7 +25,7 @@
               <div class="col-lg-7 col-md-12">
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src='@/assets/pictures/menu-burger.jpg' alt="Image">
+                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Mini cheese Burger</span> <strong>$9.00</strong></h3>
@@ -36,7 +34,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Double size burger</span> <strong>$11.00</strong></h3>
@@ -45,7 +43,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Bacon, EGG and Cheese</span> <strong>$13.00</strong></h3>
@@ -54,7 +52,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Pulled porx Burger</span> <strong>$18.00</strong></h3>
@@ -63,7 +61,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-burger.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Fried chicken Burger</span> <strong>$22.00</strong></h3>
@@ -72,7 +70,7 @@
                 </div>
               </div>
               <div class="col-lg-5 d-none d-lg-block">
-                <img src="@/assets/pictures/menu-burger-img.jpg" alt="Image">
+                <img src="@/assets/pictures/menu-burger-img.jpg" alt="Image" />
               </div>
             </div>
           </div>
@@ -81,7 +79,7 @@
               <div class="col-lg-7 col-md-12">
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Corn Tikki - Spicy fried Aloo</span> <strong>$15.00</strong></h3>
@@ -90,7 +88,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Bread besan Toast</span> <strong>$35.00</strong></h3>
@@ -99,7 +97,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Healthy soya nugget snacks</span> <strong>$20.00</strong></h3>
@@ -108,7 +106,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-snack.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Tandoori Soya Chunks</span> <strong>$30.00</strong></h3>
@@ -117,7 +115,7 @@
                 </div>
               </div>
               <div class="col-lg-5 d-none d-lg-block">
-                <img src="@/assets/pictures/menu-snack-img.jpg" alt="Image">
+                <img src="@/assets/pictures/menu-snack-img.jpg" alt="Image" />
               </div>
             </div>
           </div>
@@ -126,7 +124,7 @@
               <div class="col-lg-7 col-md-12">
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Single Cup Brew</span> <strong>$7.00</strong></h3>
@@ -135,7 +133,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Caffe Americano</span> <strong>$9.00</strong></h3>
@@ -144,7 +142,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Caramel Macchiato</span> <strong>$15.00</strong></h3>
@@ -153,7 +151,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Standard black coffee</span> <strong>$8.00</strong></h3>
@@ -162,7 +160,7 @@
                 </div>
                 <div class="menu-item">
                   <div class="menu-img">
-                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image">
+                    <img src="@/assets/pictures/menu-beverage.jpg" alt="Image" />
                   </div>
                   <div class="menu-text">
                     <h3><span>Standard black coffee</span> <strong>$12.00</strong></h3>
@@ -171,7 +169,7 @@
                 </div>
               </div>
               <div class="col-lg-5 d-none d-lg-block">
-                <img src="@/assets/pictures/menu-beverage-img.jpg" alt="Image">
+                <img src="@/assets/pictures/menu-beverage-img.jpg" alt="Image" />
               </div>
             </div>
           </div>
@@ -236,7 +234,7 @@
 }
 .menu .menu-text h3::after {
   position: absolute;
-  content: "";
+  content: '';
   width: 100%;
   height: 0;
   top: 13px;
@@ -263,7 +261,7 @@
   float: left;
   display: block;
 }
-@media(max-width: 575.98px) {
+@media (max-width: 575.98px) {
   .menu .menu-text p,
   .menu .menu-text h3,
   .menu .menu-text h3 span,

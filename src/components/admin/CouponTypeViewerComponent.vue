@@ -2,23 +2,23 @@
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useCouponStore } from '@/stores/coupon_store.ts'
-import type DiscountType from '@/models/discount_type.ts'
+import type { DiscountType } from '@/types/discount-type.ts'
 
 export default defineComponent({
-  name: "CouponTypeViewerComponent",
+  name: 'CouponTypeViewerComponent',
   data() {
     return {
       showDeleteModal: false,
       couponToDelete: null as number | null,
-      couponNameToDelete: "",
-      backendError: "",
-      successMessage: "",
+      couponNameToDelete: '',
+      backendError: '',
+      successMessage: '',
       discountCategories: {
-        percent: "Százalékos kedvezmény",
-        fixed: "Fix összegű kedvezmény",
-        free_item: "Egy termék ingyen",
-        shipping: "Ingyenes szállítás"
-      }
+        percent: 'Százalékos kedvezmény',
+        fixed: 'Fix összegű kedvezmény',
+        free_item: 'Egy termék ingyen',
+        shipping: 'Ingyenes szállítás',
+      },
     }
   },
   computed: {
@@ -28,31 +28,31 @@ export default defineComponent({
     },
     couponTypes() {
       return this.couponStore.couponTypes
-    }
+    },
   },
   async mounted() {
     await this.loadCoupons()
   },
   methods: {
     async loadCoupons() {
-      this.backendError = ""
+      this.backendError = ''
       try {
         await this.couponStore.loadDiscountTypes()
       } catch (error) {
-        this.backendError = "Hiba történt a kupontípusok betöltésekor"
+        this.backendError = 'Hiba történt a kupontípusok betöltésekor'
       }
     },
     openDeleteModal(id: number, name: string) {
       this.couponToDelete = id
       this.couponNameToDelete = name
       this.showDeleteModal = true
-      this.backendError = ""
-      this.successMessage = ""
+      this.backendError = ''
+      this.successMessage = ''
     },
     closeDeleteModal() {
       this.showDeleteModal = false
       this.couponToDelete = null
-      this.couponNameToDelete = ""
+      this.couponNameToDelete = ''
     },
     async confirmDelete() {
       if (this.couponToDelete === null) return
@@ -60,15 +60,15 @@ export default defineComponent({
       const result = await this.couponStore.deleteDiscountType(this.couponToDelete)
 
       if (result.success) {
-        this.successMessage = "Kupontípus sikeresen törölve!"
+        this.successMessage = 'Kupontípus sikeresen törölve!'
         this.closeDeleteModal()
 
         // Success message eltűntetése 3 másodperc után
         setTimeout(() => {
-          this.successMessage = ""
+          this.successMessage = ''
         }, 3000)
       } else {
-        this.backendError = result.message || "Hiba történt a kupontípus törlésekor"
+        this.backendError = result.message || 'Hiba történt a kupontípus törlésekor'
       }
     },
     getCategoryLabel(category: string): string {
@@ -85,8 +85,8 @@ export default defineComponent({
         return 'Ingyen szállítás'
       }
       return coupon.value.toString()
-    }
-  }
+    },
+  },
 })
 </script>
 
@@ -161,9 +161,21 @@ export default defineComponent({
                     class="btn-delete"
                     title="Törlés"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
                       <polyline points="3 6 5 6 21 6"></polyline>
-                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                      <path
+                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                      ></path>
                       <line x1="10" y1="11" x2="10" y2="17"></line>
                       <line x1="14" y1="11" x2="14" y2="17"></line>
                     </svg>
@@ -189,9 +201,7 @@ export default defineComponent({
           <p class="warning-text">Ez a művelet nem visszavonható!</p>
         </div>
         <div class="modal-footer">
-          <button class="btn-cancel" @click="closeDeleteModal">
-            Mégse
-          </button>
+          <button class="btn-cancel" @click="closeDeleteModal">Mégse</button>
           <button class="btn-confirm-delete" @click="confirmDelete" :disabled="isLoading">
             <span v-if="isLoading">Törlés...</span>
             <span v-else>Törlés</span>
@@ -219,7 +229,7 @@ export default defineComponent({
 }
 
 .card-header {
-  background: linear-gradient(135deg, #FEA116 0%, #FF6B35 100%);
+  background: linear-gradient(135deg, #fea116 0%, #ff6b35 100%);
   padding: 1.5rem;
   text-align: center;
 }
@@ -274,7 +284,7 @@ export default defineComponent({
 
 .spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #FEA116;
+  border-top: 4px solid #fea116;
   border-radius: 50%;
   width: 50px;
   height: 50px;
@@ -283,8 +293,12 @@ export default defineComponent({
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-container p {
@@ -376,7 +390,7 @@ export default defineComponent({
 .badge {
   display: inline-block;
   padding: 0.4rem 0.8rem;
-  background-color: #FEA116;
+  background-color: #fea116;
   color: #fff;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -386,7 +400,7 @@ export default defineComponent({
 
 .coupon-value {
   font-weight: 600;
-  color: #FEA116;
+  color: #fea116;
   font-size: 1.1rem;
 }
 

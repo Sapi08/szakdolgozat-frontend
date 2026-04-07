@@ -1,8 +1,8 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "FoodComponent"
+  name: 'FoodComponent',
 })
 </script>
 
@@ -15,8 +15,9 @@ export default defineComponent({
             <i class="flaticon-burger"></i>
             <h2>Hamburgerek</h2>
             <p>
-              🍔🔥Harapj bele az élvezetbe!
-              Kézműves, friss hozzávalókból készítjük el minden egyes falatot: puha, grillezett zsemlét, ínycsiklandó, szaftos húspogácsát, és gazdag feltéteket, amik garantáltan elvarázsolnak.
+              🍔🔥Harapj bele az élvezetbe! Kézműves, friss hozzávalókból készítjük el minden egyes
+              falatot: puha, grillezett zsemlét, ínycsiklandó, szaftos húspogácsát, és gazdag
+              feltéteket, amik garantáltan elvarázsolnak.
             </p>
             <a href="/menu">Étlap</a>
           </div>
@@ -26,7 +27,9 @@ export default defineComponent({
             <i class="flaticon-vegetable"></i>
             <h2>Desszertek</h2>
             <p>
-              🍰🍪Zárd le az étkezést egy igazán finom, házi desszerttel! Frissen készített, krémes, lágy és szaftos édességeink minden falata a gondos munka és szeretet ízét hordozza. Tökéletes választás, ha valami igazán édesre vágysz.
+              🍰🍪Zárd le az étkezést egy igazán finom, házi desszerttel! Frissen készített, krémes,
+              lágy és szaftos édességeink minden falata a gondos munka és szeretet ízét hordozza.
+              Tökéletes választás, ha valami igazán édesre vágysz.
             </p>
             <a href="/menu">Étlap</a>
           </div>
@@ -36,8 +39,9 @@ export default defineComponent({
             <i class="flaticon-cocktail"></i>
             <h2>Italok</h2>
             <p>
-              🥤🍹Kortyolj bele a frissességbe!
-              Legyen az hűsítő limonádé, gyümölcsös smoothie vagy egy tökéletesen elkészített kávé. Minden korty tele van ízekkel és energiával, hogy feldobja a napod. Válaszd a minőséget, válaszd az élményt!”
+              🥤🍹Kortyolj bele a frissességbe! Legyen az hűsítő limonádé, gyümölcsös smoothie vagy
+              egy tökéletesen elkészített kávé. Minden korty tele van ízekkel és energiával, hogy
+              feldobja a napod. Válaszd a minőséget, válaszd az élményt!”
             </p>
             <a href="/menu">Étlap</a>
           </div>
@@ -53,7 +57,7 @@ export default defineComponent({
   width: 100%;
   padding: 90px 0 60px 0;
   margin: 45px 0;
-  background: rgba(0, 0, 0, .04);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .food .food-item {
@@ -64,8 +68,8 @@ export default defineComponent({
   text-align: center;
   background: #ffffff;
   border-radius: 15px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, .08);
-  transition: .3s;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
 }
 
 .food .food-item:hover {
@@ -79,7 +83,7 @@ export default defineComponent({
   font-size: 60px;
   line-height: 60px;
   margin-bottom: 20px;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .food .food-item:hover i {
@@ -88,7 +92,7 @@ export default defineComponent({
 
 .food .food-item i::after {
   position: absolute;
-  content: "";
+  content: '';
   width: calc(100% + 20px);
   height: calc(100% + 20px);
   top: -20px;
@@ -97,7 +101,7 @@ export default defineComponent({
   border-right: transparent;
   border-bottom: transparent;
   border-radius: 100px;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .food .food-item:hover i::after {
@@ -118,13 +122,13 @@ export default defineComponent({
 
 .food .food-item a::after {
   position: absolute;
-  content: "";
+  content: '';
   width: 50px;
   height: 1px;
   bottom: 0;
   left: calc(50% - 25px);
   background: #fbaf32;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .food .food-item a:hover::after {

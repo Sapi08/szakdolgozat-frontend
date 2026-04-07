@@ -29,12 +29,13 @@ export default {
 <template>
   <div class="capacity-card">
     <div class="card-header">
-      <h3 class="card-title">{{title}}</h3>
+      <h3 class="card-title">{{ title }}</h3>
       <span class="update-badge">
-        <i class="update-icon">{{icon}}</i> {{updatedText}}</span>
+        <i class="update-icon">{{ icon }}</i> {{ updatedText }}</span
+      >
     </div>
     <div class="card-content">
-      <p class="capacity-value">{{value}}</p>
+      <p class="capacity-value">{{ value }}</p>
     </div>
   </div>
 </template>

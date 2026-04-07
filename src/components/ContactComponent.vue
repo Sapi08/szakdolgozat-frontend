@@ -1,72 +1,71 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { mapStores } from "pinia";
-import { useContactStore } from "@/stores/contact_store.ts";
+import { mapStores } from 'pinia'
+import { useContactStore } from '@/stores/contact_store.ts'
 import ToastComponent from '@/components/ToastComponent.vue'
 
 export default defineComponent({
-  name: "ContactComponent",
+  name: 'ContactComponent',
   components: { ToastComponent },
   data() {
     return {
       form: {
-        name: "",
-        email: "",
-        subject: "",
-        message: ""
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
       },
       loading: false,
       toast: {
         show: false,
-        message: "",
-        type: "success" as "success" | "error"
-      }
+        message: '',
+        type: 'success' as 'success' | 'error',
+      },
     }
   },
   computed: {
-    ...mapStores(useContactStore)
+    ...mapStores(useContactStore),
   },
   methods: {
-    showToast(message: string, type: "success" | "error" = "success") {
-      this.toast.show = false;
+    showToast(message: string, type: 'success' | 'error' = 'success') {
+      this.toast.show = false
       setTimeout(() => {
-        this.toast = { show: true, message, type };
-      }, 10);
+        this.toast = { show: true, message, type }
+      }, 10)
     },
 
     async submitForm() {
       if (!this.form.name || !this.form.email || !this.form.message) {
-        this.showToast('Kérlek, töltsd ki az összes kötelező mezőt!', 'error');
-        return;
+        this.showToast('Kérlek, töltsd ki az összes kötelező mezőt!', 'error')
+        return
       }
 
-      this.loading = true;
+      this.loading = true
       try {
         // KÖZVETLENÜL a form adatait küldjük - NINCS contactMessage változó!
         await this.contactStore.sendContact(
           this.form.name,
           this.form.email,
           this.form.subject,
-          this.form.message
-        );
+          this.form.message,
+        )
 
-        this.showToast('Üzenetét sikeresen elküldtük!', 'success');
+        this.showToast('Üzenetét sikeresen elküldtük!', 'success')
 
         // Form reset
-        this.form.name = "";
-        this.form.email = "";
-        this.form.subject = "";
-        this.form.message = "";
-
+        this.form.name = ''
+        this.form.email = ''
+        this.form.subject = ''
+        this.form.message = ''
       } catch (error) {
-        console.error('Hiba:', error);
-        this.showToast('Hálózati hiba történt, próbálja újra!', 'error');
+        console.error('Hiba:', error)
+        this.showToast('Hálózati hiba történt, próbálja újra!', 'error')
       } finally {
-        this.loading = false;
+        this.loading = false
       }
-    }
-  }
-});
+    },
+  },
+})
 </script>
 
 <template>

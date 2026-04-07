@@ -1,17 +1,15 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import DishesTableComponent from "@/components/admin/DishesTableComponent.vue";
+import { defineComponent } from 'vue'
+import DishesTableComponent from '@/components/admin/DishesTableComponent.vue'
 
 export default defineComponent({
-  name: "DishesView",
-  components: {DishesTableComponent}
+  name: 'DishesView',
+  components: { DishesTableComponent },
 })
 </script>
 
 <template>
-  <DishesTableComponent/>
+  <DishesTableComponent />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

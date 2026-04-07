@@ -1,17 +1,15 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
-import ContactsTableComponent from '@/components/admin/ContactsTableComponent.vue';
+import { defineComponent } from 'vue'
+import ContactsTableComponent from '@/components/admin/ContactsTableComponent.vue'
 
 export default defineComponent({
-  name: "ContactsView",
-  components: {ContactsTableComponent}
+  name: 'ContactsView',
+  components: { ContactsTableComponent },
 })
 </script>
 
 <template>
-  <ContactsTableComponent/>
+  <ContactsTableComponent />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

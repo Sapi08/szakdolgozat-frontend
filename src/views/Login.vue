@@ -1,18 +1,15 @@
 <script lang="ts">
-
-import { defineComponent } from 'vue';
-import LoginFormComponent from "@/components/LoginFormComponent.vue";
+import { defineComponent } from 'vue'
+import LoginFormComponent from '@/components/LoginFormComponent.vue'
 
 export default defineComponent({
-  name: "LoginView",
-  components: { LoginFormComponent }
+  name: 'LoginView',
+  components: { LoginFormComponent },
 })
 </script>
 
 <template>
-  <LoginFormComponent/>
+  <LoginFormComponent />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

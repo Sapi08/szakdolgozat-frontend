@@ -152,7 +152,8 @@ export default {
 }
 
 .calendar {
-  flex: 1;min-width: 400px;
+  flex: 1;
+  min-width: 400px;
 }
 
 .form {
@@ -173,7 +174,9 @@ label {
   font-weight: 500;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -207,6 +210,7 @@ button:disabled {
 
 @media (max-width: 768px) {
   .container {
-    flex-direction: column;}
+    flex-direction: column;
+  }
 }
 </style>

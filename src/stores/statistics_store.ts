@@ -30,7 +30,7 @@ export const useStatisticsStore = defineStore('statistics', {
     return {
       statistics: null as Statistics | null,
       loading: false,
-      error: null as string | null
+      error: null as string | null,
     }
   },
   getters: {
@@ -38,10 +38,11 @@ export const useStatisticsStore = defineStore('statistics', {
     ordersCount: (state) => state.statistics?.orders ?? 0,
     dailyOrdersCount: (state) => state.statistics?.dailyOrders ?? 0,
     todayStats: (state) => state.statistics?.today ?? { count: 0, total_revenue: 0, pending: 0 },
-    weekStats: (state) => state.statistics?.week ?? { count: 0, total_revenue: 0, avg_order_value: 0 },
+    weekStats: (state) =>
+      state.statistics?.week ?? { count: 0, total_revenue: 0, avg_order_value: 0 },
     monthStats: (state) => state.statistics?.month ?? { count: 0, total_revenue: 0, completed: 0 },
     pendingCount: (state) => state.statistics?.pending_count ?? 0,
-    statusBreakdown: (state) => state.statistics?.status_breakdown ?? {}
+    statusBreakdown: (state) => state.statistics?.status_breakdown ?? {},
   },
   actions: {
     async fetchStatistics() {
@@ -77,6 +78,6 @@ export const useStatisticsStore = defineStore('statistics', {
       } finally {
         this.loading = false
       }
-    }
-  }
+    },
+  },
 })

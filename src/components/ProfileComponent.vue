@@ -3,17 +3,17 @@ import { defineComponent, onMounted, computed } from 'vue'
 import { useUserStore } from '@/stores/user_store.ts'
 
 interface UserDetails {
-  email: string;
-  name: string;
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
-  birth_date?: string;
-  points?: number;
+  email: string
+  name: string
+  first_name?: string
+  last_name?: string
+  phone?: string
+  birth_date?: string
+  points?: number
 }
 
 export default defineComponent({
-  name: "ProfileComponent",
+  name: 'ProfileComponent',
   setup() {
     const userStore = useUserStore()
 
@@ -24,9 +24,9 @@ export default defineComponent({
     })
 
     return {
-      user
+      user,
     }
-  }
+  },
 })
 </script>
 
@@ -35,7 +35,9 @@ export default defineComponent({
     <div class="profile-container" v-if="user">
       <div class="profile-header">
         <div class="profile-avatar">
-          <span class="avatar-text">{{ user.first_name?.charAt(0) }}{{ user.last_name?.charAt(0) }}</span>
+          <span class="avatar-text"
+            >{{ user.first_name?.charAt(0) }}{{ user.last_name?.charAt(0) }}</span
+          >
         </div>
         <h2 class="profile-title">Profil adatok</h2>
       </div>
@@ -44,7 +46,6 @@ export default defineComponent({
         <div class="profile-section">
           <h3 class="section-title">Személyes adatok</h3>
           <div class="info-grid">
-
             <div class="info-item">
               <span class="info-icon">👤</span>
               <div class="info-details">
@@ -320,18 +321,31 @@ export default defineComponent({
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 @keyframes rotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {

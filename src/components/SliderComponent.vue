@@ -29,11 +29,11 @@ const slides = [
           <a class="btn custom-btn" href="">Foglalás</a>
         </div>
       </div>
-    `
+    `,
   },
   {
     image: new URL('@/assets/pictures/carousel-2.webp', import.meta.url).href,
-    text:`
+    text: `
       <div class="carousel-text">
         <h1 class="title">Hazánk <span>legjobb </span> szakácsai</h1>
         <p>
@@ -45,7 +45,7 @@ const slides = [
           <a class="btn custom-btn" href="">Foglalás</a>
         </div>
       </div>
-    `
+    `,
   },
   {
     image: new URL('@/assets/pictures/carousel-3.webp', import.meta.url).href,
@@ -61,9 +61,9 @@ const slides = [
             <a class="btn custom-btn" href="">Foglalás</a>
           </div>
         </div>
-    `
-  }
-];
+    `,
+  },
+]
 </script>
 <template>
   <div class="slider">
@@ -107,4 +107,3 @@ const slides = [
   text-align: center;
 }
 </style>
-

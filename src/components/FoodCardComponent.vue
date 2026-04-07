@@ -4,14 +4,14 @@ import { mapStores } from 'pinia'
 import { useDishStore } from '@/stores/dish_store.ts'
 import { useCartStore } from '@/stores/cart_store.ts'
 import { useDishVariantStore } from '@/stores/dish_variant_store.ts'
-import Dish from '@/models/dish.ts'
-import type DishVariant from '@/models/dish_variant.ts'
+import type { Dish } from '@/types/dish.ts'
+import type { DishVariant } from '@/types/dish-variant.ts'
 import DishVariantSelectorComponent from './DishVariantSelectorComponent.vue'
 
 export default defineComponent({
-  name: "DishesCards",
+  name: 'DishesCards',
   components: {
-    DishVariantSelector: DishVariantSelectorComponent
+    DishVariantSelector: DishVariantSelectorComponent,
   },
   data() {
     return {
@@ -19,196 +19,171 @@ export default defineComponent({
       dishes: [] as Dish[],
       showVariantModal: false,
       selectedDish: null as Dish | null,
-      dishVariants: [] as DishVariant[]
+      dishVariants: [] as DishVariant[],
     }
   },
   methods: {
     prettyAllergies(arr: string[]) {
-      return arr.map(el => el.trim()).join(", ");
-    },
-    hasVariants(dish: Dish): boolean {
-      return dish.price === null || dish.price === 0;
+      return arr.map((el) => el.trim()).join(', ')
     },
     async handleAddToCart(dish: Dish) {
-      if (this.hasVariants(dish)) {
-        // Load variants and show modal
+      // Ha van variáns, a modal-t nyitjuk meg
+      if (dish.has_variants) {
+        this.selectedDish = dish
         try {
-          this.dishVariants = await this.dishVariantStore.loadVariantsByDishId(dish.id);
-
-          if (this.dishVariants.length > 0) {
-            this.selectedDish = dish;
-            this.showVariantModal = true;
-          } else {
-            // No variants found, add as is
-            this.cartStore.addToCart(dish);
-          }
+          this.dishVariants = this.dishVariantStore.getVariantsByDishId(dish.id)
+          this.showVariantModal = true
         } catch (error) {
-          console.error('Error loading variants:', error);
-          this.cartStore.addToCart(dish);
+          console.error('Hiba a variánsok betöltésekor:', error)
         }
       } else {
-        // Direct add to cart
-        this.cartStore.addToCart(dish);
+        // Ha nincs variáns, simán kosárba tesszük
+        this.cartStore.addToCart(dish) // <-- A második paraméter (variant) undefined
       }
     },
+
+    // --- MÓDOSÍTÁS: handleVariantSelect ---
     handleVariantSelect(variant: DishVariant) {
       try {
         if (this.selectedDish) {
-          // Create a new Dish instance with variant data
-          const dishWithVariant = new Dish(
-            this.selectedDish.id * 10000 + variant.id, // Unique ID for variant
-            `${this.selectedDish.name} (${variant.detail})`,
-            this.selectedDish.description,
-            Number(variant.price), // Convert to number
-            this.selectedDish.category,
-            this.selectedDish.allergies || [],
-            this.selectedDish.image
-          );
-          this.cartStore.addToCart(dishWithVariant);
+          // Az új addToCart metódust hívjuk a dish-sel ÉS a variant-tal
+          this.cartStore.addToCart(this.selectedDish, variant)
         }
       } catch (error) {
-        console.error('Error in handleVariantSelect:', error);
+        console.error('Hiba a variáns kiválasztásakor:', error)
       } finally {
-        this.closeVariantModal();
+        this.closeVariantModal()
       }
     },
+
     closeVariantModal() {
-      this.showVariantModal = false;
+      this.showVariantModal = false
       // Use setTimeout to ensure DOM updates complete before clearing state
       setTimeout(() => {
-        this.selectedDish = null;
-        this.dishVariants = [];
-      }, 300); // Match modal transition duration
+        this.selectedDish = null
+        this.dishVariants = []
+      }, 300) // Match modal transition duration
     },
     scrollToCategory(category: string) {
-      const element = document.getElementById(`category-${category}`);
+      const element = document.getElementById(`category-${category}`)
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
-    }
+    },
   },
   computed: {
     ...mapStores(useDishStore, useCartStore, useDishVariantStore),
     dishesByCategory(): Record<string, Dish[]> {
-      const grouped: Record<string, Dish[]> = {};
+      const grouped: Record<string, Dish[]> = {}
       this.dishes.forEach((dish: Dish) => {
         if (!grouped[dish.category]) {
-          grouped[dish.category] = [];
+          grouped[dish.category] = []
         }
-        grouped[dish.category].push(dish);
-      });
-      return grouped;
+        grouped[dish.category].push(dish)
+      })
+      return grouped
     },
     categories(): string[] {
-      const cats = this.dishesByCategory as Record<string, Dish[]>;
-      return Object.keys(cats).sort();
-    }
+      const cats = this.dishesByCategory as Record<string, Dish[]>
+      return Object.keys(cats).sort()
+    },
   },
   async created() {
-    this.loading = true;
+    this.loading = true
     try {
-      const loadedDishes = await this.dishStore.loadDishes();
-      this.dishes = loadedDishes as Dish[];
-      await this.dishVariantStore.loadVariants();
+      const loadedDishes = await this.dishStore.loadDishes()
+      this.dishes = loadedDishes as Dish[]
+      await this.dishVariantStore.loadVariants()
     } finally {
-      this.loading = false;
+      this.loading = false
     }
-  }
+  },
 })
 </script>
 
 <template>
-<div class="food-menu-container">
-  <!-- Kategória navigáció -->
-  <div class="category-navigation" v-if="!loading && categories.length > 0">
-    <div class="category-nav-wrapper">
-      <button
+  <div class="food-menu-container">
+    <!-- Kategória navigáció -->
+    <div class="category-navigation" v-if="!loading && categories.length > 0">
+      <div class="category-nav-wrapper">
+        <button
+          v-for="category in categories"
+          :key="category"
+          @click="scrollToCategory(category)"
+          class="category-nav-btn"
+        >
+          {{ category }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading állapot -->
+    <div v-if="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Ételek betöltése...</p>
+    </div>
+
+    <!-- Ételek kategóriák szerint -->
+    <template v-else>
+      <div
         v-for="category in categories"
         :key="category"
-        @click="scrollToCategory(category)"
-        class="category-nav-btn"
+        :id="`category-${category}`"
+        class="category-section"
       >
-        {{ category }}
-      </button>
-    </div>
-  </div>
+        <div class="category-header">
+          <h2 class="category-title">{{ category }}</h2>
+          <div class="category-divider"></div>
+        </div>
 
-  <!-- Loading állapot -->
-  <div v-if="loading" class="loading-container">
-    <div class="spinner"></div>
-    <p>Ételek betöltése...</p>
-  </div>
-
-  <!-- Ételek kategóriák szerint -->
-  <template v-else>
-    <div
-      v-for="category in categories"
-      :key="category"
-      :id="`category-${category}`"
-      class="category-section"
-    >
-      <div class="category-header">
-        <h2 class="category-title">{{ category }}</h2>
-        <div class="category-divider"></div>
-      </div>
-
-      <div class="dishes-grid">
-        <div
-          v-for="dish in dishesByCategory[category]"
-          :key="dish.id"
-          class="dish-card"
-        >
-          <!-- Kép szekció (opcionális) -->
-          <div v-if="dish.image" class="dish-image-wrapper">
-            <img
-              :src="dish.image"
-              :alt="dish.name"
-              class="dish-image"
-              loading="lazy"
-            />
-          </div>
-
-          <div class="dish-card-content">
-            <div class="dish-card-header">
-              <h3 class="dish-name">{{ dish.name }}</h3>
-              <span v-if="!hasVariants(dish)" class="dish-price">{{ dish.price }} Ft</span>
-              <span v-else class="dish-price-variants">
-                <i class="fas fa-list-ul"></i> Több kiszerelés
-              </span>
+        <div class="dishes-grid">
+          <div v-for="dish in dishesByCategory[category]" :key="dish.id" class="dish-card">
+            <!-- Kép szekció (opcionális) -->
+            <div v-if="dish.image" class="dish-image-wrapper">
+              <img :src="dish.image" :alt="dish.name" class="dish-image" loading="lazy" />
             </div>
 
-            <div class="dish-content">
-              <div v-if="dish.allergies && dish.allergies.length > 0" class="dish-allergies">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span>{{ prettyAllergies(dish.allergies) }}</span>
+            <div class="dish-card-content">
+              <div class="dish-card-header">
+                <h3 class="dish-name">{{ dish.name }}</h3>
+                <span v-if="!dish.has_variants" class="dish-price">{{ dish.price }} Ft</span>
+                <span v-else class="dish-price-variants">
+                  <i class="fas fa-list-ul"></i> Több kiszerelés
+                </span>
               </div>
-              <p v-if="dish.description" class="dish-description">
-                {{ dish.description }}
-              </p>
-            </div>
 
-            <div class="dish-footer">
-              <button class="btn custom-btn add-to-cart-btn" @click="handleAddToCart(dish)">
-                <i class="fas fa-shopping-cart"></i>
-                {{ hasVariants(dish) ? 'Kiszerelés választása' : 'Kosárba' }}
-              </button>
+              <div class="dish-content">
+                <div v-if="dish.allergies && dish.allergies.length > 0" class="dish-allergies">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  <span>{{ prettyAllergies(dish.allergies) }}</span>
+                </div>
+                <p v-if="dish.description" class="dish-description">
+                  {{ dish.description }}
+                </p>
+              </div>
+
+              <div class="dish-footer">
+                <button class="btn custom-btn add-to-cart-btn" @click="handleAddToCart(dish)">
+                  <i class="fas fa-shopping-cart"></i>
+                  {{ dish.has_variants ? 'Kiszerelés választása' : 'Kosárba' }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Variant Selector Modal -->
-    <DishVariantSelector
-      v-if="selectedDish && showVariantModal"
-      :show="showVariantModal"
-      :dish="selectedDish"
-      :variants="dishVariants"
-      @close="closeVariantModal"
-      @select="handleVariantSelect"
-    />
-  </template>
-</div>
+      <!-- Variant Selector Modal -->
+      <DishVariantSelector
+        v-if="selectedDish && showVariantModal"
+        :show="showVariantModal"
+        :dish="selectedDish"
+        :variants="dishVariants"
+        @close="closeVariantModal"
+        @select="handleVariantSelect"
+      />
+    </template>
+  </div>
 </template>
 
 <style scoped>
@@ -276,8 +251,12 @@ export default defineComponent({
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Kategória szekciók */
@@ -286,7 +265,7 @@ export default defineComponent({
   scroll-margin-top: 180px;
 }
 
-.category-section h2{
+.category-section h2 {
   text-transform: uppercase;
 }
 

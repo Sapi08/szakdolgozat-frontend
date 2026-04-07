@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import api from '@/config/axios'
-import type { Order, OrderCreateRequest } from '@/models/order'
-import { OrderModel } from '@/models/order'
+import type { Order, OrderCreateRequest } from '@/types/order'
+import { OrderModel } from '@/types/order'
 
 export const useOrderStore = defineStore('order', {
   state: () => ({
@@ -12,14 +12,14 @@ export const useOrderStore = defineStore('order', {
   }),
 
   getters: {
-    pendingOrders: (state) => state.orders.filter(order => order.status === 'pending'),
-    acceptedOrders: (state) => state.orders.filter(order => order.status === 'accepted'),
-    preparingOrders: (state) => state.orders.filter(order => order.status === 'preparing'),
-    readyOrders: (state) => state.orders.filter(order => order.status === 'ready'),
-    inDeliveryOrders: (state) => state.orders.filter(order => order.status === 'in_delivery'),
-    deliveredOrders: (state) => state.orders.filter(order => order.status === 'delivered'),
-    completedOrders: (state) => state.orders.filter(order => order.status === 'completed'),
-    canceledOrders: (state) => state.orders.filter(order => order.status === 'canceled'),
+    pendingOrders: (state) => state.orders.filter((order) => order.status === 'pending'),
+    acceptedOrders: (state) => state.orders.filter((order) => order.status === 'accepted'),
+    preparingOrders: (state) => state.orders.filter((order) => order.status === 'preparing'),
+    readyOrders: (state) => state.orders.filter((order) => order.status === 'ready'),
+    inDeliveryOrders: (state) => state.orders.filter((order) => order.status === 'in_delivery'),
+    deliveredOrders: (state) => state.orders.filter((order) => order.status === 'delivered'),
+    completedOrders: (state) => state.orders.filter((order) => order.status === 'completed'),
+    canceledOrders: (state) => state.orders.filter((order) => order.status === 'canceled'),
   },
 
   actions: {
@@ -70,7 +70,7 @@ export const useOrderStore = defineStore('order', {
         this.currentOrder = newOrder
         return { success: true, order: newOrder }
       } catch (err) {
-        const error = err as { response?: { data?: any, status?: number } }
+        const error = err as { response?: { data?: any; status?: number } }
         console.error('❌ Create order error - Full error:', err)
         console.error('❌ Error response:', error.response)
         console.error('❌ Error response data:', error.response?.data)
@@ -107,12 +107,12 @@ export const useOrderStore = defineStore('order', {
       try {
         const response = await api.post(`/api/admin/orders/${orderId}/status/`, {
           status,
-          admin_note: adminNote
+          admin_note: adminNote,
         })
         const updatedOrder = new OrderModel(response.data)
 
         // Frissítjük a listában
-        const index = this.orders.findIndex(o => o.id === orderId)
+        const index = this.orders.findIndex((o) => o.id === orderId)
         if (index !== -1) {
           this.orders[index] = updatedOrder
         }
@@ -138,8 +138,10 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        await api.post(`/api/admin/orders/${orderId}/cancel/`, { reason: reason || 'Admin által törölve' })
-        this.orders = this.orders.filter(o => o.id !== orderId)
+        await api.post(`/api/admin/orders/${orderId}/cancel/`, {
+          reason: reason || 'Admin által törölve',
+        })
+        this.orders = this.orders.filter((o) => o.id !== orderId)
         if (this.currentOrder && this.currentOrder.id === orderId) {
           this.currentOrder = null
         }
@@ -162,7 +164,7 @@ export const useOrderStore = defineStore('order', {
         const response = await api.post(`/api/admin/orders/${orderId}/accept/`)
         const updatedOrder = new OrderModel(response.data)
 
-        const index = this.orders.findIndex(o => o.id === orderId)
+        const index = this.orders.findIndex((o) => o.id === orderId)
         if (index !== -1) {
           this.orders[index] = updatedOrder
         }
@@ -200,7 +202,7 @@ export const useOrderStore = defineStore('order', {
         return {
           success: true,
           count: response.data.pending_count,
-          hasNew: response.data.has_new_orders
+          hasNew: response.data.has_new_orders,
         }
       } catch (err) {
         console.error('Get pending count error:', err)
@@ -229,11 +231,10 @@ export const useOrderStore = defineStore('order', {
     playNotificationSound() {
       try {
         const audio = new Audio('/src/assets/sounds/mixkit-software-interface-start-2574.wav')
-        audio.play().catch(err => console.error('Error playing sound:', err))
+        audio.play().catch((err) => console.error('Error playing sound:', err))
       } catch (err) {
         console.error('Error creating audio:', err)
       }
     },
   },
 })
-

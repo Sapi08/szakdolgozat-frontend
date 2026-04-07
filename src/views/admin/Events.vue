@@ -3,15 +3,13 @@ import { defineComponent } from 'vue'
 import AdminEventBookingComponent from '@/components/admin/AdminEventBookingComponent.vue'
 
 export default defineComponent({
-  name: "EventsView",
-  components: { AdminEventBookingComponent }
+  name: 'EventsView',
+  components: { AdminEventBookingComponent },
 })
 </script>
 
 <template>
-  <AdminEventBookingComponent/>
+  <AdminEventBookingComponent />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,45 +1,45 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import type Dish from '@/models/dish.ts'
-import type DishVariant from '@/models/dish_variant.ts'
+import type Dish from '@/types/dish.ts'
+import type DishVariant from '@/types/dish_variant.ts'
 
 export default defineComponent({
-  name: "DishVariantSelector",
+  name: 'DishVariantSelector',
   props: {
     dish: {
       type: Object as () => Dish,
-      required: true
+      required: true,
     },
     variants: {
       type: Array as () => DishVariant[],
-      required: true
+      required: true,
     },
     show: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
   emits: ['close', 'select'],
   data() {
     return {
-      selectedVariant: null as DishVariant | null
+      selectedVariant: null as DishVariant | null,
     }
   },
   methods: {
     selectVariant(variant: DishVariant) {
-      this.selectedVariant = variant;
+      this.selectedVariant = variant
     },
     confirmSelection() {
       if (this.selectedVariant) {
-        this.$emit('select', this.selectedVariant);
-        this.close();
+        this.$emit('select', this.selectedVariant)
+        this.close()
       }
     },
     close() {
-      this.selectedVariant = null;
-      this.$emit('close');
-    }
-  }
+      this.selectedVariant = null
+      this.$emit('close')
+    },
+  },
 })
 </script>
 
@@ -61,7 +61,7 @@ export default defineComponent({
             <div
               v-for="variant in variants"
               :key="variant.id"
-              :class="['variant-card', { 'selected': selectedVariant?.id === variant.id }]"
+              :class="['variant-card', { selected: selectedVariant?.id === variant.id }]"
               @click="selectVariant(variant)"
             >
               <div class="variant-detail">{{ variant.detail }}</div>
@@ -74,14 +74,8 @@ export default defineComponent({
         </div>
 
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="close">
-            Mégse
-          </button>
-          <button
-            class="btn custom-btn"
-            @click="confirmSelection"
-            :disabled="!selectedVariant"
-          >
+          <button class="btn btn-secondary" @click="close">Mégse</button>
+          <button class="btn custom-btn" @click="confirmSelection" :disabled="!selectedVariant">
             <i class="fas fa-shopping-cart"></i>
             Kosárba
           </button>
@@ -326,4 +320,3 @@ export default defineComponent({
   }
 }
 </style>
-
