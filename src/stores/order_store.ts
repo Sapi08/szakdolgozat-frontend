@@ -29,7 +29,8 @@ export const useOrderStore = defineStore('order', {
       this.error = null
       try {
         const response = await api.get('/api/admin/orders/')
-        this.orders = response.data.map((order: Order) => new OrderModel(order))
+        const results = Array.isArray(response.data) ? response.data : (response.data?.orders || response.data?.results || response.data?.data || [])
+        this.orders = results.map((order: Order) => new OrderModel(order))
         return { success: true }
       } catch (err) {
         this.error = (err as Error).message || 'Hiba történt a rendelések lekérése során'
@@ -109,7 +110,7 @@ export const useOrderStore = defineStore('order', {
           status,
           admin_note: adminNote,
         })
-        const updatedOrder = new OrderModel(response.data)
+        const updatedOrder = new OrderModel(response.data.order || response.data)
 
         // Frissítjük a listában
         const index = this.orders.findIndex((o) => o.id === orderId)
@@ -162,7 +163,7 @@ export const useOrderStore = defineStore('order', {
       this.error = null
       try {
         const response = await api.post(`/api/admin/orders/${orderId}/accept/`)
-        const updatedOrder = new OrderModel(response.data)
+        const updatedOrder = new OrderModel(response.data.order || response.data)
 
         const index = this.orders.findIndex((o) => o.id === orderId)
         if (index !== -1) {
@@ -216,7 +217,8 @@ export const useOrderStore = defineStore('order', {
       this.error = null
       try {
         const response = await api.get('/api/orders/my-orders/')
-        this.orders = response.data.map((order: Order) => new OrderModel(order))
+        const results = Array.isArray(response.data) ? response.data : (response.data?.orders || response.data?.results || response.data?.data || [])
+        this.orders = results.map((order: Order) => new OrderModel(order))
         return { success: true }
       } catch (err) {
         this.error = (err as Error).message || 'Hiba történt a rendelések lekérése során'

@@ -13,6 +13,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
     pendingBookings: (state) => state.bookings.filter((b) => !b.confirmed),
     unseenCount: (state) => state.bookings.filter((b) => !b.seen_by_admin).length,
     confirmedBookings: (state) => state.bookings.filter((b) => b.confirmed),
+    unhandledCount: (state) => state.bookings.filter((b) => b.confirmed === null).length,
   },
 
   actions: {
@@ -40,11 +41,11 @@ export const useAdminBookingStore = defineStore('admin_booking', {
       }
     },
 
-    async confirmBooking(id: number, confirmed: boolean) {
+    async changeBookingStatus(id: number, confirmed: boolean) {
       this.loading = true
       this.error = null
       try {
-        await api.patch(`/api/bookings/${id}/confirm/`, { confirmed })
+        await api.patch(`/api/bookings/${id}/change-status/`, { confirmed })
         const booking = this.bookings.find((b) => b.id === id)
         if (booking) {
           booking.confirmed = confirmed

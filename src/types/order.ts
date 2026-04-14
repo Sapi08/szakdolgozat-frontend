@@ -112,4 +112,32 @@ export class OrderModel implements Order {
     this.admin_note = data.admin_note
     this.items = data.items
   }
+
+  getStatusLabel(): string {
+    const labels: Record<string, string> = {
+      pending: 'Függőben',
+      accepted: 'Elfogadva',
+      preparing: 'Készítés alatt',
+      ready: 'Kész',
+      in_delivery: 'Szállítás alatt',
+      delivered: 'Kiszállítva',
+      completed: 'Lezárva',
+      canceled: 'Törölve',
+    }
+    return labels[this.status] || this.status
+  }
+
+  getStatusColor(): string {
+    const colors: Record<string, string> = {
+      pending: '#ffc107',
+      accepted: '#17a2b8',
+      preparing: '#fd7e14',
+      ready: '#28a745',
+      in_delivery: '#9c27b0',
+      delivered: '#607d8b',
+      completed: '#4caf50',
+      canceled: '#dc3545',
+    }
+    return colors[this.status] || '#6c757d'
+  }
 }

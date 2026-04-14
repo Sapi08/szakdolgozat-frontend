@@ -22,7 +22,7 @@ export default {
   methods: {
     async handleConfirm(id: number) {
       if (confirm('Biztosan elfogadod ezt a foglalást?')) {
-        const result = await this.bookingStore.confirmBooking(id, true)
+        const result = await this.bookingStore.changeBookingStatus(id, true)
         if (result.success) {
           alert('Foglalás elfogadva!')
         } else {
@@ -32,7 +32,7 @@ export default {
     },
     async handleReject(id: number) {
       if (confirm('Biztosan elutasítod ezt a foglalást?')) {
-        const result = await this.bookingStore.confirmBooking(id, false)
+        const result = await this.bookingStore.changeBookingStatus(id, false)
         if (result.success) {
           alert('Foglalás elutasítva!')
         } else {

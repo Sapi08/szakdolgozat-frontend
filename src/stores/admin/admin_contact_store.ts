@@ -10,6 +10,12 @@ export const useAdminContactStore = defineStore('admin_contact', {
     error: null as string | null,
   }),
 
+  getters: {
+    unseenCount: (state) => {
+      return state.contacts.filter(msg => !msg.seen_by_admin).length
+    }
+  },
+
   actions: {
     async loadContacts() {
       this.loading = true
@@ -30,6 +36,17 @@ export const useAdminContactStore = defineStore('admin_contact', {
         this.loading = false
       }
     },
+
+    async markAsSeen(id: number) {
+      try {
+        await api.patch(`/contacts/${id}/mark-seen/`)
+        const contact = this.contacts.find((c) => c.id === id)
+        if (contact) contact.seen_by_admin = true
+        return { success: true }
+      } catch (err) {
+        console.error('Mark as seen error:', err)
+        return { success: false }
+      }
+    },
   },
 })
-

@@ -3,13 +3,24 @@ import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useAdminContactStore } from '@/stores/admin/admin_contact_store'
 import type { ContactMessage } from '@/types/contact'
+import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
 
 export default defineComponent({
   name: 'ContactsTable',
+  components: {
+    EditableTableComponent,
+  },
   data() {
     return {
       loading: false,
       contacts: [] as ContactMessage[],
+      columns: [
+        { key: 'id', label: 'ID', editable: false },
+        { key: 'name', label: 'Név', editable: false },
+        { key: 'email', label: 'Email', editable: false },
+        { key: 'subject', label: 'Tárgy', editable: false, cellStyle: 'min-width: 650px; max-width: 250px; white-space: normal; word-wrap: break-word;' },
+        { key: 'message', label: 'Üzenet', editable: false, cellStyle: 'min-width: 200px; max-width: 400px; white-space: normal; word-wrap: break-word;' },
+      ] as TableColumn[],
     }
   },
   computed: {
@@ -26,40 +37,43 @@ export default defineComponent({
       this.loading = false
     }
   },
+  methods: {
+    handleSave(item: any) {
+      console.log('Mentés:', item)
+      // Todo: ha a store-ban is benne lesz a funkció
+    },
+    handleDelete(id: number) {
+      console.log('Törlés:', id)
+      // Todo: ha a store-ban is benne lesz a funkció
+    },
+    handleRowClick(item: any) {
+      if (item.id && !item.seen_by_admin) {
+        this.admin_contactStore.markAsSeen(item.id)
+      }
+    },
+    checkIfUnseen(item: any) {
+      return !item.seen_by_admin
+    }
+  },
 })
 </script>
 
 <template>
-  <div>
-    <template v-if="loading"> Loading.... </template>
-    <template v-else>
-      <table class="min-w-full border border-gray-300">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="border px-4 py-2">ID</th>
-            <th class="border px-4 py-2">Name</th>
-            <th class="border px-4 py-2">Email</th>
-            <th class="border px-4 py-2">Subject</th>
-            <th class="border px-4 py-2">Message</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="contact in contacts" :key="contact.id">
-            <td class="border px-4 py-2">{{ contact.id }}</td>
-            <td class="border px-4 py-2">{{ contact.name }}</td>
-            <td class="border px-4 py-2">{{ contact.email }}</td>
-            <td class="border px-4 py-2">{{ contact.subject }}</td>
-            <td class="border px-4 py-2">{{ contact.message }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </template>
+  <div class="table-wrapper">
+    <EditableTableComponent
+      :items="contacts"
+      :columns="columns"
+      :loading="loading"
+      :unseenFn="checkIfUnseen"
+      @save="handleSave"
+      @delete="handleDelete"
+      @row-click="handleRowClick"
+    />
   </div>
 </template>
 
 <style scoped>
-table {
-  border-collapse: collapse;
+.table-wrapper {
   margin-left: 300px;
 }
 </style>

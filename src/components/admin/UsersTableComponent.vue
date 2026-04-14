@@ -3,22 +3,52 @@ import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useUserStore } from '@/stores/user_store.ts'
 import moment from 'moment'
+import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
 
 export default defineComponent({
   name: 'UsersTable',
+  components: { EditableTableComponent },
   data() {
     return {
       loading: false,
-      users: [],
+      users: [] as any[],
+      columns: [
+        { key: 'id', label: 'ID', editable: false },
+        { key: 'last_name', label: 'Vezetéknév', editable: true },
+        { key: 'first_name', label: 'Keresztnév', editable: true },
+        { key: 'email', label: 'Email cím', editable: true },
+        { key: 'last_login', label: 'Utolsó bejelentkezés', editable: false, format: (date: string) => moment(String(date)).format('YYYY.MM.DD hh:mm') },
+        { key: 'phone', label: 'Telefon', editable: true },
+      ] as TableColumn[],
     }
   },
   computed: {
     ...mapStores(useUserStore),
   },
   methods: {
-    formatDate(date: string) {
-      return moment(String(date)).format('YYYY.MM.DD hh:mm')
+    async handleSave(updatedUser: any) {
+      try {
+        await this.userStore.updateUser(updatedUser.id, updatedUser)
+        const index = this.users.findIndex(u => u.id === updatedUser.id)
+        if (index !== -1) {
+          this.users[index] = updatedUser
+        }
+        alert('Felhasználó sikeresen mentve')
+      } catch (err) {
+        console.error(err)
+        alert('Hiba történt a mentés során!')
+      }
     },
+    async handleDelete(id: number) {
+      try {
+        await this.userStore.deleteUser(id)
+        this.users = this.users.filter(u => u.id !== id)
+        alert('Felhasználó sikeresen törölve')
+      } catch (err) {
+        console.error(err)
+        alert('Hiba történt a törlés során!')
+      }
+    }
   },
   async created() {
     this.loading = true
@@ -32,38 +62,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <template v-if="loading"> Loading.... </template>
-    <template v-else>
-      <table class="min-w-full border border-gray-300">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="border px-4 py-2">ID</th>
-            <th class="border px-4 py-2">Vezetéknév</th>
-            <th class="border px-4 py-2">Keresztnév</th>
-            <th class="border px-4 py-2">Email cím</th>
-            <th class="border px-4 py-2">Utolsó bejelentkezés</th>
-            <th class="border px-4 py-2">Telefon</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="user in users" :key="user.id">
-            <td class="border px-4 py-2">{{ user.id }}</td>
-            <td class="border px-4 py-2">{{ user.last_name }}</td>
-            <td class="border px-4 py-2">{{ user.first_name }}</td>
-            <td class="border px-4 py-2">{{ user.email }}</td>
-            <td class="border px-4 py-2">{{ formatDate(user.last_login) }}</td>
-            <td class="border px-4 py-2">{{ user.phone }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </template>
+  <div class="table-container">
+    <EditableTableComponent
+      :loading="loading"
+      :items="users"
+      :columns="columns"
+      @save="handleSave"
+      @delete="handleDelete"
+    />
   </div>
 </template>
 
 <style scoped>
-table {
-  border-collapse: collapse;
+.table-container {
   margin-left: 300px;
 }
 </style>

@@ -39,49 +39,10 @@ export default defineComponent({
   },
   async mounted() {
     await this.loadOrders()
-    this.lastOrderCount = this.orderStore.orders.length
-
-    // Auto-refresh beállítása (30 másodpercenként)
-    if (this.autoRefresh) {
-      this.startAutoRefresh()
-    }
-  },
-  beforeUnmount() {
-    this.stopAutoRefresh()
   },
   methods: {
     async loadOrders() {
       await this.orderStore.fetchOrders()
-      this.checkForNewOrders()
-    },
-    checkForNewOrders() {
-      const currentCount = this.orderStore.orders.length
-      if (currentCount > this.lastOrderCount) {
-        // Új rendelés érkezett
-        this.orderStore.playNotificationSound()
-        this.showNotification('Új rendelés érkezett!', 'success')
-      }
-      this.lastOrderCount = currentCount
-    },
-    startAutoRefresh() {
-      this.refreshInterval = window.setInterval(() => {
-        if (this.autoRefresh) {
-          this.loadOrders()
-        }
-      }, 30000) // 30 másodperc
-    },
-    stopAutoRefresh() {
-      if (this.refreshInterval) {
-        clearInterval(this.refreshInterval)
-      }
-    },
-    toggleAutoRefresh() {
-      this.autoRefresh = !this.autoRefresh
-      if (this.autoRefresh) {
-        this.startAutoRefresh()
-      } else {
-        this.stopAutoRefresh()
-      }
     },
     viewOrderDetails(order: OrderModel) {
       this.selectedOrder = order
@@ -140,8 +101,10 @@ export default defineComponent({
         minute: '2-digit',
       })
     },
-    formatPrice(price: number) {
-      return price.toFixed(0) + ' Ft'
+    formatPrice(price: number | string) {
+      const numPrice = typeof price === 'string' ? parseFloat(price) : price
+      if (isNaN(numPrice)) return '0 Ft'
+      return numPrice.toFixed(0) + ' Ft'
     },
     getStatusIcon(status: OrderModel['status']) {
       const icons: Record<OrderModel['status'], string> = {

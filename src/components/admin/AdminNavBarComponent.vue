@@ -1,3 +1,31 @@
+<script lang="ts">
+import { useAdminBookingStore } from '@/stores/admin/admin_booking_store'
+import { useAdminContactStore } from '@/stores/admin/admin_contact_store'
+
+export default {
+  name: 'SideNavbar',
+  data() {
+    return {
+      bookingStore: useAdminBookingStore(),
+      contactStore: useAdminContactStore(),
+      navItems: [
+        { name: 'Statisztikák', path: '/admin', icon: 'fas fa-chart-line' },
+        { name: 'Rendelések', path: '/admin/orders', icon: 'fas fa-shopping-cart' },
+        { name: 'Felhasználók', path: '/admin/users', icon: 'fas fa-users' },
+        { name: 'Ételek', path: '/admin/dishes', icon: 'fas fa-utensils' },
+        { name: 'Üzenetek', path: '/admin/contacts', icon: 'fas fa-utensils' },
+        { name: 'Kuponok', path: '/admin/coupons', icon: 'fas fa-receipt' },
+        { name: 'Rendezvények', path: '/admin/events', icon: 'fas fa-calendar' },
+      ],
+    }
+  },
+  mounted() {
+    this.bookingStore.fetchBookings()
+    this.contactStore.loadContacts()
+  }
+}
+</script>
+
 <template>
   <div class="side-navbar">
     <div class="logo-container">
@@ -12,41 +40,40 @@
               <i :class="item.icon"></i>
             </span>
             <span class="nav-text">{{ item.name }}</span>
+            <span
+              v-if="item.name === 'Rendezvények' && bookingStore.unhandledCount > 0"
+              class="badge badge-unhandled"
+            >
+              <i class="fas fa-exclamation-circle" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ bookingStore.unhandledCount }}
+            </span>
+            <span
+              v-if="item.name === 'Rendezvények' && bookingStore.unseenCount > 0"
+              class="badge badge-unseen"
+              style="margin-left: 4px;"
+            >
+              <i class="fas fa-bell" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ bookingStore.unseenCount }}
+            </span>
+            <span
+              v-if="item.name === 'Üzenetek' && contactStore.unseenCount > 0"
+              class="badge badge-unseen"
+            >
+              <i class="fas fa-envelope" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ contactStore.unseenCount }}
+            </span>
           </router-link>
         </li>
       </ul>
     </nav>
 
     <div class="nav-footer">
-      <p class="user-profile">TURAL LIST</p>
+      <p class="user-profile">INFO</p>
       <ul class="footer-menu">
-        <li>TYPOGRAPHY</li>
-        <li>ICONS</li>
-        <li>MAP</li>
-        <li>NOTIFICATIONS</li>
+        <li><a href="/" style="color: black">---- PUBLIKUS OLDAL ----</a></li>
       </ul>
+      <br>
+      <p>Segítég: +36301231234</p>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  name: 'SideNavbar',
-  data() {
-    return {
-      navItems: [
-        { name: 'Statisztikák', path: '/admin', icon: 'fas fa-chart-line' },
-        { name: 'Rendelések', path: '/admin/orders', icon: 'fas fa-shopping-cart' },
-        { name: 'Felhasználók', path: '/admin/users', icon: 'fas fa-users' },
-        { name: 'Ételek', path: '/admin/dishes', icon: 'fas fa-utensils' },
-        { name: 'Üzenetek', path: '/admin/contacts', icon: 'fas fa-utensils' },
-        { name: 'Kuponok', path: '/admin/coupons', icon: 'fas fa-receipt' },
-        { name: 'Rendezvények', path: '/admin/events', icon: 'fas fa-calendar' },
-      ],
-    }
-  },
-}
-</script>
 
 <style scoped>
 .side-navbar {
@@ -137,5 +164,28 @@ export default {
 
 .footer-menu li {
   padding: 5px;
+}
+
+.badge {
+  color: white;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  /* A margin-left: auto tolja ki a jobb szélre a flex konténeren belül */
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 22px;
+}
+
+.badge-unhandled {
+  background-color: #0085dd;
+}
+
+.badge-unseen {
+  background-color: #dc3545;
 }
 </style>
