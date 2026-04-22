@@ -17,7 +17,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        const response = await api.get('/api/discount_types/')
+        const response = await api.get('/admin/discount_types/')
         this.couponTypes = response.data as DiscountType[]
         return response.data
       } catch (err) {
@@ -35,7 +35,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        const response = await api.post('/api/create_discount_type/', formData, {
+        const response = await api.post('/admin/discount_type/create/', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -80,7 +80,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        await api.delete(`/api/delete_discount_type/${id}/`)
+        await api.delete(`/admin/discount_type/${id}/delete/`)
 
         // Töröljük a listából
         this.couponTypes = this.couponTypes.filter((ct) => ct.id !== id)
@@ -97,7 +97,7 @@ export const useCouponStore = defineStore('coupon', {
 
     async getDiscountTypeById(id: number) {
       try {
-        const response = await api.get(`/api/discount_type/${id}/`)
+        const response = await api.get(`/discount_type/${id}/`)
         return response.data as DiscountType
       } catch (err) {
         console.error('Kupontípus lekérdezési hiba:', err)
@@ -110,7 +110,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        const response = await api.get('/api/coupons/')
+        const response = await api.get('/admin/coupons/')
 
         // ÁTALAKÍTÁS: Ha a backend discount_type objektumot küld, alakítsuk át
         const transformedCoupons = response.data.map((coupon: unknown) => {
@@ -148,7 +148,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        const response = await api.post('/api/coupon_create/', couponData)
+        const response = await api.post('/admin/coupons/create/', couponData)
         this.coupons.push(response.data)
         return { success: true, data: response.data }
       } catch (err) {
@@ -184,7 +184,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        await api.delete(`/api/coupon_delete/${id}/`)
+        await api.delete(`/api/coupons/${id}/delete/`)
         this.coupons = this.coupons.filter((c) => c.id !== id)
         return { success: true }
       } catch (err) {
@@ -195,13 +195,13 @@ export const useCouponStore = defineStore('coupon', {
       }
     },
 
-    // coupon_store.ts - loadMyCoupons() action hozzáadása a loadCoupons() után
+    //TODO coupon_store.ts - loadMyCoupons() action hozzáadása a loadCoupons() után
 
     async loadUserCoupons() {
       this.isLoading = true
       this.error = null
       try {
-        const response = await api.get('/api/user_coupons/')
+        const response = await api.get('/user_coupons/')
 
         const transformedCoupons = response.data.map((coupon: unknown) => {
           const couponObj = coupon as Record<string, unknown>
@@ -229,7 +229,7 @@ export const useCouponStore = defineStore('coupon', {
 
     async scratchCoupon(code: string) {
       try {
-        await api.patch(`/api/coupons/${code}/`, {
+        await api.patch(`/coupons/set_scratched/${code}/`, {
           is_scratched: true,
         })
         const coupon = this.coupons.find((c) => c.code === code)
@@ -238,6 +238,24 @@ export const useCouponStore = defineStore('coupon', {
       } catch (err) {
         console.error('Kaparás mentési hiba:', err)
         return { success: false }
+      }
+    },
+
+    async validateCoupon(code: string, cartTotal: number) {
+      this.isLoading = true
+      this.error = null
+      try {
+        const response = await api.post('/coupons/validate/', {
+          code: code,
+          cart_total: cartTotal
+        })
+        return { success: true, data: response.data }
+      } catch (err: any) {
+        const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Hiba történt a kupon érvényesítésekor.'
+        this.error = errorMsg
+        return { success: false, message: errorMsg }
+      } finally {
+        this.isLoading = false
       }
     },
   },

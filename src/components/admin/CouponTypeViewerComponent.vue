@@ -16,7 +16,6 @@ export default defineComponent({
       discountCategories: {
         percent: 'Százalékos kedvezmény',
         fixed: 'Fix összegű kedvezmény',
-        free_item: 'Egy termék ingyen',
         shipping: 'Ingyenes szállítás',
       },
     }
@@ -79,8 +78,6 @@ export default defineComponent({
         return `${coupon.value}%`
       } else if (coupon.discount_category === 'fixed') {
         return `${coupon.value} Ft`
-      } else if (coupon.discount_category === 'free_item') {
-        return 'Ingyen termék'
       } else if (coupon.discount_category === 'shipping') {
         return 'Ingyen szállítás'
       }

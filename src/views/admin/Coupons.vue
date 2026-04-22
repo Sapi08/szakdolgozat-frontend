@@ -18,24 +18,24 @@ export default defineComponent({
 
 <template>
   <div class="coupons-page">
-    <div class="container-fluid">
-      <h1 class="page-title">Kuponok Kezelése</h1>
+    <div class="container-fluid mt-5">
+      <h1 class="page-title">Kupon Típusok Kezelése</h1>
       <div class="row g-3">
         <div class="col-lg-5 col-12">
           <CouponTypeCreaterComponent />
         </div>
-        <div class="col-lg-6 col-12">
+        <div class="col-lg-7 col-12">
           <CouponTypeViewerComponent />
         </div>
       </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
       <h1 class="page-title">Kuponok Kezelése</h1>
       <div class="row g-3">
         <div class="col-lg-5 col-12">
           <CouponCreaterComponent />
         </div>
-        <div class="col-lg-6 col-12">
+        <div class="col-lg-7 col-12">
           <CouponViewerComponent />
         </div>
       </div>
@@ -45,7 +45,7 @@ export default defineComponent({
 
 <style scoped>
 .coupons-page {
-  padding: 2rem 3rem;
+  padding-left: 5rem;
   background-color: #f5f5f5;
   min-height: 100vh;
 }
@@ -61,14 +61,6 @@ export default defineComponent({
   color: #333;
   margin-bottom: 2rem;
   font-weight: 700;
-}
-
-.row {
-  gap: 1.5rem;
-}
-
-.col-lg-6 {
-  padding: 0 0.75rem;
 }
 
 @media (max-width: 768px) {

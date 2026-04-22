@@ -7,4 +7,5 @@ export interface Dish {
   allergies: string[]
   image?: string
   has_variants: boolean
+  available: boolean
 }

@@ -22,7 +22,6 @@ export default defineComponent({
       discountCategories: [
         { value: 'percent', label: 'Százalékos kedvezmény' },
         { value: 'fixed', label: 'Fix összegű kedvezmény' },
-        { value: 'free_item', label: 'Egy termék ingyen' },
         { value: 'shipping', label: 'Ingyenes szállítás' },
       ],
     }

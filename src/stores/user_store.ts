@@ -132,13 +132,13 @@ export const useUserStore = defineStore('user', {
     },
 
     async loadUsers() {
-      const res = await api.get('/users/')
+      const res = await api.get('/admin/users/')
       this.users = res.data as User[]
       return res.data
     },
 
     async updateUser(userId: number, data: Partial<User>) {
-      const res = await api.put(`/users/${userId}/edit`, data)
+      const res = await api.put(`/admin/users/${userId}/edit`, data)
       const index = this.users.findIndex(u => u.id === userId)
       if (index !== -1) {
         this.users[index] = { ...this.users[index], ...res.data }
@@ -147,7 +147,7 @@ export const useUserStore = defineStore('user', {
     },
 
     async deleteUser(userId: number) {
-      await api.delete(`/users/${userId}/delete`)
+      await api.delete(`/admin/users/${userId}/delete`)
       this.users = this.users.filter(u => u.id !== userId)
     },
 

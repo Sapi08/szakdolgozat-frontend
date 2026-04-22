@@ -29,7 +29,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
           params.seen = filters.seen.toString()
         }
 
-        const response = await api.get('/api/bookings/', { params })
+        const response = await api.get('/admin/bookings/', { params })
         this.bookings = response.data
         return { success: true }
       } catch (err: any) {
@@ -45,7 +45,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
       this.loading = true
       this.error = null
       try {
-        await api.patch(`/api/bookings/${id}/change-status/`, { confirmed })
+        await api.patch(`/admin/bookings/${id}/change-status/`, { confirmed })
         const booking = this.bookings.find((b) => b.id === id)
         if (booking) {
           booking.confirmed = confirmed
@@ -62,7 +62,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
 
     async markAsSeen(id: number) {
       try {
-        await api.patch(`/api/bookings/${id}/mark-seen/`)
+        await api.patch(`/admin/bookings/${id}/mark-seen/`)
         const booking = this.bookings.find((b) => b.id === id)
         if (booking) booking.seen_by_admin = true
         return { success: true }

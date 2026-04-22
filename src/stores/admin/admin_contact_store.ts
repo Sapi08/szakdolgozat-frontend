@@ -21,7 +21,7 @@ export const useAdminContactStore = defineStore('admin_contact', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get('/contacts')
+        const response = await api.get('/admin/contacts')
         this.contacts = response.data as ContactMessage[]
         return { success: true, data: this.contacts }
       } catch (err) {
@@ -39,7 +39,7 @@ export const useAdminContactStore = defineStore('admin_contact', {
 
     async markAsSeen(id: number) {
       try {
-        await api.patch(`/contacts/${id}/mark-seen/`)
+        await api.patch(`/admin/contacts/${id}/mark-seen/`)
         const contact = this.contacts.find((c) => c.id === id)
         if (contact) contact.seen_by_admin = true
         return { success: true }

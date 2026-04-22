@@ -13,7 +13,7 @@ export const useBookingStore = defineStore('booking', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.post('/api/create_bookings/', booking)
+        const response = await api.post('/create_bookings/', booking)
         return { success: true, data: response.data }
       } catch (err: any) {
         this.error = err.response?.data?.error || 'Nem sikerült elküldeni a foglalást'

@@ -7,6 +7,8 @@ export default {
   data() {
     return {
       bookingStore: useAdminBookingStore(),
+      selectedBooking: null as Booking | null,
+      showModal: false,
       eventTypeLabels: {
         wedding: 'Esküvő',
         birthday_party: 'Születésnapi buli',
@@ -42,6 +44,15 @@ export default {
     },
     viewBooking(id: number) {
       this.bookingStore.markAsSeen(id)
+    },
+    openModal(booking: Booking) {
+      this.selectedBooking = booking
+      this.showModal = true
+      this.viewBooking(booking.id)
+    },
+    closeModal() {
+      this.showModal = false
+      this.selectedBooking = null
     },
     formatDate(dateStr: string) {
       return new Date(dateStr).toLocaleDateString('hu-HU')
@@ -94,6 +105,7 @@ export default {
             :key="booking.id"
             :class="{ unseen: !booking.seen_by_admin }"
             @click="viewBooking(booking.id)"
+            @dblclick="openModal(booking)"
           >
             <td>{{ booking.name }}</td>
             <td>{{ formatDate(booking.date) }}</td>
@@ -127,6 +139,38 @@ export default {
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Modal -->
+    <div v-if="showModal && selectedBooking" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <button class="close-modal-btn" @click="closeModal">&times;</button>
+        <h3>Foglalás részletei</h3>
+
+        <div class="modal-body">
+          <p><strong>Név:</strong> {{ selectedBooking.name }}</p>
+          <p><strong>Dátum:</strong> {{ formatDate(selectedBooking.date) }}</p>
+          <p><strong>Időpont:</strong> {{ selectedBooking.time }}</p>
+          <p><strong>Rendezvény típusa:</strong> {{ getEventTypeLabel(selectedBooking.type_of_event) }}</p>
+          <p><strong>Email:</strong> {{ selectedBooking.email }}</p>
+          <p><strong>Telefon:</strong> {{ selectedBooking.phone }}</p>
+          <p><strong>Létszám:</strong> {{ selectedBooking.number_of_people }} fő</p>
+          <p><strong>Státusz:</strong>
+            <span :class="['status-badge', getStatusClass(selectedBooking)]">
+              {{ getStatusText(selectedBooking) }}
+            </span>
+          </p>
+          <div class="modal-comment">
+            <strong>Megjegyzés:</strong>
+            <p>{{ selectedBooking.comment || 'Nincs megjegyzés' }}</p>
+          </div>
+        </div>
+
+        <div class="modal-actions" v-if="!selectedBooking.confirmed">
+          <button @click="handleConfirm(selectedBooking.id); closeModal()" class="btn-accept">Elfogad</button>
+          <button @click="handleReject(selectedBooking.id); closeModal()" class="btn-reject">Elutasít</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -254,5 +298,71 @@ tr:hover {
 
 .btn-reject:hover {
   opacity: 0.9;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+.close-modal-btn:hover {
+  color: #000;
+}
+
+.modal-body {
+  margin-top: 1.5rem;
+}
+
+.modal-body p {
+  margin-bottom: 0.5rem;
+}
+
+.modal-comment {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.modal-comment p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.modal-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
 }
 </style>

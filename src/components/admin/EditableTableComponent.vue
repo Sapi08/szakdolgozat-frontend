@@ -92,27 +92,31 @@ export default defineComponent({
               <template v-if="editingId === item.id">
                 <td v-for="col in columns" :key="col.key" :class="col.cellClass" :style="col.cellStyle">
                   <template v-if="col.editable">
-                    <input
-                      v-if="col.type === 'number'"
-                      v-model.number="editForm[col.key]"
-                      type="number"
-                      class="border p-1 w-full"
-                    />
-                    <input
-                      v-else-if="col.type === 'array'"
-                      :value="(editForm[col.key] || []).join(', ')"
-                      @input="handleArrayInput($event, col.key)"
-                      class="border p-1 w-full"
-                    />
-                    <input
-                      v-else
-                      v-model="editForm[col.key]"
-                      type="text"
-                      class="border p-1 w-full"
-                    />
+                    <slot :name="`edit-${col.key}`" :editForm="editForm" :col="col">
+                      <input
+                        v-if="col.type === 'number'"
+                        v-model.number="editForm[col.key]"
+                        type="number"
+                        class="border p-1 w-full"
+                      />
+                      <input
+                        v-else-if="col.type === 'array'"
+                        :value="(editForm[col.key] || []).join(', ')"
+                        @input="handleArrayInput($event, col.key)"
+                        class="border p-1 w-full"
+                      />
+                      <input
+                        v-else
+                        v-model="editForm[col.key]"
+                        type="text"
+                        class="border p-1 w-full"
+                      />
+                    </slot>
                   </template>
                   <template v-else>
-                    <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
+                    <slot :name="`cell-${col.key}`" :item="item" :col="col">
+                      <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
+                    </slot>
                   </template>
                 </td>
                 <td class="actions">
@@ -129,7 +133,9 @@ export default defineComponent({
               </template>
               <template v-else>
                 <td v-for="col in columns" :key="col.key" :class="col.cellClass" :style="col.cellStyle">
-                  <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
+                  <slot :name="`cell-${col.key}`" :item="item" :col="col">
+                    <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
+                  </slot>
                 </td>
                 <td class="actions">
                   <button @click.stop="startEdit(item)" class="bg-blue-500 text-black px-2 py-1 rounded">Szerkesztés</button>

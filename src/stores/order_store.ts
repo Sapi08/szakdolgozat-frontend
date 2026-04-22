@@ -28,7 +28,7 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get('/api/admin/orders/')
+        const response = await api.get('/admin/orders/')
         const results = Array.isArray(response.data) ? response.data : (response.data?.orders || response.data?.results || response.data?.data || [])
         this.orders = results.map((order: Order) => new OrderModel(order))
         return { success: true }
@@ -46,7 +46,7 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get(`/api/orders/${orderId}/`)
+        const response = await api.get(`/orders/${orderId}/`)
         this.currentOrder = new OrderModel(response.data)
         return { success: true, order: this.currentOrder }
       } catch (err) {
@@ -64,7 +64,7 @@ export const useOrderStore = defineStore('order', {
       this.error = null
       try {
         console.log('📤 Sending order data:', orderData)
-        const response = await api.post('/api/orders/create/', orderData)
+        const response = await api.post('/orders/create/', orderData)
         console.log('✅ Order response:', response.data)
         const newOrder = new OrderModel(response.data)
         this.orders.unshift(newOrder)
@@ -106,7 +106,7 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.post(`/api/admin/orders/${orderId}/status/`, {
+        const response = await api.post(`/admin/orders/${orderId}/status/`, {
           status,
           admin_note: adminNote,
         })
@@ -139,7 +139,7 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        await api.post(`/api/admin/orders/${orderId}/cancel/`, {
+        await api.post(`/admin/orders/${orderId}/cancel/`, {
           reason: reason || 'Admin által törölve',
         })
         this.orders = this.orders.filter((o) => o.id !== orderId)
@@ -162,7 +162,7 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.post(`/api/admin/orders/${orderId}/accept/`)
+        const response = await api.post(`/admin/orders/${orderId}/accept/`)
         const updatedOrder = new OrderModel(response.data.order || response.data)
 
         const index = this.orders.findIndex((o) => o.id === orderId)
@@ -188,7 +188,7 @@ export const useOrderStore = defineStore('order', {
     // Rendelés megtekintettnek jelölése (admin)
     async markOrderViewed(orderId: number) {
       try {
-        await api.post(`/api/admin/orders/${orderId}/view/`)
+        await api.post(`/admin/orders/${orderId}/view/`)
         return { success: true }
       } catch (err) {
         console.error('Mark order viewed error:', err)
@@ -199,7 +199,7 @@ export const useOrderStore = defineStore('order', {
     // Függőben lévő rendelések száma (admin)
     async getPendingOrdersCount() {
       try {
-        const response = await api.get('/api/admin/orders/pending-count/')
+        const response = await api.get('/admin/orders/pending-count/')
         return {
           success: true,
           count: response.data.pending_count,
@@ -216,7 +216,7 @@ export const useOrderStore = defineStore('order', {
       this.loading = true
       this.error = null
       try {
-        const response = await api.get('/api/orders/my-orders/')
+        const response = await api.get('/orders/my-orders/')
         const results = Array.isArray(response.data) ? response.data : (response.data?.orders || response.data?.results || response.data?.data || [])
         this.orders = results.map((order: Order) => new OrderModel(order))
         return { success: true }

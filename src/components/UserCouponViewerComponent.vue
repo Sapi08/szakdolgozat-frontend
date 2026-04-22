@@ -17,7 +17,6 @@ export default defineComponent({
       discountCategories: {
         percent: 'Százalékos',
         fixed: 'Fix összeg',
-        free_item: 'Ingyen termék',
         shipping: 'Ingyen szállítás',
       },
     }
@@ -67,7 +66,6 @@ export default defineComponent({
       if (!value) return '-'
       if (category === 'percent') return `${value}%`
       if (category === 'fixed') return `${value} Ft`
-      if (category === 'free_item') return 'Ingyen termék'
       if (category === 'shipping') return 'Ingyen szállítás'
       return value.toString()
     },

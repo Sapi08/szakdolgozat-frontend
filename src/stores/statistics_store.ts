@@ -50,7 +50,7 @@ export const useStatisticsStore = defineStore('statistics', {
       this.error = null
 
       try {
-        const res = await api.get('api/statistics/')
+        const res = await api.get('admin/statistics/')
         this.statistics = res.data.statistics as Statistics
         return { success: true }
       } catch (err) {

@@ -160,10 +160,18 @@ export default defineComponent({
                 <p v-if="dish.description" class="dish-description">
                   {{ dish.description }}
                 </p>
+                <div v-if="dish.available === false" class="dish-unavailable-badge">
+                  <i class="fas fa-times-circle"></i> Jelenleg nem elérhető!
+                </div>
               </div>
 
               <div class="dish-footer">
-                <button class="btn custom-btn add-to-cart-btn" @click="handleAddToCart(dish)">
+                <button
+                  class="btn custom-btn add-to-cart-btn"
+                  :class="{ 'disabled-btn': dish.available === false }"
+                  :disabled="dish.available === false"
+                  @click="handleAddToCart(dish)"
+                >
                   <i class="fas fa-shopping-cart"></i>
                   {{ dish.has_variants ? 'Kiszerelés választása' : 'Kosárba' }}
                 </button>
@@ -413,6 +421,23 @@ export default defineComponent({
   font-size: 16px;
 }
 
+.dish-unavailable-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+  padding: 8px 12px;
+  background-color: #ffebee;
+  color: #d32f2f;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.dish-unavailable-badge i {
+  font-size: 16px;
+}
+
 .dish-footer {
   display: flex;
   justify-content: flex-end;
@@ -429,6 +454,20 @@ export default defineComponent({
 
 .add-to-cart-btn i {
   font-size: 16px;
+}
+
+.disabled-btn {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.disabled-btn:hover {
+  background: #ccc !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* Reszponzív dizájn */
