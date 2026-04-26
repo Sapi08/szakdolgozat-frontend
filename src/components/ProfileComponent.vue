@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onMounted, computed } from 'vue'
+import { defineComponent, onMounted, computed, ref } from 'vue'
 import { useUserStore } from '@/stores/user_store.ts'
 
 interface UserDetails {
@@ -19,12 +19,102 @@ export default defineComponent({
 
     const user = computed(() => userStore.user as UserDetails | null)
 
+    const showModal = ref(false)
+    const activeTab = ref('profile')
+
+    const editProfileForm = ref({
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      birth_date: ''
+    })
+
+    const passwordForm = ref({
+      oldPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    })
+
+    const openEditModal = () => {
+      if (user.value) {
+        editProfileForm.value = {
+          first_name: user.value.first_name || '',
+          last_name: user.value.last_name || '',
+          email: user.value.email || '',
+          phone: user.value.phone || '',
+          birth_date: user.value.birth_date || ''
+        }
+      }
+      activeTab.value = 'profile'
+      passwordForm.value = { oldPassword: '', newPassword: '', confirmPassword: '' }
+      showModal.value = true
+    }
+
+    const closeEditModal = () => {
+      showModal.value = false
+    }
+
+    const validatePhone = (phone: string) => {
+      if (!phone) return true // Optional
+      const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+      return phoneRegex.test(phone)
+    }
+
+    const saveProfile = async () => {
+      if (!editProfileForm.value.email.includes('@')) {
+        alert('Helytelen email formátum!')
+        return
+      }
+      if (editProfileForm.value.phone && !validatePhone(editProfileForm.value.phone)) {
+        alert('Helytelen telefonszám formátum!')
+        return
+      }
+
+      const res = await userStore.updateProfile(editProfileForm.value)
+      if (res?.success) {
+        alert(res.message)
+        closeEditModal()
+      } else if (res) {
+        alert(res.message)
+      }
+    }
+
+    const savePassword = async () => {
+      if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+        alert('Új jelszavak nem egyeznek!')
+        return
+      }
+      if (passwordForm.value.newPassword.length < 6) {
+        alert('Az új jelszónak legalább 6 karakter hosszúnak kell lennie!')
+        return
+      }
+      const res = await userStore.changePassword(
+        passwordForm.value.oldPassword,
+        passwordForm.value.newPassword
+      )
+      if (res?.success) {
+        alert(res.message)
+        closeEditModal()
+      } else if (res) {
+        alert(res.message)
+      }
+    }
+
     onMounted(async () => {
       await userStore.userDetail()
     })
 
     return {
       user,
+      showModal,
+      activeTab,
+      editProfileForm,
+      passwordForm,
+      openEditModal,
+      closeEditModal,
+      saveProfile,
+      savePassword
     }
   },
 })
@@ -40,6 +130,7 @@ export default defineComponent({
           >
         </div>
         <h2 class="profile-title">Profil adatok</h2>
+        <button class="edit-btn" @click="openEditModal">✍️ Adatok szerkesztése</button>
       </div>
 
       <div class="profile-content">
@@ -104,6 +195,64 @@ export default defineComponent({
       <div class="spinner"></div>
       <p>Betöltés...</p>
     </div>
+
+    <!-- Edit Profile Modal -->
+    <div v-if="showModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="close-modal" @click="closeEditModal">✖</button>
+        <h2 class="modal-title">Adatok szerkesztése</h2>
+
+        <div class="modal-tabs">
+          <button :class="{ active: activeTab === 'profile' }" @click="activeTab = 'profile'">Személyes adatok</button>
+          <button :class="{ active: activeTab === 'password' }" @click="activeTab = 'password'">Jelszó módosítás</button>
+        </div>
+
+        <div v-if="activeTab === 'profile'" class="modal-tab-content">
+          <form @submit.prevent="saveProfile" class="edit-form">
+            <div class="form-group">
+              <label>Vezetéknév</label>
+              <input v-model="editProfileForm.last_name" type="text" required />
+            </div>
+            <div class="form-group">
+              <label>Keresztnév</label>
+              <input v-model="editProfileForm.first_name" type="text" required />
+            </div>
+            <div class="form-group">
+              <label>Email cím</label>
+              <input v-model="editProfileForm.email" type="email" required />
+            </div>
+            <div class="form-group">
+              <label>Telefonszám</label>
+              <input v-model="editProfileForm.phone" type="tel" placeholder="+36301234567" />
+            </div>
+            <div class="form-group">
+              <label>Születési dátum</label>
+              <input v-model="editProfileForm.birth_date" type="date" />
+            </div>
+            <button type="submit" class="save-btn">Mentés</button>
+          </form>
+        </div>
+
+        <div v-if="activeTab === 'password'" class="modal-tab-content">
+          <form @submit.prevent="savePassword" class="edit-form">
+            <div class="form-group">
+              <label>Jelenlegi jelszó</label>
+              <input v-model="passwordForm.oldPassword" type="password" required />
+            </div>
+            <div class="form-group">
+              <label>Új jelszó</label>
+              <input v-model="passwordForm.newPassword" type="password" required minlength="6" />
+            </div>
+            <div class="form-group">
+              <label>Új jelszó megerősítése</label>
+              <input v-model="passwordForm.confirmPassword" type="password" required minlength="6" />
+            </div>
+            <button type="submit" class="save-btn">Jelszó frissítése</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -111,7 +260,7 @@ export default defineComponent({
 .profile-wrapper {
   min-height: 70vh;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: #f3f3f3;
 }
 
 .profile-container {
@@ -169,6 +318,124 @@ export default defineComponent({
   font-weight: 600;
   position: relative;
   z-index: 1;
+}
+
+.edit-btn {
+  margin-top: 15px;
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.edit-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-title {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.modal-tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.modal-tabs button {
+  flex: 1;
+  padding: 10px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+.modal-tabs button.active {
+  color: #fbaf32;
+  border-bottom-color: #fbaf32;
+}
+
+.edit-form .form-group {
+  margin-bottom: 15px;
+}
+
+.edit-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+  font-size: 14px;
+}
+
+.edit-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  background: #fbaf32;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.save-btn:hover {
+  background: #e86a61;
 }
 
 .profile-content {

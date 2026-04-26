@@ -11,23 +11,17 @@ export default defineComponent({
     <div class="container">
       <div class="section-header text-center">
         <p>Csapatunk</p>
-        <h2>Mesterszakácsaink</h2>
+        <h2>Szakácsaink</h2>
       </div>
       <div class="row align-items-center justify-content-center">
         <div class="col-lg-4 col-md-6 mr-5">
           <div class="team-item">
             <div class="team-img">
               <img src="../assets/pictures/team-1.jpg" alt="Image" />
-              <div class="team-social">
-                <a href=""><i class="fab fa-twitter"></i></a>
-                <a href=""><i class="fab fa-facebook-f"></i></a>
-                <a href=""><i class="fab fa-linkedin-in"></i></a>
-                <a href=""><i class="fab fa-instagram"></i></a>
-              </div>
             </div>
             <div class="team-text">
               <h2>Kucsera László</h2>
-              <p>Mesterszakács</p>
+              <p>Szakács, Felszolgáló</p>
             </div>
           </div>
         </div>
@@ -35,16 +29,10 @@ export default defineComponent({
           <div class="team-item">
             <div class="team-img">
               <img src="../assets/pictures/team-2.jpg" alt="Image" />
-              <div class="team-social">
-                <a href=""><i class="fab fa-twitter"></i></a>
-                <a href=""><i class="fab fa-facebook-f"></i></a>
-                <a href=""><i class="fab fa-linkedin-in"></i></a>
-                <a href=""><i class="fab fa-instagram"></i></a>
-              </div>
             </div>
             <div class="team-text">
               <h2>Szilágyi Melinda</h2>
-              <p>Mesterszakács</p>
+              <p>Szakács, Felszolgáló</p>
             </div>
           </div>
         </div>
@@ -80,55 +68,25 @@ export default defineComponent({
   margin-top: 0;
   margin-bottom: 15px;
 }
-.team .team-social {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.5s;
-}
-.team .team-social a {
-  position: relative;
-  margin: 0 3px;
-  margin-top: 100px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 40px;
-  font-size: 16px;
-  color: #ffffff;
-  background: #e86a61;
-  opacity: 0;
-}
-.team .team-social a:hover {
-  color: #ffffff;
-  background: #fbaf32;
-}
-.team .team-item:hover .team-social {
+.team .team-item:hover {
   background: rgba(256, 256, 256, 0.5);
 }
-.team .team-item:hover .team-social a:first-child {
+.team .team-item:hover a:first-child {
   opacity: 1;
   margin-top: 0;
   transition: 0.3s 0s;
 }
-.team .team-item:hover .team-social a:nth-child(2) {
+.team .team-item:hover a:nth-child(2) {
   opacity: 1;
   margin-top: 0;
   transition: 0.3s 0.1s;
 }
-.team .team-item:hover .team-social a:nth-child(3) {
+.team .team-item:hover a:nth-child(3) {
   opacity: 1;
   margin-top: 0;
   transition: 0.3s 0.2s;
 }
-.team .team-item:hover .team-social a:nth-child(4) {
+.team .team-item:hover a:nth-child(4) {
   opacity: 1;
   margin-top: 0;
   transition: 0.3s 0.3s;

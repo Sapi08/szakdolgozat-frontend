@@ -15,21 +15,20 @@ export default defineComponent({
             <i class="flaticon-burger"></i>
             <h2>Hamburgerek</h2>
             <p>
-              🍔🔥Harapj bele az élvezetbe! Kézműves, friss hozzávalókból készítjük el minden egyes
-              falatot: puha, grillezett zsemlét, ínycsiklandó, szaftos húspogácsát, és gazdag
-              feltéteket, amik garantáltan elvarázsolnak.
+              Harapj bele az élvezetbe! Kézműves, friss hozzávalókból készítjük el minden egyes
+              falatot: puha friss zsemle, ínycsiklandozó, szaftos hús, és gazdag feltétek, amik garantáltan elvarázsolják.
             </p>
             <a href="/menu">Étlap</a>
           </div>
         </div>
         <div class="col-md-4">
           <div class="food-item">
-            <i class="flaticon-vegetable"></i>
+            <i class="flaticon-cooking"></i>
             <h2>Desszertek</h2>
             <p>
-              🍰🍪Zárd le az étkezést egy igazán finom, házi desszerttel! Frissen készített, krémes,
-              lágy és szaftos édességeink minden falata a gondos munka és szeretet ízét hordozza.
-              Tökéletes választás, ha valami igazán édesre vágysz.
+              Zárja le az étkezést egy igazán finom, házi desszerttel! Frissen készített, gesztenyepüré, lágy és
+              habos édességeink minden falata a gondos munka és szeretet ízét hordozza.
+              Tökéletes választás, ha valami igazán édesre vágyik.
             </p>
             <a href="/menu">Étlap</a>
           </div>
@@ -39,9 +38,9 @@ export default defineComponent({
             <i class="flaticon-cocktail"></i>
             <h2>Italok</h2>
             <p>
-              🥤🍹Kortyolj bele a frissességbe! Legyen az hűsítő limonádé, gyümölcsös smoothie vagy
-              egy tökéletesen elkészített kávé. Minden korty tele van ízekkel és energiával, hogy
-              feldobja a napod. Válaszd a minőséget, válaszd az élményt!”
+              Kortyoljon bele a frissességbe! Legyen az hűsítő gyümölcslé, egy tökéletesen elkészített
+              kávé. Minden korty tele van ízekkel és energiával, hogy feldobja a napját.
+              Válassza a minőséget, válassza az élményt!”
             </p>
             <a href="/menu">Étlap</a>
           </div>

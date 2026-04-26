@@ -1,33 +1,29 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <template>
   <div class="blog">
     <div class="container">
-      <div class="section-header text-center">
-        <p>Food Blog</p>
-        <h2>Latest From Food Blog</h2>
-      </div>
       <div class="row">
         <div class="col-md-6">
           <div class="blog-item">
             <div class="blog-img">
-              <img src="../assets/pictures/feature-1.jpg" alt="Blog" />
+              <img src="../assets/pictures/tableware.png" alt="Blog" />
             </div>
             <div class="blog-content">
-              <h2 class="blog-title">Lorem ipsum dolor sit amet</h2>
-              <div class="blog-meta">
-                <p><i class="far fa-user"></i>Admin</p>
-                <p><i class="far fa-list-alt"></i>Food</p>
-                <p><i class="far fa-calendar-alt"></i>01-Jan-2045</p>
-                <p><i class="far fa-comments"></i>10</p>
-              </div>
+              <h2 class="blog-title">Eszköz bérlés</h2>
               <div class="blog-text">
                 <p>
-                  Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non
-                  vulpte liqum metus tortor. Lorem ipsum dolor sit amet elit. Neca pretim miura
-                  bitur facili ornare velit non vulpte
+                  Cégünk lehetőséget biztosít eszközök bérlésére.
                 </p>
-                <a class="btn custom-btn" href="">Read More</a>
+                <ul>
+                  <li>Evőeszközök</li>
+                  <li>Tányérok</li>
+                  <li>Poharak</li>
+                  <li>Tálak</li>
+                  <li>Chafingek</li>
+                </ul>
+                <a class="btn custom-btn" href="/about">Érdeklődés</a>
               </div>
             </div>
           </div>
@@ -35,27 +31,26 @@
         <div class="col-md-6">
           <div class="blog-item">
             <div class="blog-img">
-              <img src="../assets/pictures/feature-1.jpg" alt="Blog" />
+              <img src="../assets/pictures/events.png" alt="Blog" />
             </div>
             <div class="blog-content">
-              <h2 class="blog-title">Lorem ipsum dolor sit amet</h2>
-              <div class="blog-meta">
-                <p><i class="far fa-user"></i>Admin</p>
-                <p><i class="far fa-list-alt"></i>Food</p>
-                <p><i class="far fa-calendar-alt"></i>01-Jan-2045</p>
-                <p><i class="far fa-comments"></i>10</p>
-              </div>
+              <h2 class="blog-title">Rendezvénylebonyolítás</h2>
               <div class="blog-text">
                 <p>
-                  Lorem ipsum dolor sit amet elit. Neca pretim miura bitur facili ornare velit non
-                  vulpte liqum metus tortor. Lorem ipsum dolor sit amet elit. Neca pretim miura
-                  bitur facili ornare velit non vulpte
+                  Cégünk vállalja rendezvények lebonyolítását külső és belső helyszínen egyaránt 1500 főig.
                 </p>
-                <a class="btn custom-btn" href="">Read More</a>
+                <ul>
+                  <li>Családi rendezvények</li>
+                  <li>Baráti összejövetelek</li>
+                  <li>Céges rendezvények</li>
+                  <li>Esküvők</li>
+                </ul>
+                <a class="btn custom-btn" href="/event_booking">Érdeklődés</a>
               </div>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -74,14 +69,21 @@
 
 .blog .blog-img {
   position: relative;
-  width: 100%;
-  border-radius: 15px;
+  width: 80%;
+  height: 500px;
+  border-radius: 200px;
   overflow: hidden;
-  z-index: 1;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .blog .blog-img img {
   width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 15px;
 }
 
 .blog .blog-content {
@@ -101,25 +103,25 @@
   font-weight: 700;
 }
 
-.blog .blog-meta {
+.blog {
   position: relative;
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 15px;
 }
 
-.blog .blog-meta p {
+.blog p {
   margin: 0 10px 0 0;
   font-size: 14px;
   color: #999999;
 }
 
-.blog .blog-meta i {
+.blog i {
   color: #e86a61;
   margin-right: 5px;
 }
 
-.blog .blog-meta p:last-child {
+.blog p:last-child {
   margin: 0;
 }
 
@@ -154,7 +156,7 @@
 }
 
 @media (max-width: 575.98px) {
-  .blog .blog-meta p {
+  .blog p {
     flex: 50%;
     font-size: 13px;
     margin: 0 0 5px 0;

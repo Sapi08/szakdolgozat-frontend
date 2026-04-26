@@ -23,41 +23,6 @@ export const useOrderStore = defineStore('order', {
   },
 
   actions: {
-    // Rendelések lekérése (admin)
-    async fetchOrders() {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await api.get('/admin/orders/')
-        const results = Array.isArray(response.data) ? response.data : (response.data?.orders || response.data?.results || response.data?.data || [])
-        this.orders = results.map((order: Order) => new OrderModel(order))
-        return { success: true }
-      } catch (err) {
-        this.error = (err as Error).message || 'Hiba történt a rendelések lekérése során'
-        console.error('Fetch orders error:', err)
-        return { success: false, message: this.error }
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // Egy rendelés lekérése ID alapján
-    async fetchOrderById(orderId: number) {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await api.get(`/orders/${orderId}/`)
-        this.currentOrder = new OrderModel(response.data)
-        return { success: true, order: this.currentOrder }
-      } catch (err) {
-        this.error = (err as Error).message || 'Hiba történt a rendelés lekérése során'
-        console.error('Fetch order error:', err)
-        return { success: false, message: this.error }
-      } finally {
-        this.loading = false
-      }
-    },
-
     // Új rendelés létrehozása
     async createOrder(orderData: OrderCreateRequest) {
       this.loading = true
@@ -101,123 +66,16 @@ export const useOrderStore = defineStore('order', {
       }
     },
 
-    // Rendelés státuszának frissítése (admin)
-    async updateOrderStatus(orderId: number, status: Order['status'], adminNote?: string) {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await api.post(`/admin/orders/${orderId}/status/`, {
-          status,
-          admin_note: adminNote,
-        })
-        const updatedOrder = new OrderModel(response.data.order || response.data)
-
-        // Frissítjük a listában
-        const index = this.orders.findIndex((o) => o.id === orderId)
-        if (index !== -1) {
-          this.orders[index] = updatedOrder
-        }
-
-        // Frissítjük a current order-t is ha az van
-        if (this.currentOrder && this.currentOrder.id === orderId) {
-          this.currentOrder = updatedOrder
-        }
-
-        return { success: true, order: updatedOrder }
-      } catch (err) {
-        const error = err as { response?: { data?: { message?: string } } }
-        this.error = error.response?.data?.message || 'Hiba történt a státusz frissítése során'
-        console.error('Update order status error:', err)
-        return { success: false, message: this.error }
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // Rendelés lemondása (admin)
-    async deleteOrder(orderId: number, reason?: string) {
-      this.loading = true
-      this.error = null
-      try {
-        await api.post(`/admin/orders/${orderId}/cancel/`, {
-          reason: reason || 'Admin által törölve',
-        })
-        this.orders = this.orders.filter((o) => o.id !== orderId)
-        if (this.currentOrder && this.currentOrder.id === orderId) {
-          this.currentOrder = null
-        }
-        return { success: true }
-      } catch (err) {
-        const error = err as { response?: { data?: { message?: string } } }
-        this.error = error.response?.data?.message || 'Hiba történt a rendelés törlése során'
-        console.error('Delete order error:', err)
-        return { success: false, message: this.error }
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // Rendelés elfogadása (admin)
-    async acceptOrder(orderId: number) {
-      this.loading = true
-      this.error = null
-      try {
-        const response = await api.post(`/admin/orders/${orderId}/accept/`)
-        const updatedOrder = new OrderModel(response.data.order || response.data)
-
-        const index = this.orders.findIndex((o) => o.id === orderId)
-        if (index !== -1) {
-          this.orders[index] = updatedOrder
-        }
-
-        if (this.currentOrder && this.currentOrder.id === orderId) {
-          this.currentOrder = updatedOrder
-        }
-
-        return { success: true, order: updatedOrder }
-      } catch (err) {
-        const error = err as { response?: { data?: { message?: string } } }
-        this.error = error.response?.data?.message || 'Hiba történt a rendelés elfogadása során'
-        console.error('Accept order error:', err)
-        return { success: false, message: this.error }
-      } finally {
-        this.loading = false
-      }
-    },
-
-    // Rendelés megtekintettnek jelölése (admin)
-    async markOrderViewed(orderId: number) {
-      try {
-        await api.post(`/admin/orders/${orderId}/view/`)
-        return { success: true }
-      } catch (err) {
-        console.error('Mark order viewed error:', err)
-        return { success: false }
-      }
-    },
-
-    // Függőben lévő rendelések száma (admin)
-    async getPendingOrdersCount() {
-      try {
-        const response = await api.get('/admin/orders/pending-count/')
-        return {
-          success: true,
-          count: response.data.pending_count,
-          hasNew: response.data.has_new_orders,
-        }
-      } catch (err) {
-        console.error('Get pending count error:', err)
-        return { success: false, count: 0, hasNew: false }
-      }
-    },
-
     // Felhasználó saját rendelései
-    async fetchMyOrders() {
+    async fetchUserOrders() {
       this.loading = true
       this.error = null
       try {
         const response = await api.get('/orders/my-orders/')
-        const results = Array.isArray(response.data) ? response.data : (response.data?.orders || response.data?.results || response.data?.data || [])
+        const results = Array.isArray(response.data)
+          ? response.data
+          : response.data?.orders || response.data?.results || response.data?.data || []
+
         this.orders = results.map((order: Order) => new OrderModel(order))
         return { success: true }
       } catch (err) {
@@ -226,16 +84,6 @@ export const useOrderStore = defineStore('order', {
         return { success: false, message: this.error }
       } finally {
         this.loading = false
-      }
-    },
-
-    // Értesítési hang lejátszása
-    playNotificationSound() {
-      try {
-        const audio = new Audio('/src/assets/sounds/mixkit-software-interface-start-2574.wav')
-        audio.play().catch((err) => console.error('Error playing sound:', err))
-      } catch (err) {
-        console.error('Error creating audio:', err)
       }
     },
   },

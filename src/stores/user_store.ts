@@ -123,11 +123,41 @@ export const useUserStore = defineStore('user', {
 
     async userDetail() {
       try {
-        const res = await api.get('/user_details')
+        const res = await api.get('/user_details/')
         this.user = res.data
       } catch (err) {
         console.error('Profil lekérés hiba:', err)
         this.user = null
+      }
+    },
+
+    async updateProfile(data: Partial<UserWithDetails>) {
+      try {
+        const res = await api.patch('/profile/update/', data)
+        this.user = { ...this.user, ...res.data }
+        return { success: true, message: 'Profil sikeresen frissítve!' }
+      } catch (err) {
+        console.error('Profil frissítési hiba:', err)
+        if (err instanceof AxiosError && err.response) {
+          return { success: false, message: err.response.data.detail || 'Hiba történt a frissítés során.' }
+        }
+        return { success: false, message: 'Váratlan hiba történt.' }
+      }
+    },
+
+    async changePassword(oldPassword: string, newPassword: string) {
+      try {
+        await api.post('/profile/change-password/', {
+          old_password: oldPassword,
+          new_password: newPassword,
+        })
+        return { success: true, message: 'Jelszó sikeresen megváltoztatva!' }
+      } catch (err) {
+        console.error('Jelszócsere hiba:', err)
+        if (err instanceof AxiosError && err.response) {
+          return { success: false, message: err.response.data.detail || 'Hiba történt a jelszócsere során.' }
+        }
+        return { success: false, message: 'Váratlan hiba történt.' }
       }
     },
 

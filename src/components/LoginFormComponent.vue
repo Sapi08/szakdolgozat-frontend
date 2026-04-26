@@ -83,7 +83,7 @@ export default defineComponent({
     <label for="email"><b>E-mail cím</b></label>
     <input
       type="email"
-      placeholder="Adja meg az email címét"
+      placeholder="Email címét"
       name="email"
       id="email"
       v-model="email"
@@ -94,7 +94,7 @@ export default defineComponent({
     <label for="psw"><b>Jelszó</b></label>
     <input
       type="password"
-      placeholder="Adja meg a jelszavát"
+      placeholder="Jelszó"
       name="psw"
       id="psw"
       v-model="password"
@@ -108,7 +108,7 @@ export default defineComponent({
       <span class="error-text">{{ backendError }}</span>
     </div>
     <div class="d-flex justify-content-between">
-      <p class="register-link"><a href="#">Szabályzat</a></p>
+      <p class="register-link"><a href="#">ÁSZF</a></p>
       <p class="register-link">
         Még nincs fiókja? <a @click="goToRegister" class="register-link-btn">Regisztráció</a>
       </p>

@@ -34,34 +34,37 @@ export const useCartStore = defineStore('cart', {
       return state.items.map((item) => {
         const baseDish = state.dishesCache.get(item.dishId)
 
-        // Létrehozunk egy másolatot, hogy ne írjuk felül a cache-t
-        const finalDish: Dish = JSON.parse(JSON.stringify(baseDish || {}))
+        const isVariantItem = !!item.variantId && !!item.variantDetails
+        const resolvedPrice = isVariantItem
+          ? Number(item.variantDetails?.price || 0)
+          : Number(baseDish?.price || 0)
 
-        if (item.variantId && item.variantDetails) {
-          finalDish.name = `${baseDish?.name} (${item.variantDetails.name})`
-          finalDish.price = item.variantDetails.price
-          finalDish.has_variants = false // Ez már egy konkrét, kiválasztott variáns
+        const resolvedName = isVariantItem
+          ? `${baseDish?.name || 'Termek'} (${item.variantDetails?.name || 'Varians'})`
+          : (baseDish?.name || 'Betoltes...')
+
+        const finalDish: Dish = {
+          id: item.dishId,
+          name: resolvedName,
+          description: baseDish?.description || '',
+          price: resolvedPrice,
+          category_id: baseDish?.category_id || '',
+          allergies: baseDish?.allergies || [],
+          image: baseDish?.image,
+          has_variants: false,
+          available: baseDish?.available ?? true,
         }
 
         return {
           ...item,
-          dish: finalDish.id
-            ? finalDish
-            : {
-                id: item.dishId,
-                name: 'Betöltés...',
-                description: '',
-                price: 0,
-                category: '',
-                allergies: [],
-                has_variants: false,
-              },
+          dish: finalDish,
         } as CartItemWithDetails
       })
     },
     cartItemsForCheckout: (state) => {
       return state.items.map((item) => ({
         dish_id: item.dishId,
+        variant_id: item.variantId,
         quantity: item.quantity,
       }))
     },

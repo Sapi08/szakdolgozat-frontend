@@ -1,6 +1,7 @@
 export interface OrderItem {
   id?: number
   dish_id: number
+  variant_id?: number
   quantity: number
 }
 
@@ -11,6 +12,7 @@ export interface OrderCreateRequest {
   delivery_address?: string
   delivery_city?: string
   delivery_zip?: string
+  delivery_email?: string
   payment_method: string
   coupon_code?: string
   comment?: string

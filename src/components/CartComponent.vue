@@ -20,7 +20,7 @@ export default defineComponent({
       deliveryAddress: '',
       deliveryCity: '',
       deliveryZip: '',
-      paymentMethod: 'cash_on_delivery' as 'cash_on_delivery' | 'card_on_delivery' | 'card_online',
+      paymentMethod: 'cash_on_delivery' as 'cash_on_delivery' | 'card_on_delivery' | 'szep_card_on_delivery' | 'card_online',
       orderNotes: '',
       couponCode: '',
       couponMessage: '',
@@ -38,6 +38,7 @@ export default defineComponent({
         zip: '',
         email: '',
       },
+      full_name: '',
     }
   },
   computed: {
@@ -87,6 +88,15 @@ export default defineComponent({
         alert('A kosár üres!')
         return
       }
+
+      // Alapértelmezett adatok kitöltése a bejelentkezett felhasználó adataival
+      if (this.userStore.isAuthenticated && this.userStore.user) {
+        this.full_name = this.userStore.user.first_name + ' ' + this.userStore.user.last_name
+        this.deliveryName = this.userStore.user.name || this.full_name || ''
+        this.deliveryPhone = this.userStore.user.phone || this.userStore.user.phone || ''
+        this.deliveryEmail = this.userStore.user.email || ''
+      }
+
       this.showOrderModal = true
       this.showOrderForm = false
     },
@@ -266,18 +276,11 @@ export default defineComponent({
         delivery_address: this.deliveryType === 'delivery' ? this.deliveryAddress.trim() : '',
         delivery_city: this.deliveryType === 'delivery' ? this.deliveryCity.trim() : '',
         delivery_zip: this.deliveryType === 'delivery' ? this.deliveryZip.trim() : '',
+        delivery_email: this.deliveryEmail.trim() || undefined,
         payment_method: this.paymentMethod,
         comment: this.orderNotes.trim() || '',
-        coupon_code: this.isCouponValid ? this.couponCode.trim() : '',
-        discount_amount: this.calculatedDiscount,
-        delivery_fee: this.deliveryType === 'delivery' ? this.deliveryFee : 0,
-        packaging_fee: this.packagingFee,
-        items: this.cartStore.cartItems.map((item) => ({
-          dish_id: item.dishId || item.dish?.id,
-          quantity: item.quantity,
-          unit_price: Number(item.dish.price || 0),
-          price: Number(item.dish.price || 0)
-        })),
+        coupon_code: this.couponCode || undefined,
+        items: this.cartStore.cartItemsForCheckout as any,
       }
       return orderData
     },
@@ -313,7 +316,6 @@ export default defineComponent({
 </script>
 
 <template>
-  <!-- Disabled háttér overlay amíg a modal nyitva van -->
   <div v-if="showOrderModal" class="page-disabled-overlay"></div>
 
   <div class="container my-5">
@@ -655,6 +657,7 @@ export default defineComponent({
                   <select v-model="paymentMethod" class="form-select">
                     <option value="cash_on_delivery">Készpénz átvételkor</option>
                     <option value="card_on_delivery">Kártya átvételkor</option>
+                    <option value="szep_card_on_delivery">SZÉPKártya átvételkor</option>
                     <option value="card_online">Online fizetés bankkártyával</option>
                   </select>
                   <small v-if="paymentMethod === 'card_online'" class="text-muted d-block mt-2">

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
-import { useOrderStore } from '@/stores/order_store'
+import { useAdminOrderStore } from '@/stores/admin/admin_order_store'
 import { OrderModel } from '@/types/order'
 
 export default defineComponent({
@@ -17,32 +17,38 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapStores(useOrderStore),
+    ...mapStores(useAdminOrderStore),
     filteredOrders(): OrderModel[] {
       if (this.filterStatus === 'all') {
-        return this.orderStore.orders
+        return this.adminOrderStore.orders
       }
-      return this.orderStore.orders.filter((order) => order.status === this.filterStatus)
+      return this.adminOrderStore.orders.filter((order) => order.status === this.filterStatus)
     },
     statusCounts() {
       return {
-        pending: this.orderStore.pendingOrders.length,
-        accepted: this.orderStore.acceptedOrders.length,
-        preparing: this.orderStore.preparingOrders.length,
-        ready: this.orderStore.readyOrders.length,
-        in_delivery: this.orderStore.inDeliveryOrders.length,
-        delivered: this.orderStore.deliveredOrders.length,
-        completed: this.orderStore.completedOrders.length,
-        canceled: this.orderStore.canceledOrders.length,
+        pending: this.adminOrderStore.pendingOrders.length,
+        accepted: this.adminOrderStore.acceptedOrders.length,
+        preparing: this.adminOrderStore.preparingOrders.length,
+        ready: this.adminOrderStore.readyOrders.length,
+        in_delivery: this.adminOrderStore.inDeliveryOrders.length,
+        delivered: this.adminOrderStore.deliveredOrders.length,
+        completed: this.adminOrderStore.completedOrders.length,
+        canceled: this.adminOrderStore.canceledOrders.length,
       }
     },
   },
   async mounted() {
     await this.loadOrders()
+    if (this.autoRefresh) {
+      this.startAutoRefresh()
+    }
+  },
+  unmounted() {
+    this.stopAutoRefresh()
   },
   methods: {
     async loadOrders() {
-      await this.orderStore.fetchOrders()
+      await this.adminOrderStore.fetchOrders()
     },
     viewOrderDetails(order: OrderModel) {
       this.selectedOrder = order
@@ -53,7 +59,7 @@ export default defineComponent({
       this.selectedOrder = null
     },
     async acceptOrder(orderId: number) {
-      const result = await this.orderStore.acceptOrder(orderId)
+      const result = await this.adminOrderStore.acceptOrder(orderId)
       if (result.success) {
         this.showNotification('Rendelés elfogadva!', 'success')
         if (this.selectedOrder && this.selectedOrder.id === orderId) {
@@ -64,7 +70,7 @@ export default defineComponent({
       }
     },
     async updateStatus(orderId: number, newStatus: OrderModel['status']) {
-      const result = await this.orderStore.updateOrderStatus(orderId, newStatus)
+      const result = await this.adminOrderStore.updateOrderStatus(orderId, newStatus)
       if (result.success) {
         this.showNotification('Státusz sikeresen frissítve!', 'success')
         if (this.selectedOrder && this.selectedOrder.id === orderId) {
@@ -79,7 +85,7 @@ export default defineComponent({
         return
       }
 
-      const result = await this.orderStore.deleteOrder(orderId)
+      const result = await this.adminOrderStore.deleteOrder(orderId)
       if (result.success) {
         this.showNotification('Rendelés törölve!', 'success')
         this.closeOrderDetails()
@@ -119,6 +125,26 @@ export default defineComponent({
       }
       return icons[status]
     },
+    startAutoRefresh() {
+      this.stopAutoRefresh()
+      this.refreshInterval = window.setInterval(() => {
+        this.loadOrders()
+      }, 10000)
+    },
+    stopAutoRefresh() {
+      if (this.refreshInterval !== null) {
+        clearInterval(this.refreshInterval)
+        this.refreshInterval = null
+      }
+    },
+    toggleAutoRefresh() {
+      this.autoRefresh = !this.autoRefresh
+      if (this.autoRefresh) {
+        this.startAutoRefresh()
+      } else {
+        this.stopAutoRefresh()
+      }
+    },
   },
 })
 </script>
@@ -131,8 +157,8 @@ export default defineComponent({
         Rendelések Kezelése
       </h1>
       <div class="header-actions">
-        <button @click="loadOrders" class="btn btn-outline-primary" :disabled="orderStore.loading">
-          <i class="fas fa-sync-alt" :class="{ 'fa-spin': orderStore.loading }"></i>
+        <button @click="loadOrders" class="btn btn-outline-primary" :disabled="adminOrderStore.loading">
+          <i class="fas fa-sync-alt" :class="{ 'fa-spin': adminOrderStore.loading }"></i>
           Frissítés
         </button>
         <button
@@ -154,7 +180,7 @@ export default defineComponent({
         :class="{ active: filterStatus === 'all' }"
       >
         <span class="filter-label">Összes</span>
-        <span class="filter-count">{{ orderStore.orders.length }}</span>
+        <span class="filter-count">{{ adminOrderStore.orders.length }}</span>
       </button>
       <button
         @click="filterStatus = 'pending'"
@@ -222,7 +248,7 @@ export default defineComponent({
     </div>
 
     <!-- Rendelések lista -->
-    <div v-if="orderStore.loading && orderStore.orders.length === 0" class="text-center py-5">
+    <div v-if="adminOrderStore.loading && adminOrderStore.orders.length === 0" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Betöltés...</span>
       </div>
@@ -264,7 +290,7 @@ export default defineComponent({
           </div>
           <div class="order-info-row">
             <i class="fas fa-map-marker-alt"></i>
-            <span>{{ order.delivery_address.substring(0, 50) }}...</span>
+            <span>{{ order.delivery_address ? order.delivery_address.substring(0, 50) + '...' : 'Személyes átvétel' }}</span>
           </div>
           <div class="order-info-row">
             <i class="fas fa-phone"></i>
@@ -272,7 +298,7 @@ export default defineComponent({
           </div>
           <div class="order-info-row">
             <i class="fas fa-utensils"></i>
-            <span>{{ order.items.length }} tétel</span>
+            <span>{{ order.items?.length ?? 0 }} tétel</span>
           </div>
         </div>
 

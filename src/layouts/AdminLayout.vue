@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import AdminNavBarComponent from '@/components/admin/AdminNavBarComponent.vue'
 import { useAdminBookingStore } from '@/stores/admin/admin_booking_store'
 import { useAdminContactStore } from '@/stores/admin/admin_contact_store'
-import { useOrderStore } from '@/stores/order_store'
+import { useAdminOrderStore } from '@/stores/admin/admin_order_store'
 
 export default defineComponent({
   name: 'AdminLayout',
@@ -15,7 +15,7 @@ export default defineComponent({
       intervalId: null as number | null,
       bookingStore: useAdminBookingStore(),
       contactStore: useAdminContactStore(),
-      orderStore: useOrderStore(),
+      orderStore: useAdminOrderStore(),
     }
   },
   mounted() {
@@ -39,7 +39,8 @@ export default defineComponent({
       await Promise.all([
         this.bookingStore.fetchBookings(),
         this.contactStore.loadContacts(),
-        this.orderStore.fetchOrders()
+        this.orderStore.fetchOrders(),
+        this.orderStore.fetchPendingOrdersCount(),
       ])
 
       this.checkNotifications()
@@ -53,7 +54,7 @@ export default defineComponent({
       const hasUnseen =
         currentUnseenBookings > 0 ||
         currentUnseenContacts > 0 ||
-        currentPendingOrders > 0;
+        currentPendingOrders > 0
 
       if (hasUnseen) {
         this.playNotificationSound()

@@ -61,12 +61,17 @@ export default {
       return this.eventTypeLabels[type] || type
     },
     getStatusText(booking: Booking) {
-      if (booking.confirmed) return 'Elfogadva'
+      if (booking.confirmed === true) return 'Elfogadva'
+      if (booking.confirmed === false) return 'Elutasított'
       return 'Függőben'
     },
     getStatusClass(booking: Booking) {
-      if (booking.confirmed) return 'confirmed'
+      if (booking.confirmed === true) return 'confirmed'
+      if (booking.confirmed === false) return 'rejected'
       return 'pending'
+    },
+    isPending(booking: Booking) {
+      return booking.confirmed === null || booking.confirmed === undefined
     },
   },
 }
@@ -122,14 +127,14 @@ export default {
             </td>
             <td class="actions">
               <button
-                v-if="!booking.confirmed"
+                v-if="isPending(booking)"
                 @click.stop="handleConfirm(booking.id)"
                 class="btn-accept"
               >
                 Elfogad
               </button>
               <button
-                v-if="!booking.confirmed"
+                v-if="isPending(booking)"
                 @click.stop="handleReject(booking.id)"
                 class="btn-reject"
               >
@@ -166,7 +171,7 @@ export default {
           </div>
         </div>
 
-        <div class="modal-actions" v-if="!selectedBooking.confirmed">
+        <div class="modal-actions" v-if="isPending(selectedBooking)">
           <button @click="handleConfirm(selectedBooking.id); closeModal()" class="btn-accept">Elfogad</button>
           <button @click="handleReject(selectedBooking.id); closeModal()" class="btn-reject">Elutasít</button>
         </div>

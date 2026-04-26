@@ -12,18 +12,18 @@
         <div class="col-lg-6">
           <div class="about-content">
             <div class="section-header">
-              <h2>30 éve szakmában</h2>
+              <h2>25 éve szakmában</h2>
             </div>
             <div class="about-text">
               <p>
                 Cégünk családi vállalkozásként üzemel. Kizárólag házhoz szállítással foglalkozunk,
-                rendezvények teljeskörű szervezése-kivitelezése. Családi-baráti -céges rendezvényre:
+                rendezvények teljeskörű szervezése-kivitelezése, családi, baráti, céges rendezvényre:
               </p>
               <p>
-                Napi menük, Levesek, Frissensültek, Sültestálak, Pizzák, Hamburgerek, Gyrosok, Hideg
-                tálak, Szendvicsek ( büféasztal ).
+                Napi menük, Levesek, Frissensültek, Sültestálak, Pizzák, Hamburgerek,
+                Gyrosok, Hideg tálak, Szendvicsek ( büféasztal ).
               </p>
-              <a class="btn custom-btn" href="">Rendeljen most</a>
+              <a class="btn custom-btn" href="/menu">Rendeljen most</a>
             </div>
           </div>
         </div>

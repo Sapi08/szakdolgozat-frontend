@@ -224,7 +224,7 @@ export default defineComponent({
           <div
             class="prize-background"
             :style="{
-              backgroundImage: `url(${couponImage})`,
+              backgroundImage: `url(http://localhost:8000${couponImage})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }"

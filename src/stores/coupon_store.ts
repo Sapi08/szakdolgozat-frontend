@@ -184,7 +184,7 @@ export const useCouponStore = defineStore('coupon', {
       this.isLoading = true
       this.error = null
       try {
-        await api.delete(`/api/coupons/${id}/delete/`)
+        await api.delete(`/admin/coupons/${id}/delete/`)
         this.coupons = this.coupons.filter((c) => c.id !== id)
         return { success: true }
       } catch (err) {

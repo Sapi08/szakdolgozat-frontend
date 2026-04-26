@@ -32,12 +32,7 @@ export default defineComponent({
                 </div>
               </div>
             </div>
-            <p>
-              Lorem ipsum dolor sit amet consec adipis elit. Phasel nec preti mi. Curabit facilis
-              ornare velit non vulputa. Aliquam metus tortor, auctor id gravida condime, viverra
-              quis sem. Curabit non nisl nec nisi sceleri maximus
-            </p>
-            <a class="btn custom-btn" href="">Időpont foglalás rendezvényre</a>
+            <a class="btn custom-btn" href="/event_booking">Időpont foglalás rendezvényre</a>
           </div>
         </div>
         <div class="col-lg-7">
@@ -45,10 +40,9 @@ export default defineComponent({
             <div class="col-sm-6">
               <div class="feature-item">
                 <i class="flaticon-cooking"></i>
-                <h3>A világ legjobb szakácsa</h3>
+                <h3>Szakácsaink több éves tapasztalattal rendelkeznek</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
-                  non vulput metus tortor
+                  Szakácsaink szenvedélye a főzés és céljuk, hogy a legjobb ételeket készítsék el Önnek.
                 </p>
               </div>
             </div>
@@ -57,8 +51,7 @@ export default defineComponent({
                 <i class="flaticon-vegetable"></i>
                 <h3>Természetes összetevők</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
-                  non vulput metus tortor
+                  Minden ételünk természetes összetevőkből készül, hogy a lehető legjobb ízt és minőséget biztosítsuk.
                 </p>
               </div>
             </div>
@@ -69,8 +62,7 @@ export default defineComponent({
                 <i class="flaticon-medal"></i>
                 <h3>Legjobb minőségű termékek</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
-                  non vulput metus tortor
+                  Igyekszünk mindig a legjobb minőségű alapanyagokat beszerezni, hogy ételeink kiválóak legyenek.
                 </p>
               </div>
             </div>
@@ -79,8 +71,7 @@ export default defineComponent({
                 <i class="flaticon-meat"></i>
                 <h3>Friss zöldségek és húsok</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
-                  non vulput metus tortor
+                  Minden zöldségünk és húsunk friss, hogy ételeink ízletesek és táplálóak legyenek.
                 </p>
               </div>
             </div>
@@ -91,18 +82,16 @@ export default defineComponent({
                 <i class="flaticon-courier"></i>
                 <h3>Gyors házhozszállítás</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
-                  non vulput metus tortor
+                  Gyors és megbízható házhozszállítást kínálunk, hogy ételeink mindig frissen és melegen érkezzenek meg Önhöz.
                 </p>
               </div>
             </div>
             <div class="col-sm-6">
               <div class="feature-item">
                 <i class="flaticon-fruits-and-vegetables"></i>
-                <h3>Darált marhahús és alacsony zsírtartalom</h3>
+                <h3>Egészséges étkezés, alacsony zsírtartalom</h3>
                 <p>
-                  Lorem ipsum dolor sit amet elit. Phasel nec preti mi. Curabit facilis ornare velit
-                  non vulput metus tortor
+                  Egészséges és tápláló ételeket kínálunk, amelyek alacsony zsírtartalmúak, hogy Ön jól érezze magát.
                 </p>
               </div>
             </div>

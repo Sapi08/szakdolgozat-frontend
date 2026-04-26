@@ -3,10 +3,12 @@ import { defineComponent } from 'vue'
 import ProfileComponent from '@/components/ProfileComponent.vue'
 import PageHeader from '@/components/PageHeader.vue'
 import UserCouponViewerComponent from '@/components/UserCouponViewerComponent.vue'
+import UserOrderViewerComponent from '@/components/UserOrdersViewerComponent.vue'
 
 export default defineComponent({
   name: 'ProfileView',
   components: {
+    UserOrderViewerComponent,
     UserCouponViewerComponent,
     PageHeader,
     ProfileComponent,
@@ -21,12 +23,13 @@ export default defineComponent({
     <div class="container-fluid">
       <h1 class="page-title">Kuponok Kezelése</h1>
       <div class="row g-3">
-        <div class="col-lg-5 col-12">
-          <ProfileComponent />
-        </div>
-        <div class="col-lg-6 col-12">
-          <UserCouponViewerComponent />
-        </div>
+        <ProfileComponent />
+      </div>
+      <div class="row g-3">
+        <UserCouponViewerComponent />
+      </div>
+      <div class="row g-3">
+        <UserOrderViewerComponent />
       </div>
     </div>
   </div>

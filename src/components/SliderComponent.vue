@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 // If you are using PurgeCSS, make sure to whitelist the carousel CSS classes
 import 'vue3-carousel/carousel.css'
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
@@ -19,14 +19,14 @@ const slides = [
       <div class="carousel-text">
         <h1 class="title">A legjobb <span>minőségű</span> összetevők</h1>
         <p>
-          Minőség, amit érezni fogsz az ízekben! 🥗🍎<br>
+          Minőség, amit érezni fogsz az ízekben!<br>
           Csak a legjobb alapanyagokkal dolgozunk, mert hiszünk abban, hogy az igazi élvezet a részletekben rejlik.
           Friss, válogatott összetevők, gondosan megmunkálva – ez a titka annak, hogy minden falat tökéletes legyen.
           Nálunk a minőség nem kompromisszum!
         </p>
         <div class="carousel-btn">
-          <a class="btn custom-btn" href="">Étlap</a>
-          <a class="btn custom-btn" href="">Foglalás</a>
+          <a class="btn custom-btn" href="/menu">Étlap</a>
+          <a class="btn custom-btn" href="/event_booking">Foglalás</a>
         </div>
       </div>
     `,
@@ -35,14 +35,14 @@ const slides = [
     image: new URL('@/assets/pictures/carousel-2.webp', import.meta.url).href,
     text: `
       <div class="carousel-text">
-        <h1 class="title">Hazánk <span>legjobb </span> szakácsai</h1>
+        <h1 class="title">Hazánk <span>tapasztalt </span> szakácsai</h1>
         <p>
-          Magyarország legjobb szakácsai, akik a világ ízeit hozzák el hozzád! 🌍🍴
+          Magyarország legjobb szakácsai, akik a világ ízeit hozzák el hozzád!
           A hazai gasztronómia mesterei, akik nemcsak a magyar konyhát, hanem a nemzetközi ízeket is mesterien varázsolják a tányérodra. Friss, innovatív fogások, egyedi fúziók és prémium alapanyagok – mindez egy helyen, a legjobb szakácsok kezei között!
         </p>
         <div class="carousel-btn">
-          <a class="btn custom-btn" href="">Étlap</a>
-          <a class="btn custom-btn" href="">Foglalás</a>
+          <a class="btn custom-btn" href="/menu">Étlap</a>
+          <a class="btn custom-btn" href="/event_booking">Foglalás</a>
         </div>
       </div>
     `,
@@ -53,12 +53,12 @@ const slides = [
         <div>
           <h1 class="title">A leggyorsabb <span>kiszállítás</span></h1>
           <p>
-            Villámgyors kiszállítás, hogy neked csak az élmény maradjon! 🚚⚡
+            Villámgyors kiszállítás, hogy neked csak az élmény maradjon!
             Rendelj egyszerűen, és élvezd a hihetetlenül gyors kézbesítést! Legyen szó ebédről, vacsoráról vagy egy last-minute ajándékról, mi rekordidő alatt házhoz visszük. Velünk az idő mindig neked dolgozik!
           </p>
           <div class="carousel-btn">
-            <a class="btn custom-btn" href="">Étlap</a>
-            <a class="btn custom-btn" href="">Foglalás</a>
+            <a class="btn custom-btn" href="/menu">Étlap</a>
+            <a class="btn custom-btn" href="/event_booking">Foglalás</a>
           </div>
         </div>
     `,

@@ -1,6 +1,7 @@
 <script lang="ts">
 import { useAdminBookingStore } from '@/stores/admin/admin_booking_store'
 import { useAdminContactStore } from '@/stores/admin/admin_contact_store'
+import { useAdminOrderStore } from '@/stores/admin/admin_order_store.ts'
 
 export default {
   name: 'SideNavbar',
@@ -8,6 +9,7 @@ export default {
     return {
       bookingStore: useAdminBookingStore(),
       contactStore: useAdminContactStore(),
+      orderStore: useAdminOrderStore(),
       navItems: [
         { name: 'Statisztikák', path: '/admin', icon: 'fas fa-chart-line' },
         { name: 'Rendelések', path: '/admin/orders', icon: 'fas fa-shopping-cart' },
@@ -22,6 +24,7 @@ export default {
   mounted() {
     this.bookingStore.fetchBookings()
     this.contactStore.loadContacts()
+    this.orderStore.fetchPendingOrdersCount()
   }
 }
 </script>
@@ -40,6 +43,12 @@ export default {
               <i :class="item.icon"></i>
             </span>
             <span class="nav-text">{{ item.name }}</span>
+            <span
+              v-if="item.name === 'Rendelések' && orderStore.getPendingOrdersCount > 0"
+              class="badge badge-unhandled"
+            >
+              <i class="fas fa-exclamation-circle" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ orderStore.getPendingOrdersCount }}
+            </span>
             <span
               v-if="item.name === 'Rendezvények' && bookingStore.unhandledCount > 0"
               class="badge badge-unhandled"

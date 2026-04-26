@@ -6,6 +6,7 @@ export const useDishStore = defineStore('dish', {
   state: () => ({
     dishes: [] as Dish[],
     allergens: [] as string[],
+    categories: [] as string[],
   }),
   actions: {
     async loadDishes() {
@@ -19,6 +20,11 @@ export const useDishStore = defineStore('dish', {
       if (index !== -1 && res.data.available !== undefined) {
         this.dishes[index].available = res.data.available
       }
+      return res.data
+    },
+    async createDish(data: Partial<Dish>) {
+      const res = await api.post('/dishes/create', data)
+      this.dishes.push(res.data)
       return res.data
     },
     async updateDish(dishId: number, data: Partial<Dish>) {
@@ -41,6 +47,16 @@ export const useDishStore = defineStore('dish', {
         }
       } catch (err) {
         console.error('Failed to load allergens:', err)
+      }
+    },
+    async loadCategories(){
+      try {
+        const res = await api.get('/admin/categories/')
+        if (res.data && Array.isArray(res.data)) {
+          this.categories = res.data.map((a: any) => typeof a === 'string' ? a : a.name)
+        }
+      } catch (err) {
+        console.error('Failed to load categories:', err)
       }
     },
   },

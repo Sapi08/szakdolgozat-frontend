@@ -154,7 +154,7 @@ export default defineComponent({
     <label for="first_name"><b>Keresztnév</b></label>
     <input
       type="text"
-      placeholder="Adja meg a keresztnevét"
+      placeholder="Keresztnevét"
       name="first_name"
       id="first_name"
       v-model="firstName"
@@ -165,7 +165,7 @@ export default defineComponent({
     <label for="last_name"><b>Vezetéknév</b></label>
     <input
       type="text"
-      placeholder="Adja meg a vezetéknevét"
+      placeholder="Vezetéknevét"
       name="last_name"
       id="last_name"
       v-model="lastName"
@@ -186,7 +186,7 @@ export default defineComponent({
     <label for="phone"><b>Telefonszám</b></label>
     <input
       type="tel"
-      placeholder="Adja meg a telefonszámát"
+      placeholder="+36301234567"
       name="phone"
       id="phone"
       v-model="phone"
@@ -208,7 +208,7 @@ export default defineComponent({
     <label for="psw"><b>Jelszó</b></label>
     <input
       type="password"
-      placeholder="Adjon meg egy jelszót"
+      placeholder="Adjon meg egy jelszavát"
       name="psw"
       id="psw"
       v-model="password"
@@ -219,7 +219,7 @@ export default defineComponent({
     <label for="psw-repeat"><b>Jelszó ismét</b></label>
     <input
       type="password"
-      placeholder="Ismételje meg a jelszót"
+      placeholder="Jelszó ismét"
       name="psw-repeat"
       id="psw-repeat"
       v-model="passwordAgain"
@@ -242,7 +242,7 @@ export default defineComponent({
       <p class="redirect-info">Átirányítás a bejelentkezéshez...</p>
     </div>
 
-    <p>A regisztrációval ön hozzájárul <a href="#">Szabályzatainkhoz</a>.</p>
+    <p>A regisztrációval ön hozzájárul <a href="#">Általános szerződési feltételeinkhez (ÁSZF)</a>.</p>
 
     <button type="submit" class="registerbtn" @click="register">Regisztráció</button>
   </div>
