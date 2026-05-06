@@ -37,9 +37,9 @@ export default defineComponent({
     async refreshData() {
       // Ide jöhet minden store lekérdezés, amit frissen akarsz tartani
       await Promise.all([
-        this.bookingStore.fetchBookings(),
-        this.contactStore.loadContacts(),
-        this.orderStore.fetchOrders(),
+        this.bookingStore.adminFetchBookings(),
+        this.contactStore.adminLoadContacts(),
+        this.orderStore.adminFetchOrders(),
         this.orderStore.fetchPendingOrdersCount(),
       ])
 

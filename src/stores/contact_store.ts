@@ -15,5 +15,10 @@ export const useContactStore = defineStore('contact', {
       console.log('Sikeres kapcsolatfelvétel:', res.data)
       return res.data
     },
+    async addSubscriber(email: string){
+      const res = await api.post('/add_subscriber', { email })
+      console.log('Sikeres feliratkozás:', res.data)
+      return res.data
+    }
   },
 })

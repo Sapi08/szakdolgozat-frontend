@@ -10,7 +10,6 @@ export default defineComponent({
     return {
       selectedOrder: null as OrderModel | null,
       showOrderDetails: false,
-      autoRefresh: true,
       refreshInterval: null as number | null,
       lastOrderCount: 0,
       filterStatus: 'all' as string,
@@ -48,7 +47,7 @@ export default defineComponent({
   },
   methods: {
     async loadOrders() {
-      await this.adminOrderStore.fetchOrders()
+      await this.adminOrderStore.adminFetchOrders()
     },
     viewOrderDetails(order: OrderModel) {
       this.selectedOrder = order
@@ -70,7 +69,7 @@ export default defineComponent({
       }
     },
     async updateStatus(orderId: number, newStatus: OrderModel['status']) {
-      const result = await this.adminOrderStore.updateOrderStatus(orderId, newStatus)
+      const result = await this.adminOrderStore.adminUpdateOrderStatus(orderId, newStatus)
       if (result.success) {
         this.showNotification('Státusz sikeresen frissítve!', 'success')
         if (this.selectedOrder && this.selectedOrder.id === orderId) {
@@ -125,26 +124,6 @@ export default defineComponent({
       }
       return icons[status]
     },
-    startAutoRefresh() {
-      this.stopAutoRefresh()
-      this.refreshInterval = window.setInterval(() => {
-        this.loadOrders()
-      }, 10000)
-    },
-    stopAutoRefresh() {
-      if (this.refreshInterval !== null) {
-        clearInterval(this.refreshInterval)
-        this.refreshInterval = null
-      }
-    },
-    toggleAutoRefresh() {
-      this.autoRefresh = !this.autoRefresh
-      if (this.autoRefresh) {
-        this.startAutoRefresh()
-      } else {
-        this.stopAutoRefresh()
-      }
-    },
   },
 })
 </script>
@@ -160,14 +139,6 @@ export default defineComponent({
         <button @click="loadOrders" class="btn btn-outline-primary" :disabled="adminOrderStore.loading">
           <i class="fas fa-sync-alt" :class="{ 'fa-spin': adminOrderStore.loading }"></i>
           Frissítés
-        </button>
-        <button
-          @click="toggleAutoRefresh"
-          class="btn"
-          :class="autoRefresh ? 'btn-success' : 'btn-outline-secondary'"
-        >
-          <i class="fas" :class="autoRefresh ? 'fa-pause' : 'fa-play'"></i>
-          {{ autoRefresh ? 'Auto-frissítés BE' : 'Auto-frissítés KI' }}
         </button>
       </div>
     </div>
@@ -463,7 +434,7 @@ export default defineComponent({
               <i class="fas fa-tag me-2"></i>
               Kupon
             </h5>
-            <p class="coupon-code">{{ selectedOrder.coupon.code || 'Kupon alkalmazva' }}</p>
+            <p class="coupon-code">Kupon alkalmazva: {{ selectedOrder.coupon || '' }} (azonosító)</p>
           </div>
 
           <!-- Tételek -->

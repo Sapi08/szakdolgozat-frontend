@@ -1,16 +1,16 @@
 <script lang="ts">
 import { defineComponent, onMounted } from 'vue'
 import CardComponent from '@/components/admin/CardComponent.vue'
-import { useStatisticsStore } from '@/stores/statistics_store.ts'
+import { useAdminStatisticsStore } from '@/stores/admin/admin_statistics_store'
 
 export default defineComponent({
   name: 'DashboardView',
   components: { CardComponent },
   setup() {
-    const statisticsStore = useStatisticsStore()
+    const statisticsStore = useAdminStatisticsStore()
 
     onMounted(() => {
-      statisticsStore.fetchStatistics()
+      statisticsStore.adminFetchStatistics()
     })
 
     return {

@@ -13,7 +13,7 @@ export default defineComponent({
         <div class="col-lg-5">
           <div class="section-header">
             <p>Miért válasszon minket?</p>
-            <h2>Legfontosabb jellemzőink:</h2>
+            <h2>Fontos jellemzőink:</h2>
           </div>
           <div class="feature-text">
             <div class="feature-img">
@@ -22,13 +22,13 @@ export default defineComponent({
                   <img src="../assets/pictures/feature-1.jpg" alt="Image" />
                 </div>
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-2.jpg" alt="Image" />
+                  <img src="../assets/pictures/feature-2.png" alt="Image" />
                 </div>
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-3.jpg" alt="Image" />
+                  <img src="../assets/pictures/feature-3.png" alt="Image" />
                 </div>
                 <div class="col-6">
-                  <img src="../assets/pictures/feature-4.jpg" alt="Image" />
+                  <img src="../assets/pictures/feature-4.png" alt="Image" />
                 </div>
               </div>
             </div>
@@ -113,7 +113,7 @@ export default defineComponent({
 }
 .feature .feature-text {
   position: relative;
-  width: 100%;
+  width: 70%;
 }
 .feature .feature-img {
   border-radius: 15px;
@@ -127,7 +127,7 @@ export default defineComponent({
 }
 .feature .feature-img img {
   width: 100%;
-  transition: 0.3s;
+  transition: .3s;
 }
 .feature .feature-img img:hover {
   transform: scale(1.1);
@@ -154,7 +154,7 @@ export default defineComponent({
 }
 .feature .feature-item i::after {
   position: absolute;
-  content: '';
+  content: "";
   width: 40px;
   height: 40px;
   top: -10px;

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
-import { useCouponStore } from '@/stores/coupon_store.ts'
+import { useAdminCouponStore } from '@/stores/admin/admin_coupon_store'
 
 export default defineComponent({
   name: 'CouponTypeCreaterComponent',
@@ -27,9 +27,9 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapStores(useCouponStore),
+    ...mapStores(useAdminCouponStore),
     isLoading() {
-      return this.couponStore.isLoading
+      return this.adminCouponStore.isLoading
     },
   },
   methods: {
@@ -110,7 +110,7 @@ export default defineComponent({
         formData.append('image', this.imageFile)
       }
 
-      const result = await this.couponStore.createDiscountType(formData)
+      const result = await this.adminCouponStore.adminCreateDiscountType(formData)
 
       if (result.success) {
         this.successMessage = 'Kupontípus sikeresen létrehozva!'

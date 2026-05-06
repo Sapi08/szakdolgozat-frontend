@@ -29,7 +29,7 @@ export default defineComponent({
   async created() {
     this.loading = true
     try {
-      const result = await this.admin_contactStore.loadContacts()
+      const result = await this.admin_contactStore.adminLoadContacts()
       if (result.success) {
         this.contacts = result.data || []
       }
@@ -48,7 +48,7 @@ export default defineComponent({
     },
     handleRowClick(item: any) {
       if (item.id && !item.seen_by_admin) {
-        this.admin_contactStore.markAsSeen(item.id)
+        this.admin_contactStore.adminMarkAsSeen(item.id)
       }
     },
     checkIfUnseen(item: any) {

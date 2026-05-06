@@ -24,6 +24,8 @@ import NewPassword from '@/views/NewPassword.vue'
 import PaymentSuccess from '@/views/PaymentSuccess.vue'
 import PaymentCancelled from '@/views/PaymentCancelled.vue'
 
+import {useUserStore} from '@/stores/user_store.ts'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -51,6 +53,7 @@ const router = createRouter({
     {
       path: '/admin',
       component: AdminLayout,
+      meta: { requiresAdmin: true },
       children: [
         { path: '', name: 'dashboard', component: Dashboard },
         { path: 'orders', name: 'orders', component: Orders },
@@ -65,6 +68,22 @@ const router = createRouter({
   scrollBehavior() {
     return { top: 0 }
   },
+})
+
+router.beforeEach((to, from, next) => {
+
+  const userStore = useUserStore()
+
+  const requiresAdmin = to.matched.some((record) => (record.meta as any)?.requiresAdmin)
+
+  if (requiresAdmin) {
+    // Ha nincs admin jog, redirect home
+    if (!userStore.isAdmin) {
+      return next({ name: 'home' })
+    }
+  }
+
+  return next()
 })
 
 export default router

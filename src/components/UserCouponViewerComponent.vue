@@ -37,10 +37,10 @@ export default defineComponent({
     },
   },
   async mounted() {
-    await this.loadCoupons()
+    await this.adminLoadCoupons()
   },
   methods: {
-    async loadCoupons() {
+    async adminLoadCoupons() {
       this.backendError = ''
       try {
         await this.couponStore.loadUserCoupons()

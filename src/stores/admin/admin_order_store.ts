@@ -25,7 +25,22 @@ export const useAdminOrderStore = defineStore('adminOrder', {
   },
 
   actions: {
-    async fetchOrders() {
+    adminRefreshPendingCount() {
+      this.pendingCount = this.pendingOrders.length
+    },
+
+    adminSyncUpdatedOrder(orderId: number, updatedOrder: OrderModel) {
+      const index = this.orders.findIndex((o) => o.id === orderId)
+      if (index !== -1) {
+        this.orders[index] = updatedOrder
+      }
+
+      if (this.currentOrder && this.currentOrder.id === orderId) {
+        this.currentOrder = updatedOrder
+      }
+    },
+
+    async adminFetchOrders() {
       this.loading = true
       this.error = null
       try {
@@ -35,7 +50,7 @@ export const useAdminOrderStore = defineStore('adminOrder', {
           : response.data?.orders || response.data?.results || response.data?.data || []
 
         this.orders = results.map((order: Order) => new OrderModel(order))
-        this.pendingCount = this.pendingOrders.length
+        this.adminRefreshPendingCount()
         return { success: true }
       } catch (err) {
         this.error = (err as Error).message || 'Hiba tortent a rendelesek lekerese soran'
@@ -46,7 +61,7 @@ export const useAdminOrderStore = defineStore('adminOrder', {
       }
     },
 
-    async fetchOrderById(orderId: number) {
+    async adminFetchOrderById(orderId: number) {
       this.loading = true
       this.error = null
       try {
@@ -62,7 +77,7 @@ export const useAdminOrderStore = defineStore('adminOrder', {
       }
     },
 
-    async updateOrderStatus(orderId: number, status: Order['status'], adminNote?: string) {
+    async adminUpdateOrderStatus(orderId: number, status: Order['status'], adminNote?: string) {
       this.loading = true
       this.error = null
       try {
@@ -72,16 +87,8 @@ export const useAdminOrderStore = defineStore('adminOrder', {
         })
 
         const updatedOrder = new OrderModel(response.data.order || response.data)
-        const index = this.orders.findIndex((o) => o.id === orderId)
-        if (index !== -1) {
-          this.orders[index] = updatedOrder
-        }
-
-        if (this.currentOrder && this.currentOrder.id === orderId) {
-          this.currentOrder = updatedOrder
-        }
-
-        this.pendingCount = this.pendingOrders.length
+        this.adminSyncUpdatedOrder(orderId, updatedOrder)
+        this.adminRefreshPendingCount()
         return { success: true, order: updatedOrder }
       } catch (err) {
         const error = err as { response?: { data?: { message?: string } } }
@@ -106,7 +113,7 @@ export const useAdminOrderStore = defineStore('adminOrder', {
           this.currentOrder = null
         }
 
-        this.pendingCount = this.pendingOrders.length
+        this.adminRefreshPendingCount()
         return { success: true }
       } catch (err) {
         const error = err as { response?: { data?: { message?: string } } }
@@ -124,17 +131,8 @@ export const useAdminOrderStore = defineStore('adminOrder', {
       try {
         const response = await api.post(`/admin/orders/${orderId}/accept/`)
         const updatedOrder = new OrderModel(response.data.order || response.data)
-
-        const index = this.orders.findIndex((o) => o.id === orderId)
-        if (index !== -1) {
-          this.orders[index] = updatedOrder
-        }
-
-        if (this.currentOrder && this.currentOrder.id === orderId) {
-          this.currentOrder = updatedOrder
-        }
-
-        this.pendingCount = this.pendingOrders.length
+        this.adminSyncUpdatedOrder(orderId, updatedOrder)
+        this.adminRefreshPendingCount()
         return { success: true, order: updatedOrder }
       } catch (err) {
         const error = err as { response?: { data?: { message?: string } } }

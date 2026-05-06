@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useUserStore } from '@/stores/user_store'
+import { useCartStore } from '@/stores/cart_store.ts'
 
 export default defineComponent({
   name: 'MenuComponent',
@@ -17,6 +18,10 @@ export default defineComponent({
     isAdmin(): boolean {
       const store = useUserStore()
       return store.isAdmin
+    },
+    cartCount(): number {
+      const cartStore = useCartStore()
+      return cartStore.totalItems
     },
   },
   methods: {
@@ -109,14 +114,14 @@ export default defineComponent({
       <div v-if="!isLoggedIn">
         <router-link to="/login" class="loginbutton">Belépés</router-link>
         <router-link to="/registration" class="registerbutton">Regisztráció</router-link>
-        <router-link to="/cart"
+        <router-link to="/cart" class="cart-link"
           ><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i
-        ></router-link>
+        ><span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span></router-link>
       </div>
       <div v-if="isLoggedIn" class="user-actions">
-        <router-link to="/cart"
+        <router-link to="/cart" class="cart-link"
           ><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i
-        ></router-link>
+        ><span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span></router-link>
         <router-link to="/profile"
           ><i class="fa fa-user-circle cartbutton" aria-hidden="true"></i
         ></router-link>
@@ -128,6 +133,31 @@ export default defineComponent({
 </template>
 
 <style scoped>
+.cart-link {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  transform: translate(50%, -50%);
+  background: #dc3545;
+  color: #fff;
+  border-radius: 999px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
 .navbar {
   position: fixed;
   transition: 0.5s;

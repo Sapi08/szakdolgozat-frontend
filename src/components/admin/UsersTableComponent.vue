@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
-import { useUserStore } from '@/stores/user_store.ts'
+import { useAdminUserStore } from '@/stores/admin/admin_user_store'
 import moment from 'moment'
 import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
 
@@ -23,12 +23,12 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapStores(useUserStore),
+    ...mapStores(useAdminUserStore),
   },
   methods: {
     async handleSave(updatedUser: any) {
       try {
-        await this.userStore.updateUser(updatedUser.id, updatedUser)
+        await this.adminUserStore.adminUpdateUser(updatedUser.id, updatedUser)
         const index = this.users.findIndex(u => u.id === updatedUser.id)
         if (index !== -1) {
           this.users[index] = updatedUser
@@ -41,7 +41,7 @@ export default defineComponent({
     },
     async handleDelete(id: number) {
       try {
-        await this.userStore.deleteUser(id)
+        await this.adminUserStore.adminDeleteUser(id)
         this.users = this.users.filter(u => u.id !== id)
         alert('Felhasználó sikeresen törölve')
       } catch (err) {
@@ -53,7 +53,7 @@ export default defineComponent({
   async created() {
     this.loading = true
     try {
-      this.users = await this.userStore.loadUsers()
+      this.users = await this.adminUserStore.adminLoadUsers()
     } finally {
       this.loading = false
     }

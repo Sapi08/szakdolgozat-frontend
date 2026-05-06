@@ -22,8 +22,8 @@ export default {
     }
   },
   mounted() {
-    this.bookingStore.fetchBookings()
-    this.contactStore.loadContacts()
+    this.bookingStore.adminFetchBookings()
+    this.contactStore.adminLoadContacts()
     this.orderStore.fetchPendingOrdersCount()
   }
 }

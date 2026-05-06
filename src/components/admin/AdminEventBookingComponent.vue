@@ -19,12 +19,12 @@ export default {
     }
   },
   mounted() {
-    this.bookingStore.fetchBookings()
+    this.bookingStore.adminFetchBookings()
   },
   methods: {
     async handleConfirm(id: number) {
       if (confirm('Biztosan elfogadod ezt a foglalást?')) {
-        const result = await this.bookingStore.changeBookingStatus(id, true)
+        const result = await this.bookingStore.adminChangeBookingStatus(id, true)
         if (result.success) {
           alert('Foglalás elfogadva!')
         } else {
@@ -34,7 +34,7 @@ export default {
     },
     async handleReject(id: number) {
       if (confirm('Biztosan elutasítod ezt a foglalást?')) {
-        const result = await this.bookingStore.changeBookingStatus(id, false)
+        const result = await this.bookingStore.adminChangeBookingStatus(id, false)
         if (result.success) {
           alert('Foglalás elutasítva!')
         } else {
@@ -43,7 +43,7 @@ export default {
       }
     },
     viewBooking(id: number) {
-      this.bookingStore.markAsSeen(id)
+      this.bookingStore.adminMarkAsSeen(id)
     },
     openModal(booking: Booking) {
       this.selectedBooking = booking
@@ -102,6 +102,7 @@ export default {
             <th>Megjegyzés</th>
             <th>Státusz</th>
             <th>Műveletek</th>
+            <th>Részletek</th>
           </tr>
         </thead>
         <tbody>
@@ -141,6 +142,7 @@ export default {
                 Elutasít
               </button>
             </td>
+            <td @click="openModal(booking)" style="text-align: center">🔍</td>
           </tr>
         </tbody>
       </table>

@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useDishStore } from '@/stores/dish_store'
+import { useAdminDishStore } from '@/stores/admin/admin_dish_store'
 import type { Dish } from '@/types/dish'
 import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
 
@@ -10,6 +11,7 @@ export default defineComponent({
   components: { EditableTableComponent },
   data() {
     return {
+      adminDishStore: useAdminDishStore(),
       loading: false,
       dishes: [] as Dish[],
       showAllergensModal: false,
@@ -71,7 +73,7 @@ export default defineComponent({
     },
     async handleCreateDish() {
       try {
-        await this.dishStore.createDish(this.newDish)
+        await this.adminDishStore.adminCreateDish(this.newDish)
         this.dishes = [...this.dishStore.dishes]
         this.closeCreateModal()
         alert('Étel sikeresen létrehozva')
@@ -82,7 +84,7 @@ export default defineComponent({
     },
     async handleSave(updatedDish: Dish) {
       try {
-        await this.dishStore.updateDish(updatedDish.id, updatedDish)
+        await this.adminDishStore.adminUpdateDish(updatedDish.id, updatedDish)
         const index = this.dishes.findIndex(d => d.id === updatedDish.id)
         if (index !== -1) {
           this.dishes[index] = updatedDish
@@ -95,7 +97,7 @@ export default defineComponent({
     },
     async handleDelete(id: number) {
       try {
-        await this.dishStore.deleteDish(id)
+        await this.adminDishStore.adminDeleteDish(id)
         this.dishes = this.dishes.filter(d => d.id !== id)
         alert('Étel sikeresen törölve')
       } catch (err) {
@@ -106,7 +108,7 @@ export default defineComponent({
     async toggleAvailability(dish: Dish) {
       try {
         dish.available = !dish.available
-        await this.dishStore.toggleDishAvailability(dish.id)
+        await this.adminDishStore.adminToggleDishAvailability(dish.id)
       } catch (err) {
         console.error(err)
         alert('Hiba történt az elérhetőség módosításakor!')
@@ -118,9 +120,9 @@ export default defineComponent({
     this.loading = true
     try {
       await Promise.all([
-        this.dishStore.loadDishes().then(data => this.dishes = data),
-        this.dishStore.loadAllergens(),
-        this.dishStore.loadCategories()
+        this.dishStore.loadDishes().then((data: any) => (this.dishes = data)),
+        this.adminDishStore.adminLoadAllergens(),
+        this.adminDishStore.adminLoadCategories()
       ])
     } finally {
       this.loading = false

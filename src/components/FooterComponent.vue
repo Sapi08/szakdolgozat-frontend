@@ -1,8 +1,57 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { mapStores } from 'pinia'
+import { useContactStore } from '@/stores/contact_store.ts'
 
 export default defineComponent({
   name: 'FooterComponent',
+  data() {
+    return {
+      subscriberEmail: '',
+      backendError: '',
+      successMessage: '',
+      isSubmitting: false,
+    }
+  },
+  computed: {
+    ...mapStores(useContactStore),
+  },
+  methods: {
+    async addSubscriber() {
+      this.backendError = ''
+      this.successMessage = ''
+
+      const email = this.subscriberEmail.trim()
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+      if (!email) {
+        this.backendError = 'Kérjük, adjon meg egy e-mail címet.'
+        return
+      }
+
+      if (!emailRegex.test(email)) {
+        this.backendError = 'Érvénytelen e-mail formátum.'
+        return
+      }
+
+      this.isSubmitting = true
+
+      try {
+        await this.contactStore.addSubscriber(email)
+        this.successMessage = 'Sikeres feliratkozás!'
+        this.subscriberEmail = ''
+
+        setTimeout(() => {
+          this.successMessage = ''
+        }, 3000)
+      } catch (error) {
+        console.error('Hírlevél feliratkozás hiba:', error)
+        this.backendError = 'Hiba történt a feliratkozás során. Kérjük, próbálja újra.'
+      } finally {
+        this.isSubmitting = false
+      }
+    }
+  }
 })
 </script>
 
@@ -49,10 +98,23 @@ export default defineComponent({
               Ha szeretne föliratkozni hírlevelünkre írja be e-mail címét és mindig értesítjük
               legfrissebb akcióinkról és ajánlatainkról.
             </p>
-            <div class="form">
-              <input class="form-control" placeholder="E-mail" />
-              <button class="btn custom-btn">Küldés</button>
-            </div>
+            <form class="form" @submit.prevent="addSubscriber">
+              <input
+                v-model="subscriberEmail"
+                class="form-control"
+                placeholder="E-mail"
+                type="email"
+                autocomplete="email"
+              />
+              <button class="btn custom-btn" type="submit" :disabled="isSubmitting">
+                <span v-if="isSubmitting">Küldés...</span>
+                <span v-else>Küldés</span>
+              </button>
+            </form>
+            <p v-if="backendError" class="newsletter-feedback newsletter-error">{{ backendError }}</p>
+            <p v-if="successMessage" class="newsletter-feedback newsletter-success">
+              {{ successMessage }}
+            </p>
           </div>
         </div>
       </div>
@@ -61,7 +123,6 @@ export default defineComponent({
       <div class="container">
         <p>Copyright &copy; <a href="#">Pizzahaz.hu</a>, Minden Jog Fenntartva.</p>
         <br />
-        <p>Alkotó: <a href="#">Kucsera Milán</a></p>
       </div>
     </div>
   </div>
@@ -111,7 +172,7 @@ export default defineComponent({
 .footer .footer-link a::before {
   position: relative;
   content: '\f105';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Free', sans-serif;
   font-weight: 900;
   margin-right: 10px;
   color: #fbaf32;
@@ -130,7 +191,6 @@ export default defineComponent({
   display: flex;
 }
 .footer .footer-social a {
-  display: inline-block;
   margin-right: 5px;
   width: 35px;
   height: 35px;
@@ -152,6 +212,21 @@ export default defineComponent({
   position: relative;
   width: 100%;
 }
+
+.newsletter-feedback {
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+.newsletter-error {
+  color: #dc3545;
+}
+
+.newsletter-success {
+  color: #198754;
+}
+
 .footer .footer-newsletter input {
   height: 60px;
   background: transparent;

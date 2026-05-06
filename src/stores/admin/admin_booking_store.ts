@@ -17,7 +17,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
   },
 
   actions: {
-    async fetchBookings(filters?: { confirmed?: boolean; seen?: boolean }) {
+    async adminFetchBookings(filters?: { confirmed?: boolean; seen?: boolean }) {
       this.loading = true
       this.error = null
       try {
@@ -41,7 +41,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
       }
     },
 
-    async changeBookingStatus(id: number, confirmed: boolean) {
+    async adminChangeBookingStatus(id: number, confirmed: boolean) {
       this.loading = true
       this.error = null
       try {
@@ -60,7 +60,7 @@ export const useAdminBookingStore = defineStore('admin_booking', {
       }
     },
 
-    async markAsSeen(id: number) {
+    async adminMarkAsSeen(id: number) {
       try {
         await api.patch(`/admin/bookings/${id}/mark-seen/`)
         const booking = this.bookings.find((b) => b.id === id)

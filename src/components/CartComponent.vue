@@ -45,7 +45,8 @@ export default defineComponent({
     ...mapStores(useCartStore, useOrderStore, useUserStore, useCouponStore),
     ...mapState(useCartStore, ['cartItems', 'totalItems']),
     deliveryFee(): number {
-      return (this.isCouponValid && this.couponType === 'shipping') ? 0 : 500
+      if (this.deliveryType !== 'delivery') return 0
+      return this.isCouponValid && this.couponType === 'shipping' ? 0 : 500
     },
     calculatedDiscount(): number {
       if (!this.isCouponValid) return 0;
@@ -377,7 +378,7 @@ export default defineComponent({
           </div>
 
           <!-- Kiszállítás extra díj (Fix) -->
-          <div class="cart-item bg-light">
+          <div v-if="deliveryType === 'delivery'" class="cart-item bg-light">
             <div class="item-info">
               <h6 class="item-name mb-1"><i class="fas fa-motorcycle me-2 text-muted"></i>Kiszállítás</h6>
               <small class="item-price text-muted" v-if="isCouponValid && couponType === 'shipping'">Kupon alkalmazva</small>
@@ -463,7 +464,7 @@ export default defineComponent({
             </div>
 
             <!-- Kiszállítás (Fix) modalban -->
-            <div class="order-item bg-white" style="border-left-color: #6c757d;">
+                <div v-if="deliveryType === 'delivery'" class="order-item bg-white" style="border-left-color: #6c757d;">
               <div class="order-item-details">
                 <span class="order-item-name"><i class="fas fa-motorcycle me-2 text-muted"></i>Kiszállítás</span>
               </div>

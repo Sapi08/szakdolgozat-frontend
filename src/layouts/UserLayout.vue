@@ -7,7 +7,7 @@ import ScratchCardPopupComponent from '@/components/ScratchCardPopupComponent.vu
 export default defineComponent({
   name: 'UserLayout',
   components: {
-    ScratchCardPopupComponent: ScratchCardPopupComponent,
+    ScratchCardPopupComponent,
     FooterComponent,
     NavBarComponent,
   },
@@ -21,4 +21,4 @@ export default defineComponent({
   <FooterComponent />
 </template>
 
-<style scoped></style>
+<style></style>

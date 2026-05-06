@@ -17,7 +17,7 @@ export const useAdminContactStore = defineStore('admin_contact', {
   },
 
   actions: {
-    async loadContacts() {
+    async adminLoadContacts() {
       this.loading = true
       this.error = null
       try {
@@ -37,7 +37,7 @@ export const useAdminContactStore = defineStore('admin_contact', {
       }
     },
 
-    async markAsSeen(id: number) {
+    async adminMarkAsSeen(id: number) {
       try {
         await api.patch(`/admin/contacts/${id}/mark-seen/`)
         const contact = this.contacts.find((c) => c.id === id)

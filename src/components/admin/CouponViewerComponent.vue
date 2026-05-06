@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
-import { useCouponStore } from '@/stores/coupon_store.ts'
+import { useAdminCouponStore } from '@/stores/admin/admin_coupon_store'
 import type { Coupon } from '@/types/coupon.ts'
 
 export default defineComponent({
@@ -21,22 +21,22 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapStores(useCouponStore),
+    ...mapStores(useAdminCouponStore),
     isLoading() {
-      return this.couponStore.isLoading
+      return this.adminCouponStore.isLoading
     },
     coupons() {
-      return this.couponStore.coupons
+      return this.adminCouponStore.coupons
     },
   },
   async mounted() {
-    await this.loadCoupons()
+    await this.adminLoadCoupons()
   },
   methods: {
-    async loadCoupons() {
+    async adminLoadCoupons() {
       this.backendError = ''
       try {
-        await this.couponStore.loadCoupons()
+        await this.adminCouponStore.adminLoadCoupons()
       } catch (error) {
         this.backendError = 'Hiba történt a kuponok betöltésekor'
       }
@@ -56,7 +56,7 @@ export default defineComponent({
     async confirmDelete() {
       if (this.couponToDelete === null) return
 
-      const result = await this.couponStore.deleteCoupon(this.couponToDelete)
+      const result = await this.adminCouponStore.adminDeleteCoupon(this.couponToDelete)
 
       if (result.success) {
         this.successMessage = 'Kupon sikeresen törölve!'

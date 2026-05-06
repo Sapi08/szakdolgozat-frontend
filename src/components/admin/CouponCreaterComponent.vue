@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
-import { useCouponStore } from '@/stores/coupon_store.ts'
+import { useAdminCouponStore } from '@/stores/admin/admin_coupon_store'
 
 export default defineComponent({
   name: 'CouponCreaterComponent',
@@ -23,21 +23,21 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapStores(useCouponStore),
+    ...mapStores(useAdminCouponStore),
     isLoading() {
-      return this.couponStore.isLoading
+      return this.adminCouponStore.isLoading
     },
     couponTypes() {
-      return this.couponStore.couponTypes
+      return this.adminCouponStore.couponTypes
     },
   },
   async mounted() {
-    await this.loadDiscountTypes()
+    await this.adminLoadDiscountTypes()
   },
   methods: {
-    async loadDiscountTypes() {
+    async adminLoadDiscountTypes() {
       try {
-        await this.couponStore.loadDiscountTypes()
+        await this.adminCouponStore.adminLoadDiscountTypes()
       } catch (error) {
         this.backendError = 'Hiba történt a kedvezménytípusok betöltésekor'
       }
@@ -116,7 +116,7 @@ export default defineComponent({
       this.expirationDate = ''
       this.clearErrors()
     },
-    async createCoupon() {
+    async adminCreateCoupon() {
       if (!this.validateForm()) {
         return
       }
@@ -130,7 +130,7 @@ export default defineComponent({
         expiration_date: new Date(this.expirationDate).toISOString(),
       }
 
-      const result = await this.couponStore.createCoupon(couponData)
+      const result = await this.adminCouponStore.adminCreateCoupon(couponData)
 
       if (result.success) {
         this.generatedCode = result.data?.code || ''
@@ -166,7 +166,7 @@ export default defineComponent({
           {{ backendError }}
         </div>
 
-        <form @submit.prevent="createCoupon" class="coupon-form">
+        <form @submit.prevent="adminCreateCoupon" class="coupon-form">
           <!-- User ID -->
           <div class="form-group">
             <label for="userId">Felhasználó ID <span class="required">*</span></label>
