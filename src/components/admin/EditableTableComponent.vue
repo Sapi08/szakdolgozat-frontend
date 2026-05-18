@@ -30,6 +30,14 @@ export default defineComponent({
       type: Function as PropType<(item: any) => boolean>,
       default: () => false,
     },
+    showActions: {
+      type: Boolean,
+      default: true,
+    },
+    showDelete: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['save', 'delete', 'row-click'],
   data() {
@@ -83,8 +91,8 @@ export default defineComponent({
               <th v-for="col in columns" :key="col.key">
                 {{ col.label }}
               </th>
-              <th>Műveletek</th>
-              <th>Törlés</th>
+              <th v-if="showActions">Műveletek</th>
+              <th v-if="showDelete">Törlés</th>
             </tr>
           </thead>
           <tbody>
@@ -119,11 +127,11 @@ export default defineComponent({
                     </slot>
                   </template>
                 </td>
-                <td class="actions">
+                <td v-if="showActions" class="actions">
                   <button @click.stop="saveEdit" class="bg-green-500 text-white px-2 py-1 rounded">Mentés</button>
                   <button @click.stop="cancelEdit" class="bg-gray-500 text-white px-2 py-1 rounded">Mégse</button>
                 </td>
-                <td class="actions">
+                <td v-if="showDelete" class="actions">
                   <button @click.stop="deleteItem(item)" class="bg-red-500 text-black px-2 py-1 rounded">
                     <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" >
                     <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
@@ -137,10 +145,11 @@ export default defineComponent({
                     <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
                   </slot>
                 </td>
-                <td class="actions">
+                <td v-if="showActions" class="actions">
                   <button @click.stop="startEdit(item)" class="bg-blue-500 text-black px-2 py-1 rounded">Szerkesztés</button>
+                  <slot name="extra-actions" :item="item"></slot>
                 </td>
-                <td class="actions">
+                <td v-if="showDelete" class="actions">
                   <button @click.stop="deleteItem(item)" class="bg-red-500 text-black px-2 py-1 rounded">
                     <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" >
                     <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
@@ -181,6 +190,7 @@ th {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #495057;
+  text-align: center;
 }
 
 .unseen {

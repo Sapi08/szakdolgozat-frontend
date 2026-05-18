@@ -3,7 +3,9 @@ import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useDishStore } from '@/stores/dish_store'
 import { useAdminDishStore } from '@/stores/admin/admin_dish_store'
+import { useAdminDishVariantStore } from '@/stores/admin/admin_dish_variant_store'
 import type { Dish } from '@/types/dish'
+import type { DishVariant } from '@/types/dish-variant'
 import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
 
 export default defineComponent({
@@ -12,25 +14,36 @@ export default defineComponent({
   data() {
     return {
       adminDishStore: useAdminDishStore(),
+      adminDishVariantStore: useAdminDishVariantStore(),
       loading: false,
       dishes: [] as Dish[],
       showAllergensModal: false,
-      showCreateModal: false,
+      showCreateDishModal: false,
+      showCreateDishVariantModal: false,
+      showViewVariantsModal: false,
+      currentDishForVariants: null as Dish | null,
+      currentDishVariants: [] as DishVariant[],
+      variantLoading: false,
       currentEditForm: null as any,
       newDish: {
         name: '',
         description: '',
         price: 0,
-        category: '',
+        category_id: '',
         allergies: [] as string[],
         available: true
+      },
+      newDishVariant: {
+        dish_id: null as number | null,
+        detail: '',
+        price: 0
       },
       columns: [
         { key: 'id', label: 'Azonosító', editable: false },
         { key: 'name', label: 'Név', editable: true },
         { key: 'description', label: 'Leírás', editable: true },
         { key: 'price', label: 'Ár', editable: true, type: 'number' },
-        { key: 'category', label: 'Kategória', editable: true },
+        { key: 'category_id', label: 'Kategória', editable: true },
         { key: 'allergies', label: 'Allergének', editable: true, type: 'array', format: (val: string[]) => val?.join(', ') || '' },
         { key: 'available', label: 'Elérhető', editable: false },
       ] as TableColumn[],
@@ -39,10 +52,10 @@ export default defineComponent({
   computed: {
     ...mapStores(useDishStore),
     availableCategories(): string[] {
-      return this.dishStore.categories
+      return this.adminDishStore.categories
     },
     availableAllergens(): string[] {
-      return this.dishStore.allergens
+      return this.adminDishStore.allergens
     }
   },
   methods: {
@@ -57,19 +70,73 @@ export default defineComponent({
       this.showAllergensModal = false
       this.currentEditForm = null
     },
-    openCreateModal() {
+    openCreateDishModal() {
       this.newDish = {
         name: '',
         description: '',
         price: 0,
-        category: this.availableCategories[0] || '',
+        category_id: this.availableCategories[0] || '',
         allergies: [],
         available: true
       }
-      this.showCreateModal = true
+      this.showCreateDishModal = true
     },
     closeCreateModal() {
-      this.showCreateModal = false
+      this.showCreateDishModal = false
+    },
+    openCreateDishVariantModal() {
+      this.newDishVariant = {
+        dish_id: this.dishes.length > 0 ? this.dishes[0].id : null,
+        detail: '',
+        price: 0
+      }
+      this.showCreateDishVariantModal = true
+    },
+    closeCreateVariantModal() {
+      this.showCreateDishVariantModal = false
+    },
+    async openViewVariantsModal(dish: Dish) {
+      this.currentDishForVariants = dish
+      this.showViewVariantsModal = true
+      this.variantLoading = true
+      try {
+        const variants = await this.adminDishVariantStore.adminLoadVariantsForDish(dish.id)
+        this.currentDishVariants = variants
+      } catch (err) {
+        console.error(err)
+        alert('Hiba történt a variánsok betöltésekor!')
+      } finally {
+        this.variantLoading = false
+      }
+    },
+    closeViewVariantsModal() {
+      this.showViewVariantsModal = false
+      this.currentDishForVariants = null
+      this.currentDishVariants = []
+    },
+    async deleteVariant(variantId: number) {
+      if (!confirm('Biztosan törölni szeretné ezt a variánst?')) return
+      try {
+        await this.adminDishVariantStore.adminDeleteDishVariant(variantId)
+        this.currentDishVariants = this.currentDishVariants.filter(v => v.id !== variantId)
+      } catch (err) {
+        console.error(err)
+        alert('Hiba történt a törlés során!')
+      }
+    },
+    async handleCreateDishVariant() {
+      if (!this.newDishVariant.dish_id) {
+        alert('Kérjük válasszon egy ételt!')
+        return
+      }
+      try {
+        await this.adminDishVariantStore.adminCreateDishVariant(this.newDishVariant)
+        this.closeCreateVariantModal()
+        alert('Étel adag méret (variáns) sikeresen létrehozva')
+      } catch (err) {
+        console.error(err)
+        alert('Hiba történt a létrehozás során!')
+      }
     },
     async handleCreateDish() {
       try {
@@ -134,7 +201,8 @@ export default defineComponent({
 <template>
   <div class="table-container">
     <div class="header-actions">
-      <button @click="openCreateModal" class="add-btn">Új étel hozzáadása</button>
+      <button @click="openCreateDishVariantModal" class="add-btn">Új étel adag méret hozzáadása</button>
+      <button @click="openCreateDishModal" class="add-btn">Új étel hozzáadása</button>
     </div>
 
     <EditableTableComponent
@@ -144,8 +212,11 @@ export default defineComponent({
       @save="handleSave"
       @delete="handleDelete"
     >
-      <template #edit-category="{ editForm }">
-        <select v-model="editForm.category" class="border p-1 w-full">
+      <template #cell-category_id="{ item }">
+        {{ item.category_id || item.category || '-' }}
+      </template>
+      <template #edit-category_id="{ editForm }">
+        <select v-model="editForm.category_id" class="border p-1 w-full text-black bg-white">
           <option v-for="cat in availableCategories" :key="cat" :value="cat">
             {{ cat }}
           </option>
@@ -165,10 +236,15 @@ export default defineComponent({
           {{ item.available !== false ? 'Igen' : 'Nem' }}
         </button>
       </template>
+      <template #extra-actions="{ item }">
+        <button @click.stop="openViewVariantsModal(item)" class="bg-purple-500 text-black px-2 py-1 rounded ml-2">
+          Variánsok
+        </button>
+      </template>
     </EditableTableComponent>
 
     <!-- Új étel Modal -->
-    <div v-if="showCreateModal" class="modal-overlay">
+    <div v-if="showCreateDishModal" class="modal-overlay">
       <div class="modal-content" @click.stop>
         <button class="close-modal-btn" @click="closeCreateModal">&times;</button>
         <h3>Új étel hozzáadása</h3>
@@ -186,7 +262,7 @@ export default defineComponent({
         </div>
         <div class="form-group">
           <label>Kategória</label>
-          <select v-model="newDish.category" class="form-input">
+          <select v-model="newDish.category_id" class="form-input">
             <option v-for="cat in availableCategories" :key="cat" :value="cat">{{ cat }}</option>
           </select>
         </div>
@@ -222,6 +298,69 @@ export default defineComponent({
         </div>
       </div>
     </div>
+
+    <!-- Új étel adag méret (variáns) Modal -->
+    <div v-if="showCreateDishVariantModal" class="modal-overlay">
+      <div class="modal-content" @click.stop>
+        <button class="close-modal-btn" @click="closeCreateVariantModal">&times;</button>
+        <h3>Új étel adag méret hozzáadása</h3>
+        <div class="form-group">
+          <label>Étel kiválasztása</label>
+          <select v-model="newDishVariant.dish_id" class="form-input">
+            <option v-for="dish in dishes" :key="dish.id" :value="dish.id">"{{ dish.id }}" {{ dish.name }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Adag méret / Részlet (pl. 32 cm, Nagy adag)</label>
+          <input type="text" v-model="newDishVariant.detail" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label>Ár</label>
+          <input type="number" v-model="newDishVariant.price" class="form-input" />
+        </div>
+        <div class="modal-actions">
+          <button @click="closeCreateVariantModal" class="btn-cancel">Mégse</button>
+          <button @click="handleCreateDishVariant" class="btn-save">Mentés</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Variánsok listázása és törlése Modal -->
+    <div v-if="showViewVariantsModal" class="modal-overlay" @click="closeViewVariantsModal">
+      <div class="modal-content" @click.stop>
+        <button class="close-modal-btn" @click="closeViewVariantsModal">&times;</button>
+        <h3>"{{ currentDishForVariants?.name }}" variánsai</h3>
+
+        <div v-if="variantLoading" class="p-4 text-center">Betöltés...</div>
+        <div v-else-if="currentDishVariants.length === 0" class="p-4 text-center">Nincsenek variánsok ehhez az ételhez.</div>
+        <div v-else class="variants-list mt-4">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gray-100">
+                <th class="p-2 text-left border">Detail</th>
+                <th class="p-2 text-left border">Ár</th>
+                <th class="p-2 text-center border">Művelet</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="variant in currentDishVariants" :key="variant.id">
+                <td class="p-2 border">{{ variant.detail }}</td>
+                <td class="p-2 border">{{ variant.price }} Ft</td>
+                <td class="p-2 border text-center">
+                  <button @click="deleteVariant(variant.id)" class="bg-red-500 text-white px-2 py-1 rounded">
+                    Törlés
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="modal-actions mt-4">
+          <button @click="closeViewVariantsModal" class="btn-cancel">Bezárás</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -235,6 +374,7 @@ export default defineComponent({
   margin-bottom: 20px;
   display: flex;
   justify-content: flex-end;
+  gap: 20px;
 }
 
 .add-btn {
@@ -350,5 +490,10 @@ export default defineComponent({
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+
+.variants-list {
+  max-height: 400px;
+  overflow-y: auto;
 }
 </style>

@@ -38,14 +38,6 @@ export default defineComponent({
     }
   },
   methods: {
-    handleSave(item: any) {
-      console.log('Mentés:', item)
-      // Todo: ha a store-ban is benne lesz a funkció
-    },
-    handleDelete(id: number) {
-      console.log('Törlés:', id)
-      // Todo: ha a store-ban is benne lesz a funkció
-    },
     handleRowClick(item: any) {
       if (item.id && !item.seen_by_admin) {
         this.admin_contactStore.adminMarkAsSeen(item.id)
@@ -65,8 +57,8 @@ export default defineComponent({
       :columns="columns"
       :loading="loading"
       :unseenFn="checkIfUnseen"
-      @save="handleSave"
-      @delete="handleDelete"
+      :showActions="false"
+      :showDelete="false"
       @row-click="handleRowClick"
     />
   </div>
