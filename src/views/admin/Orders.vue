@@ -136,7 +136,11 @@ export default defineComponent({
         Rendelések Kezelése
       </h1>
       <div class="header-actions">
-        <button @click="loadOrders" class="btn btn-outline-primary" :disabled="adminOrderStore.loading">
+        <button
+          @click="loadOrders"
+          class="btn btn-outline-primary"
+          :disabled="adminOrderStore.loading"
+        >
           <i class="fas fa-sync-alt" :class="{ 'fa-spin': adminOrderStore.loading }"></i>
           Frissítés
         </button>
@@ -219,7 +223,10 @@ export default defineComponent({
     </div>
 
     <!-- Rendelések lista -->
-    <div v-if="adminOrderStore.loading && adminOrderStore.orders.length === 0" class="text-center py-5">
+    <div
+      v-if="adminOrderStore.loading && adminOrderStore.orders.length === 0"
+      class="text-center py-5"
+    >
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Betöltés...</span>
       </div>
@@ -261,7 +268,11 @@ export default defineComponent({
           </div>
           <div class="order-info-row">
             <i class="fas fa-map-marker-alt"></i>
-            <span>{{ order.delivery_address ? order.delivery_address.substring(0, 50) + '...' : 'Személyes átvétel' }}</span>
+            <span>{{
+              order.delivery_address
+                ? order.delivery_address.substring(0, 50) + '...'
+                : 'Személyes átvétel'
+            }}</span>
           </div>
           <div class="order-info-row">
             <i class="fas fa-phone"></i>
@@ -434,7 +445,9 @@ export default defineComponent({
               <i class="fas fa-tag me-2"></i>
               Kupon
             </h5>
-            <p class="coupon-code">Kupon alkalmazva: {{ selectedOrder.coupon || '' }} (azonosító)</p>
+            <p class="coupon-code">
+              Kupon alkalmazva: {{ selectedOrder.coupon || '' }} (azonosító)
+            </p>
           </div>
 
           <!-- Tételek -->

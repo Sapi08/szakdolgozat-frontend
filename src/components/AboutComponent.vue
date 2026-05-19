@@ -17,11 +17,12 @@
             <div class="about-text">
               <p>
                 Cégünk családi vállalkozásként üzemel. Kizárólag házhoz szállítással foglalkozunk,
-                rendezvények teljeskörű szervezése-kivitelezése, családi, baráti, céges rendezvényre:
+                rendezvények teljeskörű szervezése-kivitelezése, családi, baráti, céges
+                rendezvényre:
               </p>
               <p>
-                Napi menük, Levesek, Frissensültek, Sültestálak, Pizzák, Hamburgerek,
-                Gyrosok, Hideg tálak, Szendvicsek ( büféasztal ).
+                Napi menük, Levesek, Frissensültek, Sültestálak, Pizzák, Hamburgerek, Gyrosok, Hideg
+                tálak, Szendvicsek ( büféasztal ).
               </p>
               <a class="btn custom-btn" href="/menu">Rendeljen most</a>
             </div>

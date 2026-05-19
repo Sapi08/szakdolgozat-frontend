@@ -50,8 +50,8 @@ export default defineComponent({
       } finally {
         this.isSubmitting = false
       }
-    }
-  }
+    },
+  },
 })
 </script>
 
@@ -111,7 +111,9 @@ export default defineComponent({
                 <span v-else>Küldés</span>
               </button>
             </form>
-            <p v-if="backendError" class="newsletter-feedback newsletter-error">{{ backendError }}</p>
+            <p v-if="backendError" class="newsletter-feedback newsletter-error">
+              {{ backendError }}
+            </p>
             <p v-if="successMessage" class="newsletter-feedback newsletter-success">
               {{ successMessage }}
             </p>

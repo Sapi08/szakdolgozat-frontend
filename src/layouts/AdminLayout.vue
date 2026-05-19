@@ -52,9 +52,7 @@ export default defineComponent({
       const currentPendingOrders = this.orderStore.pendingOrders.length
 
       const hasUnseen =
-        currentUnseenBookings > 0 ||
-        currentUnseenContacts > 0 ||
-        currentPendingOrders > 0
+        currentUnseenBookings > 0 || currentUnseenContacts > 0 || currentPendingOrders > 0
 
       if (hasUnseen) {
         this.playNotificationSound()
@@ -74,7 +72,7 @@ export default defineComponent({
       } catch (err) {
         console.error('Error creating audio:', err)
       }
-    }
+    },
   },
 })
 </script>

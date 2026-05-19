@@ -42,7 +42,8 @@ export default defineComponent({
                 <i class="flaticon-cooking"></i>
                 <h3>Szakácsaink több éves tapasztalattal rendelkeznek</h3>
                 <p>
-                  Szakácsaink szenvedélye a főzés és céljuk, hogy a legjobb ételeket készítsék el Önnek.
+                  Szakácsaink szenvedélye a főzés és céljuk, hogy a legjobb ételeket készítsék el
+                  Önnek.
                 </p>
               </div>
             </div>
@@ -51,7 +52,8 @@ export default defineComponent({
                 <i class="flaticon-vegetable"></i>
                 <h3>Természetes összetevők</h3>
                 <p>
-                  Minden ételünk természetes összetevőkből készül, hogy a lehető legjobb ízt és minőséget biztosítsuk.
+                  Minden ételünk természetes összetevőkből készül, hogy a lehető legjobb ízt és
+                  minőséget biztosítsuk.
                 </p>
               </div>
             </div>
@@ -62,7 +64,8 @@ export default defineComponent({
                 <i class="flaticon-medal"></i>
                 <h3>Legjobb minőségű termékek</h3>
                 <p>
-                  Igyekszünk mindig a legjobb minőségű alapanyagokat beszerezni, hogy ételeink kiválóak legyenek.
+                  Igyekszünk mindig a legjobb minőségű alapanyagokat beszerezni, hogy ételeink
+                  kiválóak legyenek.
                 </p>
               </div>
             </div>
@@ -82,7 +85,8 @@ export default defineComponent({
                 <i class="flaticon-courier"></i>
                 <h3>Gyors házhozszállítás</h3>
                 <p>
-                  Gyors és megbízható házhozszállítást kínálunk, hogy ételeink mindig frissen és melegen érkezzenek meg Önhöz.
+                  Gyors és megbízható házhozszállítást kínálunk, hogy ételeink mindig frissen és
+                  melegen érkezzenek meg Önhöz.
                 </p>
               </div>
             </div>
@@ -91,7 +95,8 @@ export default defineComponent({
                 <i class="flaticon-fruits-and-vegetables"></i>
                 <h3>Egészséges étkezés, alacsony zsírtartalom</h3>
                 <p>
-                  Egészséges és tápláló ételeket kínálunk, amelyek alacsony zsírtartalmúak, hogy Ön jól érezze magát.
+                  Egészséges és tápláló ételeket kínálunk, amelyek alacsony zsírtartalmúak, hogy Ön
+                  jól érezze magát.
                 </p>
               </div>
             </div>
@@ -127,7 +132,7 @@ export default defineComponent({
 }
 .feature .feature-img img {
   width: 100%;
-  transition: .3s;
+  transition: 0.3s;
 }
 .feature .feature-img img:hover {
   transform: scale(1.1);
@@ -154,7 +159,7 @@ export default defineComponent({
 }
 .feature .feature-item i::after {
   position: absolute;
-  content: "";
+  content: '';
   width: 40px;
   height: 40px;
   top: -10px;

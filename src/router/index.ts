@@ -24,7 +24,7 @@ import NewPassword from '@/views/NewPassword.vue'
 import PaymentSuccess from '@/views/PaymentSuccess.vue'
 import PaymentCancelled from '@/views/PaymentCancelled.vue'
 
-import {useUserStore} from '@/stores/user_store.ts'
+import { useUserStore } from '@/stores/user_store.ts'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -71,7 +71,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-
   const userStore = useUserStore()
 
   const requiresAdmin = to.matched.some((record) => (record.meta as any)?.requiresAdmin)

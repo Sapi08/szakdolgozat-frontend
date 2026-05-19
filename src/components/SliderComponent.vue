@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Autoplay, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/autoplay';
-import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Autoplay, Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/autoplay'
+import 'swiper/css/pagination'
 
 const slides = [
   {
@@ -21,10 +21,10 @@ const slides = [
           <a class="btn custom-btn" href="/event_booking">Foglalás</a>
         </div>
       </div>
-    `
+    `,
   },
   {
-    text:`
+    text: `
       <div class="carousel-text">
         <h1 class="display-3">Hazánk <span class="text-primary">legjobb</span> szakácsai</h1>
         <p class="fs-5">
@@ -36,7 +36,7 @@ const slides = [
           <a class="btn custom-btn" href="/event_booking">Foglalás</a>
         </div>
       </div>
-    `
+    `,
   },
   {
     text: `
@@ -51,9 +51,9 @@ const slides = [
             <a class="btn custom-btn" href="/event_booking">Foglalás</a>
           </div>
         </div>
-    `
-  }
-];
+    `,
+  },
+]
 </script>
 
 <template>
@@ -71,7 +71,11 @@ const slides = [
         :pagination="{ clickable: true, el: '.custom-pagination' }"
         class="h-100 w-100"
       >
-        <SwiperSlide v-for="(slide, index) in slides" :key="index" class="d-flex align-items-center justify-content-center">
+        <SwiperSlide
+          v-for="(slide, index) in slides"
+          :key="index"
+          class="d-flex align-items-center justify-content-center"
+        >
           <div v-html="slide.text" class="w-100"></div>
         </SwiperSlide>
       </Swiper>

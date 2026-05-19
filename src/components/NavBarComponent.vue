@@ -116,12 +116,14 @@ export default defineComponent({
         <router-link to="/registration" class="registerbutton">Regisztráció</router-link>
         <router-link to="/cart" class="cart-link"
           ><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i
-        ><span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span></router-link>
+          ><span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span></router-link
+        >
       </div>
       <div v-if="isLoggedIn" class="user-actions">
         <router-link to="/cart" class="cart-link"
           ><i class="fa fa-shopping-cart cartbutton" aria-hidden="true"></i
-        ><span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span></router-link>
+          ><span v-if="cartCount > 0" class="cart-badge">{{ cartCount }}</span></router-link
+        >
         <router-link to="/profile"
           ><i class="fa fa-user-circle cartbutton" aria-hidden="true"></i
         ></router-link>

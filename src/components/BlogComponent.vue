@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="blog">
@@ -13,9 +12,7 @@
             <div class="blog-content">
               <h2 class="blog-title">Eszköz bérlés</h2>
               <div class="blog-text">
-                <p>
-                  Cégünk lehetőséget biztosít eszközök bérlésére.
-                </p>
+                <p>Cégünk lehetőséget biztosít eszközök bérlésére.</p>
                 <ul>
                   <li>Evőeszközök</li>
                   <li>Tányérok</li>
@@ -37,7 +34,8 @@
               <h2 class="blog-title">Rendezvénylebonyolítás</h2>
               <div class="blog-text">
                 <p>
-                  Cégünk vállalja rendezvények lebonyolítását külső és belső helyszínen egyaránt 1500 főig.
+                  Cégünk vállalja rendezvények lebonyolítását külső és belső helyszínen egyaránt
+                  1500 főig.
                 </p>
                 <ul>
                   <li>Családi rendezvények</li>
@@ -50,7 +48,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>

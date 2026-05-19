@@ -25,7 +25,6 @@ export const useCouponStore = defineStore('coupon', {
     getUnusedCoupons: (state) => state.coupons.filter((c) => !c.is_used),
   },
   actions: {
-
     async getDiscountTypeById(id: number) {
       try {
         const response = await api.get(`/discount_type/${id}/`)
@@ -90,11 +89,14 @@ export const useCouponStore = defineStore('coupon', {
       try {
         const response = await api.post('/coupons/validate/', {
           code: code,
-          cart_total: cartTotal
+          cart_total: cartTotal,
         })
         return { success: true, data: response.data }
       } catch (err: any) {
-        const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Hiba történt a kupon érvényesítésekor.'
+        const errorMsg =
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          'Hiba történt a kupon érvényesítésekor.'
         this.error = errorMsg
         return { success: false, message: errorMsg }
       } finally {

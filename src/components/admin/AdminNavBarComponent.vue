@@ -25,7 +25,7 @@ export default {
     this.bookingStore.adminFetchBookings()
     this.contactStore.adminLoadContacts()
     this.orderStore.fetchPendingOrdersCount()
-  }
+  },
 }
 </script>
 
@@ -47,26 +47,30 @@ export default {
               v-if="item.name === 'Rendelések' && orderStore.getPendingOrdersCount > 0"
               class="badge badge-unhandled"
             >
-              <i class="fas fa-exclamation-circle" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ orderStore.getPendingOrdersCount }}
+              <i class="fas fa-exclamation-circle" style="margin-right: 4px; font-size: 0.7rem"></i
+              >{{ orderStore.getPendingOrdersCount }}
             </span>
             <span
               v-if="item.name === 'Rendezvények' && bookingStore.unhandledCount > 0"
               class="badge badge-unhandled"
             >
-              <i class="fas fa-exclamation-circle" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ bookingStore.unhandledCount }}
+              <i class="fas fa-exclamation-circle" style="margin-right: 4px; font-size: 0.7rem"></i
+              >{{ bookingStore.unhandledCount }}
             </span>
             <span
               v-if="item.name === 'Rendezvények' && bookingStore.unseenCount > 0"
               class="badge badge-unseen"
-              style="margin-left: 4px;"
+              style="margin-left: 4px"
             >
-              <i class="fas fa-bell" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ bookingStore.unseenCount }}
+              <i class="fas fa-bell" style="margin-right: 4px; font-size: 0.7rem"></i
+              >{{ bookingStore.unseenCount }}
             </span>
             <span
               v-if="item.name === 'Üzenetek' && contactStore.unseenCount > 0"
               class="badge badge-unseen"
             >
-              <i class="fas fa-envelope" style="margin-right: 4px; font-size: 0.7rem;"></i>{{ contactStore.unseenCount }}
+              <i class="fas fa-envelope" style="margin-right: 4px; font-size: 0.7rem"></i
+              >{{ contactStore.unseenCount }}
             </span>
           </router-link>
         </li>
@@ -78,7 +82,7 @@ export default {
       <ul class="footer-menu">
         <li><a href="/" style="color: black">---- PUBLIKUS OLDAL ----</a></li>
       </ul>
-      <br>
+      <br />
       <p>Segítég: +36301231234</p>
     </div>
   </div>

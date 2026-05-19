@@ -157,44 +157,44 @@ export default defineComponent({
             <div class="table-container">
               <table class="order-table">
                 <thead>
-                <tr>
-                  <th>Rendelésszám</th>
-                  <th>Dátum</th>
-                  <th>Összeg</th>
-                  <th>Státusz</th>
-                  <th>Fizetés</th>
-                  <th>Részletek</th>
-                </tr>
+                  <tr>
+                    <th>Rendelésszám</th>
+                    <th>Dátum</th>
+                    <th>Összeg</th>
+                    <th>Státusz</th>
+                    <th>Fizetés</th>
+                    <th>Részletek</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr v-for="order in activeOrders" :key="order.id">
-                  <td>
-                    <span class="order-number">{{ order.order_number }}</span>
-                  </td>
-                  <td>{{ formatDate(order.created_at) }}</td>
-                  <td>
-                    <span class="price-badge">{{ formatPrice(order.total_price) }}</span>
-                  </td>
-                  <td>
+                  <tr v-for="order in activeOrders" :key="order.id">
+                    <td>
+                      <span class="order-number">{{ order.order_number }}</span>
+                    </td>
+                    <td>{{ formatDate(order.created_at) }}</td>
+                    <td>
+                      <span class="price-badge">{{ formatPrice(order.total_price) }}</span>
+                    </td>
+                    <td>
                       <span class="status-badge" :class="getStatusClass(order.status)">
                         {{ getStatusLabel(order.status) }}
                       </span>
-                  </td>
-                  <td>
+                    </td>
+                    <td>
                       <span
                         class="payment-badge"
                         :class="getPaymentStatusClass(order.payment_status)"
                       >
                         {{ getPaymentStatusLabel(order.payment_status) }}
                       </span>
-                  </td>
-                  <td>
-                    <button class="btn-details" @click="viewOrderDetails(order)">
-                      <i class="fas fa-eye"></i>
-                      Megtekint
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      <button class="btn-details" @click="viewOrderDetails(order)">
+                        <i class="fas fa-eye"></i>
+                        Megtekint
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -211,44 +211,44 @@ export default defineComponent({
             <div class="table-container">
               <table class="order-table">
                 <thead>
-                <tr>
-                  <th>Rendelésszám</th>
-                  <th>Dátum</th>
-                  <th>Összeg</th>
-                  <th>Státusz</th>
-                  <th>Fizetés</th>
-                  <th>Részletek</th>
-                </tr>
+                  <tr>
+                    <th>Rendelésszám</th>
+                    <th>Dátum</th>
+                    <th>Összeg</th>
+                    <th>Státusz</th>
+                    <th>Fizetés</th>
+                    <th>Részletek</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr v-for="order in completedOrders" :key="order.id">
-                  <td>
-                    <span class="order-number">{{ order.order_number }}</span>
-                  </td>
-                  <td>{{ formatDate(order.created_at) }}</td>
-                  <td>
-                    <span class="price-badge">{{ formatPrice(order.total_price) }}</span>
-                  </td>
-                  <td>
+                  <tr v-for="order in completedOrders" :key="order.id">
+                    <td>
+                      <span class="order-number">{{ order.order_number }}</span>
+                    </td>
+                    <td>{{ formatDate(order.created_at) }}</td>
+                    <td>
+                      <span class="price-badge">{{ formatPrice(order.total_price) }}</span>
+                    </td>
+                    <td>
                       <span class="status-badge" :class="getStatusClass(order.status)">
                         {{ getStatusLabel(order.status) }}
                       </span>
-                  </td>
-                  <td>
+                    </td>
+                    <td>
                       <span
                         class="payment-badge"
                         :class="getPaymentStatusClass(order.payment_status)"
                       >
                         {{ getPaymentStatusLabel(order.payment_status) }}
                       </span>
-                  </td>
-                  <td>
-                    <button class="btn-details" @click="viewOrderDetails(order)">
-                      <i class="fas fa-eye"></i>
-                      Megtekint
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      <button class="btn-details" @click="viewOrderDetails(order)">
+                        <i class="fas fa-eye"></i>
+                        Megtekint
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -265,35 +265,35 @@ export default defineComponent({
             <div class="table-container">
               <table class="order-table">
                 <thead>
-                <tr>
-                  <th>Rendelésszám</th>
-                  <th>Dátum</th>
-                  <th>Összeg</th>
-                  <th>Státusz</th>
-                  <th>Részletek</th>
-                </tr>
+                  <tr>
+                    <th>Rendelésszám</th>
+                    <th>Dátum</th>
+                    <th>Összeg</th>
+                    <th>Státusz</th>
+                    <th>Részletek</th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr v-for="order in canceledOrders" :key="order.id" class="canceled-row">
-                  <td>
-                    <span class="order-number">{{ order.order_number }}</span>
-                  </td>
-                  <td>{{ formatDate(order.created_at) }}</td>
-                  <td>
-                    <span class="price-badge">{{ formatPrice(order.total_price) }}</span>
-                  </td>
-                  <td>
+                  <tr v-for="order in canceledOrders" :key="order.id" class="canceled-row">
+                    <td>
+                      <span class="order-number">{{ order.order_number }}</span>
+                    </td>
+                    <td>{{ formatDate(order.created_at) }}</td>
+                    <td>
+                      <span class="price-badge">{{ formatPrice(order.total_price) }}</span>
+                    </td>
+                    <td>
                       <span class="status-badge" :class="getStatusClass(order.status)">
                         {{ getStatusLabel(order.status) }}
                       </span>
-                  </td>
-                  <td>
-                    <button class="btn-details" @click="viewOrderDetails(order)">
-                      <i class="fas fa-eye"></i>
-                      Megtekint
-                    </button>
-                  </td>
-                </tr>
+                    </td>
+                    <td>
+                      <button class="btn-details" @click="viewOrderDetails(order)">
+                        <i class="fas fa-eye"></i>
+                        Megtekint
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -317,7 +317,11 @@ export default defineComponent({
 
     <!-- Rendelés részletek modal -->
     <transition name="modal-fade">
-      <div v-if="showOrderDetails && selectedOrder" class="modal-overlay" @click="closeOrderDetails">
+      <div
+        v-if="showOrderDetails && selectedOrder"
+        class="modal-overlay"
+        @click="closeOrderDetails"
+      >
         <div class="modal-content" @click.stop>
           <div class="modal-header">
             <h3>Rendelés részletei</h3>
@@ -387,11 +391,7 @@ export default defineComponent({
             <div class="detail-section">
               <h4>Rendelés tételek</h4>
               <div v-if="selectedOrder.items && selectedOrder.items.length > 0" class="items-list">
-                <div
-                  v-for="(item, index) in selectedOrder.items"
-                  :key="index"
-                  class="order-item"
-                >
+                <div v-for="(item, index) in selectedOrder.items" :key="index" class="order-item">
                   <div class="item-info">
                     <span class="item-name">{{ item.product_name }}</span>
                     <span class="item-quantity">{{ item.quantity }} db</span>

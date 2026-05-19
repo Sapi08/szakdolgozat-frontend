@@ -6,7 +6,9 @@ import { useAdminDishStore } from '@/stores/admin/admin_dish_store'
 import { useAdminDishVariantStore } from '@/stores/admin/admin_dish_variant_store'
 import type { Dish } from '@/types/dish'
 import type { DishVariant } from '@/types/dish-variant'
-import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
+import EditableTableComponent, {
+  type TableColumn,
+} from '@/components/admin/EditableTableComponent.vue'
 
 export default defineComponent({
   name: 'DishesTable',
@@ -31,12 +33,12 @@ export default defineComponent({
         price: 0,
         category_id: '',
         allergies: [] as string[],
-        available: true
+        available: true,
       },
       newDishVariant: {
         dish_id: null as number | null,
         detail: '',
-        price: 0
+        price: 0,
       },
       columns: [
         { key: 'id', label: 'Azonosító', editable: false },
@@ -44,7 +46,13 @@ export default defineComponent({
         { key: 'description', label: 'Leírás', editable: true },
         { key: 'price', label: 'Ár', editable: true, type: 'number' },
         { key: 'category_id', label: 'Kategória', editable: true },
-        { key: 'allergies', label: 'Allergének', editable: true, type: 'array', format: (val: string[]) => val?.join(', ') || '' },
+        {
+          key: 'allergies',
+          label: 'Allergének',
+          editable: true,
+          type: 'array',
+          format: (val: string[]) => val?.join(', ') || '',
+        },
         { key: 'available', label: 'Elérhető', editable: false },
       ] as TableColumn[],
     }
@@ -56,7 +64,7 @@ export default defineComponent({
     },
     availableAllergens(): string[] {
       return this.adminDishStore.allergens
-    }
+    },
   },
   methods: {
     openAllergensModal(editForm: any) {
@@ -77,7 +85,7 @@ export default defineComponent({
         price: 0,
         category_id: this.availableCategories[0] || '',
         allergies: [],
-        available: true
+        available: true,
       }
       this.showCreateDishModal = true
     },
@@ -88,7 +96,7 @@ export default defineComponent({
       this.newDishVariant = {
         dish_id: this.dishes.length > 0 ? this.dishes[0].id : null,
         detail: '',
-        price: 0
+        price: 0,
       }
       this.showCreateDishVariantModal = true
     },
@@ -118,7 +126,7 @@ export default defineComponent({
       if (!confirm('Biztosan törölni szeretné ezt a variánst?')) return
       try {
         await this.adminDishVariantStore.adminDeleteDishVariant(variantId)
-        this.currentDishVariants = this.currentDishVariants.filter(v => v.id !== variantId)
+        this.currentDishVariants = this.currentDishVariants.filter((v) => v.id !== variantId)
       } catch (err) {
         console.error(err)
         alert('Hiba történt a törlés során!')
@@ -152,7 +160,7 @@ export default defineComponent({
     async handleSave(updatedDish: Dish) {
       try {
         await this.adminDishStore.adminUpdateDish(updatedDish.id, updatedDish)
-        const index = this.dishes.findIndex(d => d.id === updatedDish.id)
+        const index = this.dishes.findIndex((d) => d.id === updatedDish.id)
         if (index !== -1) {
           this.dishes[index] = updatedDish
         }
@@ -165,7 +173,7 @@ export default defineComponent({
     async handleDelete(id: number) {
       try {
         await this.adminDishStore.adminDeleteDish(id)
-        this.dishes = this.dishes.filter(d => d.id !== id)
+        this.dishes = this.dishes.filter((d) => d.id !== id)
         alert('Étel sikeresen törölve')
       } catch (err) {
         console.error(err)
@@ -181,7 +189,7 @@ export default defineComponent({
         alert('Hiba történt az elérhetőség módosításakor!')
         dish.available = !dish.available
       }
-    }
+    },
   },
   async created() {
     this.loading = true
@@ -189,7 +197,7 @@ export default defineComponent({
       await Promise.all([
         this.dishStore.loadDishes().then((data: any) => (this.dishes = data)),
         this.adminDishStore.adminLoadAllergens(),
-        this.adminDishStore.adminLoadCategories()
+        this.adminDishStore.adminLoadCategories(),
       ])
     } finally {
       this.loading = false
@@ -201,7 +209,9 @@ export default defineComponent({
 <template>
   <div class="table-container">
     <div class="header-actions">
-      <button @click="openCreateDishVariantModal" class="add-btn">Új étel adag méret hozzáadása</button>
+      <button @click="openCreateDishVariantModal" class="add-btn">
+        Új étel adag méret hozzáadása
+      </button>
       <button @click="openCreateDishModal" class="add-btn">Új étel hozzáadása</button>
     </div>
 
@@ -223,8 +233,15 @@ export default defineComponent({
         </select>
       </template>
       <template #edit-allergies="{ editForm }">
-        <button @click.prevent="openAllergensModal(editForm)" class="bg-gray-200 border p-1 w-full text-left rounded cursor-pointer hover:bg-gray-300">
-          {{ editForm.allergies?.length ? editForm.allergies.join(', ') : 'Allergének kiválasztása...' }}
+        <button
+          @click.prevent="openAllergensModal(editForm)"
+          class="bg-gray-200 border p-1 w-full text-left rounded cursor-pointer hover:bg-gray-300"
+        >
+          {{
+            editForm.allergies?.length
+              ? editForm.allergies.join(', ')
+              : 'Allergének kiválasztása...'
+          }}
         </button>
       </template>
       <template #cell-available="{ item }">
@@ -237,7 +254,10 @@ export default defineComponent({
         </button>
       </template>
       <template #extra-actions="{ item }">
-        <button @click.stop="openViewVariantsModal(item)" class="bg-purple-500 text-black px-2 py-1 rounded ml-2">
+        <button
+          @click.stop="openViewVariantsModal(item)"
+          class="bg-purple-500 text-black px-2 py-1 rounded ml-2"
+        >
           Variánsok
         </button>
       </template>
@@ -294,7 +314,9 @@ export default defineComponent({
           </label>
         </div>
         <div class="modal-actions">
-          <button @click="closeAllergensModal" class="bg-blue-500 text-white px-4 py-2 rounded">Kész</button>
+          <button @click="closeAllergensModal" class="bg-blue-500 text-white px-4 py-2 rounded">
+            Kész
+          </button>
         </div>
       </div>
     </div>
@@ -307,7 +329,9 @@ export default defineComponent({
         <div class="form-group">
           <label>Étel kiválasztása</label>
           <select v-model="newDishVariant.dish_id" class="form-input">
-            <option v-for="dish in dishes" :key="dish.id" :value="dish.id">"{{ dish.id }}" {{ dish.name }}</option>
+            <option v-for="dish in dishes" :key="dish.id" :value="dish.id">
+              "{{ dish.id }}" {{ dish.name }}
+            </option>
           </select>
         </div>
         <div class="form-group">
@@ -332,7 +356,9 @@ export default defineComponent({
         <h3>"{{ currentDishForVariants?.name }}" variánsai</h3>
 
         <div v-if="variantLoading" class="p-4 text-center">Betöltés...</div>
-        <div v-else-if="currentDishVariants.length === 0" class="p-4 text-center">Nincsenek variánsok ehhez az ételhez.</div>
+        <div v-else-if="currentDishVariants.length === 0" class="p-4 text-center">
+          Nincsenek variánsok ehhez az ételhez.
+        </div>
         <div v-else class="variants-list mt-4">
           <table class="w-full border-collapse">
             <thead>
@@ -347,7 +373,10 @@ export default defineComponent({
                 <td class="p-2 border">{{ variant.detail }}</td>
                 <td class="p-2 border">{{ variant.price }} Ft</td>
                 <td class="p-2 border text-center">
-                  <button @click="deleteVariant(variant.id)" class="bg-red-500 text-white px-2 py-1 rounded">
+                  <button
+                    @click="deleteVariant(variant.id)"
+                    class="bg-red-500 text-white px-2 py-1 rounded"
+                  >
                     Törlés
                   </button>
                 </td>

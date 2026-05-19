@@ -96,9 +96,19 @@ export default defineComponent({
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.id" :class="{ unseen: unseenFn(item) }" @click="onRowClick(item)">
+            <tr
+              v-for="item in items"
+              :key="item.id"
+              :class="{ unseen: unseenFn(item) }"
+              @click="onRowClick(item)"
+            >
               <template v-if="editingId === item.id">
-                <td v-for="col in columns" :key="col.key" :class="col.cellClass" :style="col.cellStyle">
+                <td
+                  v-for="col in columns"
+                  :key="col.key"
+                  :class="col.cellClass"
+                  :style="col.cellStyle"
+                >
                   <template v-if="col.editable">
                     <slot :name="`edit-${col.key}`" :editForm="editForm" :col="col">
                       <input
@@ -123,38 +133,80 @@ export default defineComponent({
                   </template>
                   <template v-else>
                     <slot :name="`cell-${col.key}`" :item="item" :col="col">
-                      <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
+                      <div :class="col.cellClass" :style="col.cellStyle">
+                        {{ formatCell(item, col) }}
+                      </div>
                     </slot>
                   </template>
                 </td>
                 <td v-if="showActions" class="actions">
-                  <button @click.stop="saveEdit" class="bg-green-500 text-white px-2 py-1 rounded">Mentés</button>
-                  <button @click.stop="cancelEdit" class="bg-gray-500 text-white px-2 py-1 rounded">Mégse</button>
+                  <button @click.stop="saveEdit" class="bg-green-500 text-white px-2 py-1 rounded">
+                    Mentés
+                  </button>
+                  <button @click.stop="cancelEdit" class="bg-gray-500 text-white px-2 py-1 rounded">
+                    Mégse
+                  </button>
                 </td>
                 <td v-if="showDelete" class="actions">
-                  <button @click.stop="deleteItem(item)" class="bg-red-500 text-black px-2 py-1 rounded">
-                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" >
-                    <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
+                  <button
+                    @click.stop="deleteItem(item)"
+                    class="bg-red-500 text-black px-2 py-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"
+                      ></path>
                       <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
-                  </svg></button>
+                    </svg>
+                  </button>
                 </td>
               </template>
               <template v-else>
-                <td v-for="col in columns" :key="col.key" :class="col.cellClass" :style="col.cellStyle">
+                <td
+                  v-for="col in columns"
+                  :key="col.key"
+                  :class="col.cellClass"
+                  :style="col.cellStyle"
+                >
                   <slot :name="`cell-${col.key}`" :item="item" :col="col">
-                    <div :class="col.cellClass" :style="col.cellStyle">{{ formatCell(item, col) }}</div>
+                    <div :class="col.cellClass" :style="col.cellStyle">
+                      {{ formatCell(item, col) }}
+                    </div>
                   </slot>
                 </td>
                 <td v-if="showActions" class="actions">
-                  <button @click.stop="startEdit(item)" class="bg-blue-500 text-black px-2 py-1 rounded">Szerkesztés</button>
+                  <button
+                    @click.stop="startEdit(item)"
+                    class="bg-blue-500 text-black px-2 py-1 rounded"
+                  >
+                    Szerkesztés
+                  </button>
                   <slot name="extra-actions" :item="item"></slot>
                 </td>
                 <td v-if="showDelete" class="actions">
-                  <button @click.stop="deleteItem(item)" class="bg-red-500 text-black px-2 py-1 rounded">
-                    <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" >
-                    <path d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"></path>
+                  <button
+                    @click.stop="deleteItem(item)"
+                    class="bg-red-500 text-black px-2 py-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17 6V4c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v2H2v2h2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8h2V6zM9 4h6v2H9zM6 20V8h12v12z"
+                      ></path>
                       <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
-                  </svg></button>
+                    </svg>
+                  </button>
                 </td>
               </template>
             </tr>

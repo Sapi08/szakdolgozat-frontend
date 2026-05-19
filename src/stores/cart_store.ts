@@ -41,7 +41,7 @@ export const useCartStore = defineStore('cart', {
 
         const resolvedName = isVariantItem
           ? `${baseDish?.name || 'Termek'} (${item.variantDetails?.name || 'Varians'})`
-          : (baseDish?.name || 'Betoltes...')
+          : baseDish?.name || 'Betoltes...'
 
         const finalDish: Dish = {
           id: item.dishId,

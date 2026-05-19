@@ -89,8 +89,8 @@ export default {
       pickedDay.setHours(0, 0, 0, 0)
       const dateString = this.toLocalDateString(pickedDay)
 
-      const isReserved = this.bookingStore.reservedDates.some((d: string) =>
-        d.split('T')[0] === dateString,
+      const isReserved = this.bookingStore.reservedDates.some(
+        (d: string) => d.split('T')[0] === dateString,
       )
 
       if (isReserved || pickedDay < today) return
@@ -276,7 +276,9 @@ button:disabled {
 }
 
 /* Reserved day small count badge (the red circle with "1") */
-:deep(.vuecal--green-theme .vuecal__cell--disabled.vuecal__cell--has-events .vuecal__cell-events-count) {
+:deep(
+  .vuecal--green-theme .vuecal__cell--disabled.vuecal__cell--has-events .vuecal__cell-events-count
+) {
   background-color: #dc3545 !important;
   color: transparent !important;
   border: 1px solid #dc3545 !important;
@@ -288,8 +290,12 @@ button:disabled {
 }
 
 /* Felkiáltójel */
-:deep(.vuecal--green-theme .vuecal__cell--disabled.vuecal__cell--has-events .vuecal__cell-events-count::after) {
-  content: "Foglalt";
+:deep(
+  .vuecal--green-theme
+    .vuecal__cell--disabled.vuecal__cell--has-events
+    .vuecal__cell-events-count::after
+) {
+  content: 'Foglalt';
   color: #fff;
   font-size: 10px;
   font-weight: bold;

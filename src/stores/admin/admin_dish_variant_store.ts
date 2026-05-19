@@ -21,6 +21,6 @@ export const useAdminDishVariantStore = defineStore('admin_dish_variant_store', 
     async adminDeleteDishVariant(variantId: number) {
       await api.delete(`/admin/dish_variants/${variantId}/delete`)
       this.variants = this.variants.filter((v) => v.id !== variantId)
-    }
-  }
+    },
+  },
 })

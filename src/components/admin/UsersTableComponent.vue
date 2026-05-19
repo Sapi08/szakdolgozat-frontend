@@ -3,7 +3,9 @@ import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useAdminUserStore } from '@/stores/admin/admin_user_store'
 import moment from 'moment'
-import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
+import EditableTableComponent, {
+  type TableColumn,
+} from '@/components/admin/EditableTableComponent.vue'
 
 export default defineComponent({
   name: 'UsersTable',
@@ -17,7 +19,12 @@ export default defineComponent({
         { key: 'last_name', label: 'Vezetéknév', editable: true },
         { key: 'first_name', label: 'Keresztnév', editable: true },
         { key: 'email', label: 'Email cím', editable: true },
-        { key: 'last_login', label: 'Utolsó bejelentkezés', editable: false, format: (date: string) => moment(String(date)).format('YYYY.MM.DD hh:mm') },
+        {
+          key: 'last_login',
+          label: 'Utolsó bejelentkezés',
+          editable: false,
+          format: (date: string) => moment(String(date)).format('YYYY.MM.DD hh:mm'),
+        },
         { key: 'phone', label: 'Telefon', editable: true },
       ] as TableColumn[],
     }
@@ -29,7 +36,7 @@ export default defineComponent({
     async handleSave(updatedUser: any) {
       try {
         await this.adminUserStore.adminUpdateUser(updatedUser.id, updatedUser)
-        const index = this.users.findIndex(u => u.id === updatedUser.id)
+        const index = this.users.findIndex((u) => u.id === updatedUser.id)
         if (index !== -1) {
           this.users[index] = updatedUser
         }
@@ -42,13 +49,13 @@ export default defineComponent({
     async handleDelete(id: number) {
       try {
         await this.adminUserStore.adminDeleteUser(id)
-        this.users = this.users.filter(u => u.id !== id)
+        this.users = this.users.filter((u) => u.id !== id)
         alert('Felhasználó sikeresen törölve')
       } catch (err) {
         console.error(err)
         alert('Hiba történt a törlés során!')
       }
-    }
+    },
   },
   async created() {
     this.loading = true

@@ -16,7 +16,8 @@ export default defineComponent({
             <h2>Hamburgerek</h2>
             <p>
               Harapj bele az élvezetbe! Kézműves, friss hozzávalókból készítjük el minden egyes
-              falatot: puha friss zsemle, ínycsiklandozó, szaftos hús, és gazdag feltétek, amik garantáltan elvarázsolják.
+              falatot: puha friss zsemle, ínycsiklandozó, szaftos hús, és gazdag feltétek, amik
+              garantáltan elvarázsolják.
             </p>
             <a href="/menu">Étlap</a>
           </div>
@@ -26,9 +27,9 @@ export default defineComponent({
             <i class="flaticon-cooking"></i>
             <h2>Desszertek</h2>
             <p>
-              Zárja le az étkezést egy igazán finom, házi desszerttel! Frissen készített, gesztenyepüré, lágy és
-              habos édességeink minden falata a gondos munka és szeretet ízét hordozza.
-              Tökéletes választás, ha valami igazán édesre vágyik.
+              Zárja le az étkezést egy igazán finom, házi desszerttel! Frissen készített,
+              gesztenyepüré, lágy és habos édességeink minden falata a gondos munka és szeretet ízét
+              hordozza. Tökéletes választás, ha valami igazán édesre vágyik.
             </p>
             <a href="/menu">Étlap</a>
           </div>
@@ -38,8 +39,8 @@ export default defineComponent({
             <i class="flaticon-cocktail"></i>
             <h2>Italok</h2>
             <p>
-              Kortyoljon bele a frissességbe! Legyen az hűsítő gyümölcslé, egy tökéletesen elkészített
-              kávé. Minden korty tele van ízekkel és energiával, hogy feldobja a napját.
+              Kortyoljon bele a frissességbe! Legyen az hűsítő gyümölcslé, egy tökéletesen
+              elkészített kávé. Minden korty tele van ízekkel és energiával, hogy feldobja a napját.
               Válassza a minőséget, válassza az élményt!”
             </p>
             <a href="/menu">Étlap</a>

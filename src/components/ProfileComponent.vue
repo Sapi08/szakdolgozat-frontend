@@ -27,13 +27,13 @@ export default defineComponent({
       last_name: '',
       email: '',
       phone: '',
-      birth_date: ''
+      birth_date: '',
     })
 
     const passwordForm = ref({
       oldPassword: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
     })
 
     const openEditModal = () => {
@@ -43,7 +43,7 @@ export default defineComponent({
           last_name: user.value.last_name || '',
           email: user.value.email || '',
           phone: user.value.phone || '',
-          birth_date: user.value.birth_date || ''
+          birth_date: user.value.birth_date || '',
         }
       }
       activeTab.value = 'profile'
@@ -57,7 +57,7 @@ export default defineComponent({
 
     const validatePhone = (phone: string) => {
       if (!phone) return true // Optional
-      const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+      const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
       return phoneRegex.test(phone)
     }
 
@@ -91,7 +91,7 @@ export default defineComponent({
       }
       const res = await userStore.changePassword(
         passwordForm.value.oldPassword,
-        passwordForm.value.newPassword
+        passwordForm.value.newPassword,
       )
       if (res?.success) {
         alert(res.message)
@@ -114,7 +114,7 @@ export default defineComponent({
       openEditModal,
       closeEditModal,
       saveProfile,
-      savePassword
+      savePassword,
     }
   },
 })
@@ -203,8 +203,12 @@ export default defineComponent({
         <h2 class="modal-title">Adatok szerkesztése</h2>
 
         <div class="modal-tabs">
-          <button :class="{ active: activeTab === 'profile' }" @click="activeTab = 'profile'">Személyes adatok</button>
-          <button :class="{ active: activeTab === 'password' }" @click="activeTab = 'password'">Jelszó módosítás</button>
+          <button :class="{ active: activeTab === 'profile' }" @click="activeTab = 'profile'">
+            Személyes adatok
+          </button>
+          <button :class="{ active: activeTab === 'password' }" @click="activeTab = 'password'">
+            Jelszó módosítás
+          </button>
         </div>
 
         <div v-if="activeTab === 'profile'" class="modal-tab-content">
@@ -245,12 +249,16 @@ export default defineComponent({
             </div>
             <div class="form-group">
               <label>Új jelszó megerősítése</label>
-              <input v-model="passwordForm.confirmPassword" type="password" required minlength="6" />
+              <input
+                v-model="passwordForm.confirmPassword"
+                type="password"
+                required
+                minlength="6"
+              />
             </div>
             <button type="submit" class="save-btn">Jelszó frissítése</button>
           </form>
         </div>
-
       </div>
     </div>
   </div>

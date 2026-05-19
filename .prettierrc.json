@@ -1,5 +1,3 @@
-// npm run format
-
 {
   "$schema": "https://json.schemastore.org/prettierrc",
   "semi": false,

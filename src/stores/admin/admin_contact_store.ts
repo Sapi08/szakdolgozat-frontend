@@ -12,8 +12,8 @@ export const useAdminContactStore = defineStore('admin_contact', {
 
   getters: {
     unseenCount: (state) => {
-      return state.contacts.filter(msg => !msg.seen_by_admin).length
-    }
+      return state.contacts.filter((msg) => !msg.seen_by_admin).length
+    },
   },
 
   actions: {

@@ -5,7 +5,7 @@ import { useCartStore } from '@/stores/cart_store'
 import { useOrderStore } from '@/stores/order_store'
 import { useUserStore } from '@/stores/user_store'
 import { useCouponStore } from '@/stores/coupon_store'
-import type { OrderCreateRequest, OrderItem } from '@/types/order'
+import type { OrderCreateRequest } from '@/types/order'
 import api from '@/config/axios'
 
 export default defineComponent({
@@ -20,7 +20,11 @@ export default defineComponent({
       deliveryAddress: '',
       deliveryCity: '',
       deliveryZip: '',
-      paymentMethod: 'cash_on_delivery' as 'cash_on_delivery' | 'card_on_delivery' | 'szep_card_on_delivery' | 'card_online',
+      paymentMethod: 'cash_on_delivery' as
+        | 'cash_on_delivery'
+        | 'card_on_delivery'
+        | 'szep_card_on_delivery'
+        | 'card_online',
       orderNotes: '',
       couponCode: '',
       couponMessage: '',
@@ -49,9 +53,9 @@ export default defineComponent({
       return this.isCouponValid && this.couponType === 'shipping' ? 0 : 500
     },
     calculatedDiscount(): number {
-      if (!this.isCouponValid) return 0;
-      if (this.couponType === 'shipping') return 0;
-      return this.appliedDiscount;
+      if (!this.isCouponValid) return 0
+      if (this.couponType === 'shipping') return 0
+      return this.appliedDiscount
     },
     packagingFee(): number {
       const totalQuantities = this.cartStore.cartItems.reduce((sum, item) => sum + item.quantity, 0)
@@ -94,7 +98,7 @@ export default defineComponent({
       if (this.userStore.isAuthenticated && this.userStore.user) {
         this.full_name = this.userStore.user.first_name + ' ' + this.userStore.user.last_name
         this.deliveryName = this.userStore.user.name || this.full_name || ''
-        this.deliveryPhone = this.userStore.user.phone || this.userStore.user.phone || ''
+        this.deliveryPhone = this.userStore.user.phone || ''
         this.deliveryEmail = this.userStore.user.email || ''
       }
 
@@ -181,44 +185,45 @@ export default defineComponent({
     },
     async validateCouponCode() {
       if (!this.couponCode.trim()) {
-        this.couponMessage = 'Kérjük, írjon be egy kuponkódot!';
-        this.isCouponValid = false;
-        this.appliedDiscount = 0;
-        return;
+        this.couponMessage = 'Kérjük, írjon be egy kuponkódot!'
+        this.isCouponValid = false
+        this.appliedDiscount = 0
+        return
       }
 
-      this.validatingCoupon = true;
+      this.validatingCoupon = true
       try {
         const cartTotal = this.cartStore.cartItems.reduce((sum, item) => {
-          return sum + (Number(item.dish.price || 0) * item.quantity)
-        }, 0);
+          return sum + Number(item.dish.price || 0) * item.quantity
+        }, 0)
 
-        const result = await this.couponStore.validateCoupon(this.couponCode.trim(), cartTotal);
+        const result = await this.couponStore.validateCoupon(this.couponCode.trim(), cartTotal)
 
         if (result.success && result.data && result.data.valid) {
-          this.isCouponValid = true;
-          this.couponType = result.data.discount_category || result.data.discount_type || 'amount';
+          this.isCouponValid = true
+          this.couponType = result.data.discount_category || result.data.discount_type || 'amount'
 
           if (this.couponType === 'shipping') {
-            this.appliedDiscount = 0;
-            this.couponMessage = 'Ingyenes kiszállítás aktiválva!';
+            this.appliedDiscount = 0
+            this.couponMessage = 'Ingyenes kiszállítás aktiválva!'
           } else {
-            this.appliedDiscount = result.data.discount_amount || 0;
-            this.couponMessage = 'Kupon sikeresen érvényesítve!';
+            this.appliedDiscount = result.data.discount_amount || 0
+            this.couponMessage = 'Kupon sikeresen érvényesítve!'
           }
         } else {
-          this.isCouponValid = false;
-          this.couponType = '';
-          this.appliedDiscount = 0;
-          this.couponMessage = result.message || result.data?.message || 'Érvénytelen vagy lejárt kupon.';
+          this.isCouponValid = false
+          this.couponType = ''
+          this.appliedDiscount = 0
+          this.couponMessage =
+            result.message || result.data?.message || 'Érvénytelen vagy lejárt kupon.'
         }
       } catch (err: any) {
-        this.isCouponValid = false;
-        this.couponType = '';
-        this.appliedDiscount = 0;
-        this.couponMessage = 'Váratlan hiba történt a kupon érvényesítésekor.';
+        this.isCouponValid = false
+        this.couponType = ''
+        this.appliedDiscount = 0
+        this.couponMessage = 'Váratlan hiba történt a kupon érvényesítésekor.'
       } finally {
-        this.validatingCoupon = false;
+        this.validatingCoupon = false
       }
     },
     async submitOrder() {
@@ -331,11 +336,7 @@ export default defineComponent({
           <p class="fs-5">A kosarad üres.</p>
         </div>
         <div v-else class="cart-items">
-          <div
-            v-for="item in cartStore.cartItems"
-            :key="getCartItemKey(item)"
-            class="cart-item"
-          >
+          <div v-for="item in cartStore.cartItems" :key="getCartItemKey(item)" class="cart-item">
             <div class="item-info">
               <h6 class="item-name mb-1">{{ item.dish.name }}</h6>
               <small class="item-price text-muted"
@@ -380,14 +381,22 @@ export default defineComponent({
           <!-- Kiszállítás extra díj (Fix) -->
           <div v-if="deliveryType === 'delivery'" class="cart-item bg-light">
             <div class="item-info">
-              <h6 class="item-name mb-1"><i class="fas fa-motorcycle me-2 text-muted"></i>Kiszállítás</h6>
-              <small class="item-price text-muted" v-if="isCouponValid && couponType === 'shipping'">Kupon alkalmazva</small>
+              <h6 class="item-name mb-1">
+                <i class="fas fa-motorcycle me-2 text-muted"></i>Kiszállítás
+              </h6>
+              <small class="item-price text-muted" v-if="isCouponValid && couponType === 'shipping'"
+                >Kupon alkalmazva</small
+              >
               <small class="item-price text-muted" v-else>Fix díj</small>
             </div>
-            <div class="item-actions" style="justify-content: flex-end; width: auto;">
+            <div class="item-actions" style="justify-content: flex-end; width: auto">
               <div class="item-total">
                 <span class="fw-bold fs-6">
-                  <span v-if="isCouponValid && couponType === 'shipping'" class="text-decoration-line-through text-success me-2">500 Ft</span>
+                  <span
+                    v-if="isCouponValid && couponType === 'shipping'"
+                    class="text-decoration-line-through text-success me-2"
+                    >500 Ft</span
+                  >
                   <span>{{ deliveryFee }} Ft</span>
                 </span>
               </div>
@@ -400,7 +409,7 @@ export default defineComponent({
               <h6 class="item-name mb-1"><i class="fas fa-box me-2 text-muted"></i>Csomagolás</h6>
               <small class="item-price text-muted">100 Ft / adag</small>
             </div>
-            <div class="item-actions" style="justify-content: flex-end; width: auto;">
+            <div class="item-actions" style="justify-content: flex-end; width: auto">
               <div class="item-total">
                 <span class="fw-bold fs-6">{{ packagingFee }} Ft</span>
               </div>
@@ -410,9 +419,11 @@ export default defineComponent({
           <!-- Kupon kedvezmény (Dinamikus) -->
           <div v-if="calculatedDiscount > 0" class="cart-item bg-light">
             <div class="item-info">
-              <h6 class="item-name mb-1 text-success"><i class="fas fa-tag me-2"></i>Kupon kedvezmény</h6>
+              <h6 class="item-name mb-1 text-success">
+                <i class="fas fa-tag me-2"></i>Kupon kedvezmény
+              </h6>
             </div>
-            <div class="item-actions" style="justify-content: flex-end; width: auto;">
+            <div class="item-actions" style="justify-content: flex-end; width: auto">
               <div class="item-total">
                 <span class="fw-bold fs-6 text-success">-{{ calculatedDiscount }} Ft</span>
               </div>
@@ -449,11 +460,7 @@ export default defineComponent({
           <!-- Kosár összesítő – mindig látható -->
           <h5 class="mb-3">Kosár tartalma:</h5>
           <div class="order-summary">
-            <div
-              v-for="item in cartStore.cartItems"
-              :key="getCartItemKey(item)"
-              class="order-item"
-            >
+            <div v-for="item in cartStore.cartItems" :key="getCartItemKey(item)" class="order-item">
               <div class="order-item-details">
                 <span class="order-item-name">{{ item.dish.name }}</span>
                 <span class="order-item-qty">{{ item.quantity }} db</span>
@@ -464,35 +471,49 @@ export default defineComponent({
             </div>
 
             <!-- Kiszállítás (Fix) modalban -->
-                <div v-if="deliveryType === 'delivery'" class="order-item bg-white" style="border-left-color: #6c757d;">
+            <div
+              v-if="deliveryType === 'delivery'"
+              class="order-item bg-white"
+              style="border-left-color: #6c757d"
+            >
               <div class="order-item-details">
-                <span class="order-item-name"><i class="fas fa-motorcycle me-2 text-muted"></i>Kiszállítás</span>
+                <span class="order-item-name"
+                  ><i class="fas fa-motorcycle me-2 text-muted"></i>Kiszállítás</span
+                >
               </div>
               <div class="order-item-price">
-                <span v-if="isCouponValid && couponType === 'shipping'" class="text-decoration-line-through text-success me-2 fs-6">500 Ft</span>
+                <span
+                  v-if="isCouponValid && couponType === 'shipping'"
+                  class="text-decoration-line-through text-success me-2 fs-6"
+                  >500 Ft</span
+                >
                 {{ deliveryFee }} Ft
               </div>
             </div>
 
             <!-- Csomagolás (Dinamikus) modalban -->
-            <div class="order-item bg-white" style="border-left-color: #6c757d;">
+            <div class="order-item bg-white" style="border-left-color: #6c757d">
               <div class="order-item-details">
-                <span class="order-item-name"><i class="fas fa-box me-2 text-muted"></i>Csomagolás</span>
+                <span class="order-item-name"
+                  ><i class="fas fa-box me-2 text-muted"></i>Csomagolás</span
+                >
                 <span class="order-item-qty">{{ packagingFee / 100 }} adag</span>
               </div>
-              <div class="order-item-price">
-                {{ packagingFee }} Ft
-              </div>
+              <div class="order-item-price">{{ packagingFee }} Ft</div>
             </div>
 
             <!-- Kupon kedvezmény modalban -->
-            <div v-if="calculatedDiscount > 0" class="order-item bg-white" style="border-left-color: #28a745;">
+            <div
+              v-if="calculatedDiscount > 0"
+              class="order-item bg-white"
+              style="border-left-color: #28a745"
+            >
               <div class="order-item-details">
-                <span class="order-item-name text-success"><i class="fas fa-tag me-2"></i>Kupon kedvezmény</span>
+                <span class="order-item-name text-success"
+                  ><i class="fas fa-tag me-2"></i>Kupon kedvezmény</span
+                >
               </div>
-              <div class="order-item-price text-success">
-                -{{ calculatedDiscount }} Ft
-              </div>
+              <div class="order-item-price text-success">-{{ calculatedDiscount }} Ft</div>
             </div>
           </div>
 
@@ -692,22 +713,35 @@ export default defineComponent({
                       v-model="couponCode"
                       type="text"
                       class="form-control"
-                      :class="{ 'is-valid': isCouponValid, 'is-invalid': couponMessage && !isCouponValid }"
+                      :class="{
+                        'is-valid': isCouponValid,
+                        'is-invalid': couponMessage && !isCouponValid,
+                      }"
                       placeholder="Írja be a kuponkódját"
-                      @input="isCouponValid = false; appliedDiscount = 0; couponMessage = ''"
+                      @input="
+                        isCouponValid = false;
+                        appliedDiscount = 0;
+                        couponMessage = '';
+                      "
                     />
                     <button
                       class="btn btn-outline-secondary"
                       type="button"
                       @click="validateCouponCode"
                       :disabled="validatingCoupon || !couponCode.trim()"
-                      style="border-color: #e0e0e0;"
+                      style="border-color: #e0e0e0"
                     >
-                      <i class="fas" :class="validatingCoupon ? 'fa-spinner fa-spin' : 'fa-check'"></i>
+                      <i
+                        class="fas"
+                        :class="validatingCoupon ? 'fa-spinner fa-spin' : 'fa-check'"
+                      ></i>
                       Érvényesít
                     </button>
                   </div>
-                  <div v-if="couponMessage" :class="isCouponValid ? 'valid-feedback d-block' : 'invalid-feedback d-block'">
+                  <div
+                    v-if="couponMessage"
+                    :class="isCouponValid ? 'valid-feedback d-block' : 'invalid-feedback d-block'"
+                  >
                     {{ couponMessage }}
                   </div>
                 </div>
@@ -755,27 +789,6 @@ export default defineComponent({
   cursor: not-allowed;
   background: rgba(0, 0, 0, 0.01);
   pointer-events: all;
-}
-
-/* Lenyíló animáció */
-.slide-down-enter-active,
-.slide-down-leave-active {
-  transition: all 0.35s ease;
-  overflow: hidden;
-}
-
-.slide-down-enter-from,
-.slide-down-leave-to {
-  max-height: 0;
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.slide-down-enter-to,
-.slide-down-leave-from {
-  max-height: 1000px;
-  opacity: 1;
-  transform: translateY(0);
 }
 
 /* Toggle gomb */
@@ -1151,17 +1164,6 @@ export default defineComponent({
   background: #f8f9fa;
   border-color: #adb5bd;
   transform: translateY(-2px);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #5469d4 0%, #4353c7 100%);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #4353c7 0%, #3643b8 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(83, 105, 212, 0.4);
 }
 
 .btn-success {

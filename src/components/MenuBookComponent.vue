@@ -1,57 +1,67 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Navigation, Pagination, EffectCoverflow } from 'swiper/modules';
-import type { Swiper as SwiperType } from 'swiper';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-coverflow';
+import { defineComponent } from 'vue'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Navigation, Pagination, EffectCoverflow } from 'swiper/modules'
+import type { Swiper as SwiperType } from 'swiper'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import 'swiper/css/effect-coverflow'
 
 // Képek importálása
-import page1 from '../assets/menubook/page1.jpg';
-import page2 from '../assets/menubook/page2.jpg';
-import page3 from '../assets/menubook/page3.jpg';
-import page4 from '../assets/menubook/page4.jpg';
-import page5 from '../assets/menubook/page5.jpg';
-import page6 from '../assets/menubook/page6.jpg';
-import page7 from '../assets/menubook/page7.jpg';
-import page8 from '../assets/menubook/page8.jpg';
-import page9 from '../assets/menubook/page9.jpg';
-import page10 from '../assets/menubook/page10.jpg';
-import page11 from '../assets/menubook/page11.jpg';
-import page12 from '../assets/menubook/page12.jpg';
+import page1 from '../assets/menubook/page1.jpg'
+import page2 from '../assets/menubook/page2.jpg'
+import page3 from '../assets/menubook/page3.jpg'
+import page4 from '../assets/menubook/page4.jpg'
+import page5 from '../assets/menubook/page5.jpg'
+import page6 from '../assets/menubook/page6.jpg'
+import page7 from '../assets/menubook/page7.jpg'
+import page8 from '../assets/menubook/page8.jpg'
+import page9 from '../assets/menubook/page9.jpg'
+import page10 from '../assets/menubook/page10.jpg'
+import page11 from '../assets/menubook/page11.jpg'
+import page12 from '../assets/menubook/page12.jpg'
 
 export default defineComponent({
   name: 'MenuBookComponent',
   components: {
     Swiper,
-    SwiperSlide
+    SwiperSlide,
   },
   data() {
     return {
       modules: [Navigation, Pagination, EffectCoverflow],
       pages: [
-        page1, page2, page3, page4, page5, page6,
-        page7, page8, page9, page10, page11, page12
+        page1,
+        page2,
+        page3,
+        page4,
+        page5,
+        page6,
+        page7,
+        page8,
+        page9,
+        page10,
+        page11,
+        page12,
       ],
       currentPage: 1,
       isMobile: window.innerWidth <= 768,
       swiperInstance: null as SwiperType | null,
-      componentKey: 0
-    };
+      componentKey: 0,
+    }
   },
   watch: {
-    '$route'() {
+    $route() {
       // Minden route változáskor újratöltjük a komponenst
-      this.componentKey++;
-      this.currentPage = 1;
-    }
+      this.componentKey++
+      this.currentPage = 1
+    },
   },
   created() {
     // Oldal betöltéskor/frissítéskor mindig reseteljük
-    this.componentKey = Date.now();
-    this.currentPage = 1;
+    this.componentKey = Date.now()
+    this.currentPage = 1
   },
   computed: {
     swiperOptions() {
@@ -60,7 +70,7 @@ export default defineComponent({
         effect: (this.isMobile ? 'slide' : 'coverflow') as 'slide' | 'coverflow',
         grabCursor: true,
         centeredSlides: true,
-        slidesPerView: this.isMobile ? 1 : ('auto' as 'auto'),
+        slidesPerView: this.isMobile ? 1 : ('auto' as const),
         spaceBetween: this.isMobile ? 0 : 30,
         loop: false,
         initialSlide: 0,
@@ -72,7 +82,7 @@ export default defineComponent({
           slideShadows: true,
         },
         navigation: {
-          enabled: !this.isMobile
+          enabled: !this.isMobile,
         },
         pagination: {
           clickable: true,
@@ -82,34 +92,34 @@ export default defineComponent({
         touchRatio: this.isMobile ? 1 : 1.5,
         threshold: 5,
         simulateTouch: true,
-        allowTouchMove: true
-      };
-    }
+        allowTouchMove: true,
+      }
+    },
   },
   mounted() {
-    this.handleResize();
-    window.addEventListener('resize', this.handleResize);
+    this.handleResize()
+    window.addEventListener('resize', this.handleResize)
   },
   beforeUnmount() {
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleResize)
   },
   methods: {
     handleResize() {
-      this.isMobile = window.innerWidth <= 768;
+      this.isMobile = window.innerWidth <= 768
     },
     onSwiper(swiper: SwiperType) {
-      this.swiperInstance = swiper;
+      this.swiperInstance = swiper
       // Azonnal az első oldalra állítjuk - 0ms késleltetéssel, de biztosan
       setTimeout(() => {
-        swiper.slideTo(0, 0);
-        this.currentPage = 1;
-      }, 0);
+        swiper.slideTo(0, 0)
+        this.currentPage = 1
+      }, 0)
     },
     onSlideChange(swiper: SwiperType) {
-      this.currentPage = swiper.activeIndex + 1;
-    }
-  }
-});
+      this.currentPage = swiper.activeIndex + 1
+    },
+  },
+})
 </script>
 
 <template>
@@ -129,12 +139,7 @@ export default defineComponent({
       >
         <SwiperSlide v-for="(page, index) in pages" :key="index" class="menu-page">
           <div class="page-wrapper">
-            <img
-              :src="page"
-              :alt="`Menü oldal ${index + 1}`"
-              loading="lazy"
-              class="page-image"
-            />
+            <img :src="page" :alt="`Menü oldal ${index + 1}`" loading="lazy" class="page-image" />
           </div>
         </SwiperSlide>
       </Swiper>
@@ -303,7 +308,6 @@ export default defineComponent({
     width: 100% !important;
     max-width: 100%;
   }
-
 
   /* Nyilak elrejtése mobilon */
   :deep(.swiper-button-next),

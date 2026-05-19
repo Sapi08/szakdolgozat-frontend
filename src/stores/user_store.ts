@@ -139,7 +139,10 @@ export const useUserStore = defineStore('user', {
       } catch (err) {
         console.error('Profil frissítési hiba:', err)
         if (err instanceof AxiosError && err.response) {
-          return { success: false, message: err.response.data.detail || 'Hiba történt a frissítés során.' }
+          return {
+            success: false,
+            message: err.response.data.detail || 'Hiba történt a frissítés során.',
+          }
         }
         return { success: false, message: 'Váratlan hiba történt.' }
       }
@@ -155,7 +158,10 @@ export const useUserStore = defineStore('user', {
       } catch (err) {
         console.error('Jelszócsere hiba:', err)
         if (err instanceof AxiosError && err.response) {
-          return { success: false, message: err.response.data.detail || 'Hiba történt a jelszócsere során.' }
+          return {
+            success: false,
+            message: err.response.data.detail || 'Hiba történt a jelszócsere során.',
+          }
         }
         return { success: false, message: 'Váratlan hiba történt.' }
       }

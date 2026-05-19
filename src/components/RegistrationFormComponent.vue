@@ -242,7 +242,9 @@ export default defineComponent({
       <p class="redirect-info">Átirányítás a bejelentkezéshez...</p>
     </div>
 
-    <p>A regisztrációval ön hozzájárul <a href="#">Általános szerződési feltételeinkhez (ÁSZF)</a>.</p>
+    <p>
+      A regisztrációval ön hozzájárul <a href="#">Általános szerződési feltételeinkhez (ÁSZF)</a>.
+    </p>
 
     <button type="submit" class="registerbtn" @click="register">Regisztráció</button>
   </div>

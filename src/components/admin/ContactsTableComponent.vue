@@ -3,7 +3,9 @@ import { defineComponent } from 'vue'
 import { mapStores } from 'pinia'
 import { useAdminContactStore } from '@/stores/admin/admin_contact_store'
 import type { ContactMessage } from '@/types/contact'
-import EditableTableComponent, { type TableColumn } from '@/components/admin/EditableTableComponent.vue'
+import EditableTableComponent, {
+  type TableColumn,
+} from '@/components/admin/EditableTableComponent.vue'
 
 export default defineComponent({
   name: 'ContactsTable',
@@ -18,8 +20,20 @@ export default defineComponent({
         { key: 'id', label: 'ID', editable: false },
         { key: 'name', label: 'Név', editable: false },
         { key: 'email', label: 'Email', editable: false },
-        { key: 'subject', label: 'Tárgy', editable: false, cellStyle: 'min-width: 650px; max-width: 250px; white-space: normal; word-wrap: break-word;' },
-        { key: 'message', label: 'Üzenet', editable: false, cellStyle: 'min-width: 200px; max-width: 400px; white-space: normal; word-wrap: break-word;' },
+        {
+          key: 'subject',
+          label: 'Tárgy',
+          editable: false,
+          cellStyle:
+            'min-width: 650px; max-width: 250px; white-space: normal; word-wrap: break-word;',
+        },
+        {
+          key: 'message',
+          label: 'Üzenet',
+          editable: false,
+          cellStyle:
+            'min-width: 200px; max-width: 400px; white-space: normal; word-wrap: break-word;',
+        },
       ] as TableColumn[],
     }
   },
@@ -45,7 +59,7 @@ export default defineComponent({
     },
     checkIfUnseen(item: any) {
       return !item.seen_by_admin
-    }
+    },
   },
 })
 </script>
